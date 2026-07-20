@@ -5,15 +5,19 @@ import { hasClerkCredentials } from "@/lib/env";
 // When Clerk isn't configured, gate /dashboard routes behind the demo-auth
 // cookie instead, so unauthenticated visitors (e.g. clicking a footer link)
 // land on /sign-in rather than straight into the dashboard.
-// /dashboard/free is an intentionally public preview tier and stays open.
 const demoAuthProxy: NextMiddleware = (req) => {
   const { pathname } = req.nextUrl;
-  const isProtectedDashboardRoute =
-    pathname.startsWith("/dashboard") && pathname !== "/dashboard/free";
+  const hasDemo = Boolean(req.cookies.get("acc_demo_email")?.value);
 
-  if (isProtectedDashboardRoute && !req.cookies.get("acc_demo_email")?.value) {
-    const signInUrl = new URL("/sign-in", req.url);
-    return NextResponse.redirect(signInUrl);
+  // Member portal
+  if (pathname.startsWith("/dashboard") && !hasDemo) {
+    return NextResponse.redirect(new URL("/sign-in", req.url));
+  }
+
+  // Admin portal — dedicated login at /admin/login (not member /sign-in)
+  const isAdminLogin = pathname === "/admin/login" || pathname.startsWith("/admin/login/");
+  if (pathname.startsWith("/admin") && !isAdminLogin && !hasDemo) {
+    return NextResponse.redirect(new URL("/admin/login", req.url));
   }
 
   return NextResponse.next();

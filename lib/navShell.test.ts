@@ -13,9 +13,9 @@ import {
 } from "./navShell";
 
 describe("isFreeTierPath", () => {
-  it("detects free-tier account surfaces", () => {
-    assert.equal(isFreeTierPath("/dashboard/free"), true);
-    assert.equal(isFreeTierPath("/dashboard/free/extra"), true);
+  it("is a defensive no-op after free-tier removal", () => {
+    assert.equal(isFreeTierPath("/dashboard/free"), false);
+    assert.equal(isFreeTierPath("/dashboard/free/extra"), false);
     assert.equal(isFreeTierPath("/dashboard"), false);
     assert.equal(isFreeTierPath(null), false);
   });

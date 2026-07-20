@@ -15,7 +15,7 @@ const SAGE_600 = "#4A5E48";
 const AMBER = "#C2963A";
 const PARCHMENT = "#F0EDE6";
 
-const pricingFeatures = ["Monthly case consultation", "CEU trainings", "Clinical resource library", "Public directory listing", "Referral network", "Practice guidance", "Coaching with Sarah", "Burnout resources"];
+const pricingFeatures = ["Monthly case consultation", "CEU trainings", "Clinical resource library", "Public directory listing", "Referral network", "Practice guidance", "Coaching with Sarah", "Professional will designation", "Private online community"];
 
 const offerDetails = [
   "A structured consultation group meets the first Thursday of every month from 9:00 to 10:30am. Bring your difficult cases, process with trusted peers, and leave with a new perspective.",
@@ -145,6 +145,7 @@ export default function WhatWeOfferPage() {
                 </h4>
                 <Button
                   render={<a href="https://mail.google.com/mail/?view=cm&fs=1&to=sarah@restoredfamily.com" target="_blank" rel="noopener noreferrer" />}
+                  nativeButton={false}
                   className="flex gap-2 items-center w-full rounded-full min-h-12 cursor-pointer"
                   style={{ background: AMBER, color: "#fff" }}
                 >

@@ -41,6 +41,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# bun lockfile is local-only — Vercel uses npm, Railway uses bun via Dockerfile.bun
+bun.lockb
+bun.lock
+
 # claude code local state
 .claude/
 
@@ -51,3 +55,10 @@ next-env.d.ts
 # local working notes, not app content
 /tasks.md
 /ui-audit-findings.md
+
+# raw design dumps (process into public/*.jpg before commit)
+/_source-assets/
+/acc-qa-*.log
+
+# local agent tooling
+.kilo/

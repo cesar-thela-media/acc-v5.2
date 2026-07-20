@@ -10,6 +10,8 @@ type SignOutActionProps = {
   className?: string;
   style?: CSSProperties;
   onSignedOut?: () => void;
+  /** Where to go after sign-out. Defaults to member login. */
+  redirectTo?: string;
 };
 
 export function SignOutAction({
@@ -17,6 +19,7 @@ export function SignOutAction({
   className = "",
   style,
   onSignedOut,
+  redirectTo = "/sign-in",
 }: SignOutActionProps) {
   const router = useRouter();
 
@@ -24,7 +27,7 @@ export function SignOutAction({
     async function handleDemoSignOut() {
       await fetch("/api/mock-auth", { method: "DELETE" });
       onSignedOut?.();
-      router.push("/sign-in");
+      router.push(redirectTo);
       router.refresh();
     }
     return (
@@ -36,7 +39,7 @@ export function SignOutAction({
   }
 
   return (
-    <SignOutButton>
+    <SignOutButton redirectUrl={redirectTo}>
       <button type="button" className={className} style={style} onClick={onSignedOut}>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="inline-block align-middle mr-1.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         {label}

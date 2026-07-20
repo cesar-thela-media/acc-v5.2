@@ -26,7 +26,8 @@ export function MockSignIn({
   redirectTo = "/dashboard",
   title = "Log in to The Circle",
   description = "Clerk auth isn't configured. Enter any name and email to access the member dashboard.",
-  showFreePreview = true,
+  /** Free-tier preview link is hidden by default. Pass `true` to re-show (currently never enabled). */
+  showFreePreview = false,
   showJoinLink = true,
 }: Props) {
   const router = useRouter();
@@ -83,7 +84,7 @@ export function MockSignIn({
       <div className="relative flex items-end sm:items-center justify-center lg:justify-start min-h-screen">
         <div className="max-w-7xl p-4 lg:px-8 xl:px-16 lg:py-20 sm:py-16 py-8 mx-auto w-full">
           <Card
-            className="w-full h-full max-w-md px-6 py-8 sm:px-8 sm:py-12 border-none shadow-xl gap-8 rounded-3xl"
+            className="w-full max-w-md px-6 py-8 sm:px-8 sm:py-12 border-none shadow-xl gap-8 rounded-3xl"
             style={{
               background: "linear-gradient(160deg, #3D4F3C 0%, #2D3B2C 48%, #243024 100%)",
               border: "1px solid rgba(194,150,58,0.28)",
@@ -91,8 +92,9 @@ export function MockSignIn({
             }}
           >
             <CardHeader className="p-0 flex gap-6 flex-col">
-              <Link href="/" aria-label="The Circle">
-                <Image src="/logo-mark.png" alt="" width={160} height={58} className="h-14 w-auto object-contain brightness-110" />
+              {/* Logo centered; card stays left-aligned on large screens */}
+              <Link href="/" aria-label="The Circle" className="flex justify-center w-full">
+                <Image src="/logo-mark.png" alt="" width={200} height={72} className="h-20 w-auto object-contain brightness-110" />
               </Link>
               <div className="flex gap-2 flex-col">
                 <CardTitle className="text-2xl font-semibold" style={{ color: "#fff" }}>
@@ -117,7 +119,8 @@ export function MockSignIn({
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Jane Smith"
                         required
-                        className="h-9 shadow-xs"
+                        className="h-9 shadow-xs text-white placeholder:text-white/40 caret-white"
+                        style={{ color: "#fff", background: "rgba(255,255,255,0.07)", borderColor: "rgba(255,255,255,0.12)" }}
                       />
                     </Field>
                     <Field className="gap-1.5">
@@ -131,7 +134,8 @@ export function MockSignIn({
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="jane@example.com"
                         required
-                        className="h-9 shadow-xs"
+                        className="h-9 shadow-xs text-white placeholder:text-white/40 caret-white"
+                        style={{ color: "#fff", background: "rgba(255,255,255,0.07)", borderColor: "rgba(255,255,255,0.12)" }}
                       />
                     </Field>
                   </div>

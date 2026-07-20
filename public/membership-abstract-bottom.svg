@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 600" fill="none" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="botLine" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#E8D5A3" stop-opacity="0.5" />
+      <stop offset="0.5" stop-color="#C2963A" stop-opacity="0.3" />
+      <stop offset="1" stop-color="#3D4F3B" stop-opacity="0.4" />
+    </linearGradient>
+    <linearGradient id="botLine2" x1="1" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#D8E0D8" stop-opacity="0.45" />
+      <stop offset="1" stop-color="#3D4F3B" stop-opacity="0.2" />
+    </linearGradient>
+  </defs>
+  <g stroke-linecap="round" fill="none" stroke-width="1.25">
+    <path d="M -120 460 C 220 380, 480 520, 760 460 S 1240 360, 1600 410" stroke="url(#botLine)" />
+    <path d="M -120 400 C 260 330, 540 470, 820 410 S 1340 320, 1600 380" stroke="url(#botLine)" opacity="0.55" />
+    <path d="M -120 510 C 240 430, 520 580, 820 510 S 1340 400, 1600 460" stroke="url(#botLine2)" opacity="0.7" />
+    <path d="M -120 320 C 280 250, 560 380, 880 320 S 1380 240, 1600 290" stroke="url(#botLine)" opacity="0.42" />
+
+    <path d="M 60 170 q 80 40 160 0 t 160 10 t 160 0 t 160 8 t 160 0" stroke="#E8D5A3" stroke-opacity="0.4" />
+    <path d="M 100 110 q 70 30 140 0 t 140 6 t 140 -4 t 140 8 t 140 -6" stroke="#E8D5A3" stroke-opacity="0.3" />
+  </g>
+
+  <g fill="#E8D5A3" opacity="0.42">
+    <circle cx="180" cy="480" r="1.6" />
+    <circle cx="600" cy="520" r="1.4" />
+    <circle cx="1020" cy="460" r="1.6" />
+    <circle cx="380" cy="380" r="1.2" />
+    <circle cx="940" cy="420" r="1.4" />
+    <circle cx="1320" cy="480" r="1.4" />
+  </g>
+</svg>

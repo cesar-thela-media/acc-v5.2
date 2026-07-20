@@ -5,11 +5,19 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { MobileSidePanel } from "@/components/layout/MobileSidePanel";
+import { FileText, Search, X } from "lucide-react";
 
 const AMBER = "var(--color-accent-highlight)";
 
-const RESOURCES = [
+type Resource = {
+  title: string;
+  category: string;
+  type: string;
+  date: string;
+  description: string;
+};
+
+const RESOURCES: Resource[] = [
   { title: "CBT Session Planning Template", category: "Clinical Tools", type: "PDF", date: "Apr 18, 2026", description: "A structured template for planning CBT sessions across presenting concerns." },
   { title: "Psychoeducation: Anxiety Handout", category: "Handouts", type: "PDF", date: "Apr 15, 2026", description: "Client-facing psychoeducation on the anxiety cycle, suitable for most adult clients." },
   { title: "Fee Setting for Private Practice", category: "Business", type: "Guide", date: "Apr 10, 2026", description: "A practical guide to setting, communicating, and adjusting fees in private practice." },
@@ -24,81 +32,65 @@ const RESOURCES = [
   { title: "Intake Form Template", category: "Clinical Tools", type: "PDF", date: "Feb 20, 2026", description: "A customizable intake form template for new clients in private practice." },
 ];
 
-const CATEGORIES = ["All", "Clinical Tools", "Handouts", "Business", "Self-Care"];
-const TYPES = ["All", "PDF", "Guide", "Worksheet", "Video"];
-const COLLECTIONS = [
-  {
-    title: "Clinical essentials",
-    description: "Protocols, checklists, and templates you can use in session this week.",
-    category: "Clinical Tools",
-    type: "All",
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
-  },
-  {
-    title: "Client handout pack",
-    description: "Psychoeducation tools for anxiety, attachment, and relationships.",
-    category: "Handouts",
-    type: "PDF",
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
-  },
-  {
-    title: "Practice growth",
-    description: "Business guides for fees, marketing, and private practice systems.",
-    category: "Business",
-    type: "Guide",
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
-  },
-];
+const CATEGORIES = ["All", "Clinical Tools", "Handouts", "Business", "Self-Care"] as const;
 
 export default function ResourcesPage() {
-  const [category, setCategory] = useState("All");
-  const [type, setType] = useState("All");
+  const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("All");
   const [search, setSearch] = useState("");
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
-  const filtered = useMemo(
-    () =>
-      RESOURCES.filter((r) => {
-        if (category !== "All" && r.category !== category) return false;
-        if (type !== "All" && r.type !== type) return false;
-        if (
-          search &&
-          !`${r.title} ${r.description} ${r.category}`
-            .toLowerCase()
-            .includes(search.toLowerCase())
-        )
-          return false;
-        return true;
-      }),
-    [category, type, search]
-  );
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return RESOURCES.filter((r) => {
+      if (category !== "All" && r.category !== category) return false;
+      if (!q) return true;
+      return `${r.title} ${r.description} ${r.category} ${r.type}`.toLowerCase().includes(q);
+    });
+  }, [category, search]);
 
-  const featuredResource = filtered[0] ?? RESOURCES[0];
-  const hasActiveFilters = Boolean(
-    search.trim() || category !== "All" || type !== "All"
-  );
+  const hasFilters = category !== "All" || search.trim().length > 0;
 
   function clearFilters() {
     setSearch("");
     setCategory("All");
-    setType("All");
   }
 
-  function applyCollection(collection: (typeof COLLECTIONS)[number]) {
-    setCategory(collection.category);
-    setType(collection.type);
-  }
-
-  const filterBlocks = (
-    <>
+  return (
+    <div className="flex flex-col gap-6 max-w-4xl">
+      {/* Header */}
       <div>
-        <p
-          className="text-xs font-medium uppercase tracking-widest mb-3"
-          style={{ color: "var(--color-text-tertiary)" }}
-        >
-          Category
+        <p className="text-eyebrow">Resources</p>
+        <h1 className="text-page-title">Resource library</h1>
+        <p className="text-sm mt-2 max-w-xl" style={{ color: "var(--color-text-secondary)" }}>
+          Clinical tools, handouts, and practice guides for members. Downloads open once files are uploaded.
         </p>
-        <div className="flex flex-wrap gap-2">
+      </div>
+
+      {/* Search + categories — one control strip */}
+      <div className="flex flex-col gap-4">
+        <div className="relative">
+          <Search
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 pointer-events-none"
+            style={{ color: "var(--color-text-tertiary)" }}
+          />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by title or topic…"
+            className="h-11 pl-10"
+          />
+          {search ? (
+            <button
+              type="button"
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-black/5"
+              aria-label="Clear search"
+            >
+              <X className="size-4" style={{ color: "var(--color-text-tertiary)" }} />
+            </button>
+          ) : null}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
           {CATEGORIES.map((item) => {
             const active = category === item;
             return (
@@ -106,292 +98,97 @@ export default function ResourcesPage() {
                 key={item}
                 type="button"
                 onClick={() => setCategory(item)}
-                className="px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
+                className="px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors"
                 style={{
                   background: active ? AMBER : "#fff",
                   color: active ? "#fff" : "var(--color-sage-700)",
-                  border: `1px solid ${
-                    active ? AMBER : "rgba(194,150,58,0.18)"
-                  }`,
+                  border: `1px solid ${active ? AMBER : "rgba(194,150,58,0.18)"}`,
                 }}
               >
                 {item}
               </button>
             );
           })}
-        </div>
-      </div>
-
-      <div>
-        <p
-          className="text-xs font-medium uppercase tracking-widest mb-3"
-          style={{ color: "var(--color-text-tertiary)" }}
-        >
-          Type
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {TYPES.map((item) => {
-            const active = type === item;
-            return (
-              <button
-                key={item}
-                type="button"
-                onClick={() => setType(item)}
-                className="px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
-                style={{
-                  background: active ? AMBER : "#fff",
-                  color: active ? "#fff" : "var(--color-sage-700)",
-                  border: `1px solid ${
-                    active ? AMBER : "rgba(194,150,58,0.18)"
-                  }`,
-                }}
-              >
-                {item}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div>
-        <p
-          className="text-xs font-medium uppercase tracking-widest mb-3"
-          style={{ color: "var(--color-text-tertiary)" }}
-        >
-          Recommended collections
-        </p>
-        <div className="flex flex-col gap-3">
-          {COLLECTIONS.map((collection) => (
+          {hasFilters ? (
             <button
-              key={collection.title}
               type="button"
-              onClick={() => applyCollection(collection)}
-              className="text-left rounded-2xl border px-4 py-4 transition-colors hover:bg-[var(--color-cream-100)]"
-              style={{ borderColor: "var(--color-cream-300)", background: "#fff" }}
+              onClick={clearFilters}
+              className="text-xs font-medium underline ml-1"
+              style={{ color: "var(--color-sage-700)", textUnderlineOffset: "3px" }}
             >
-              <div className="flex items-start gap-3">
-                <span
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-sm shrink-0"
-                  style={{ background: "var(--color-sage-50)", color: "var(--color-sage-700)" }}
-                >
-                  {collection.icon}
-                </span>
-                <div>
-                  <p className="text-sm font-semibold" style={{ color: "var(--color-sage-800)" }}>
-                    {collection.title}
-                  </p>
-                  <p className="text-xs mt-1 leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>
-                    {collection.description}
-                  </p>
-                </div>
-              </div>
+              Clear
             </button>
-          ))}
+          ) : null}
         </div>
       </div>
-    </>
-  );
 
-  return (
-    <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-4">
-        <div>
-          <p className="text-eyebrow">
-            Resources
+      {/* Result meta */}
+      <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
+        {filtered.length} resource{filtered.length === 1 ? "" : "s"}
+        {category !== "All" ? ` in ${category}` : ""}
+        {search.trim() ? ` matching “${search.trim()}”` : ""}
+      </p>
+
+      {/* List */}
+      {filtered.length === 0 ? (
+        <Card className="py-14 text-center flex flex-col items-center gap-3">
+          <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>
+            No resources match your search.
           </p>
-          <h1 className="text-page-title">
-            Resource library
-          </h1>
-        </div>
-      </div>
-
-      <Card className="flex flex-col gap-1">
-        <p className="text-sm font-medium" style={{ color: "var(--color-text-primary)" }}>
-          File hosting isn&apos;t connected yet.
-        </p>
-        <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
-          Downloads and previews will work here once each resource has a real uploaded file behind it.
-        </p>
-      </Card>
-
-      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-        <div className="flex-1">
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search resources, topics, or formats..."
-            className="h-12"
-          />
-        </div>
-        <div className="flex gap-2 sm:w-auto">
-          {hasActiveFilters && (
-            <Button variant="secondary" size="md" onClick={clearFilters} className="flex-1 sm:flex-none">
-              Clear filters
-            </Button>
-          )}
           <button
             type="button"
-            onClick={() => setMobileFiltersOpen(true)}
-            className="lg:hidden px-5 py-3 rounded-full text-sm font-medium"
-            style={{ background: AMBER, color: "#fff" }}
+            onClick={clearFilters}
+            className="text-sm font-medium underline"
+            style={{ color: "var(--color-sage-700)", textUnderlineOffset: "3px" }}
           >
-            Filters
+            Clear search and filters
           </button>
-        </div>
-      </div>
-
-      <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
-        <aside className="hidden lg:flex lg:w-72 shrink-0 flex-col gap-4 self-start sticky top-24">
-          <Card className="flex flex-col gap-6">{filterBlocks}</Card>
-        </aside>
-
-        <div className="flex-1 flex flex-col gap-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
-              {filtered.length} resource{filtered.length !== 1 ? "s" : ""} in your library
-            </p>
-            <Badge variant="accent">Updated weekly</Badge>
-          </div>
-
-          <Card className="grid grid-cols-1 md:grid-cols-[1.2fr,0.8fr] gap-6 md:gap-8">
-            <div className="flex flex-col gap-3">
-              <h2
-                className="section-title-strong"
-                style={{ fontSize: "clamp(1.5rem, 3vw, 2rem)", color: "var(--color-sage-900)" }}
-              >
-                {featuredResource.title}
-              </h2>
-              <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>
-                {featuredResource.description}
-              </p>
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge>{featuredResource.category}</Badge>
-                <Badge variant="highlight">{featuredResource.type}</Badge>
-                <span className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>{featuredResource.date}</span>
-              </div>
-            </div>
-
-            <div
-              className="rounded-2xl px-5 py-5 flex flex-col gap-4"
-              style={{ background: "var(--color-cream-100)", border: "1px solid var(--color-cream-300)" }}
+        </Card>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {filtered.map((resource) => (
+            <Card
+              key={resource.title}
+              className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6"
             >
-              <div>
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                style={{ background: "var(--color-sage-100)", color: "var(--color-sage-600)" }}
+                aria-hidden="true"
+              >
+                <FileText className="size-4" />
+              </div>
+
+              <div className="flex-1 min-w-0 flex flex-col gap-1.5">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge>{resource.category}</Badge>
+                  <Badge variant="highlight">{resource.type}</Badge>
+                </div>
                 <p className="text-sm font-semibold" style={{ color: "var(--color-sage-800)" }}>
-                  About this resource
+                  {resource.title}
                 </p>
-                <p className="text-xs mt-1" style={{ color: "var(--color-text-secondary)" }}>
-                  Concise and ready to use in session or supervision.
+                <p className="text-xs leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>
+                  {resource.description}
+                </p>
+                <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
+                  Added {resource.date}
                 </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-3 mt-auto">
-                <Button size="sm" disabled title="File hosting isn't connected yet.">Download</Button>
-                <Button variant="secondary" size="sm" disabled title="File hosting isn't connected yet.">Preview</Button>
-              </div>
-            </div>
-          </Card>
 
-          {filtered.length === 0 ? (
-            <Card className="py-14 text-center">
-              <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>
-                No resources match your current search and filters.
-              </p>
-              <button
-                type="button"
-                onClick={clearFilters}
-                className="mt-4 text-sm font-medium underline"
-                style={{ color: "var(--color-sage-700)", textUnderlineOffset: "3px" }}
-              >
-                Reset library view
-              </button>
+              <div className="flex items-center gap-2 sm:shrink-0 sm:flex-col sm:items-stretch">
+                <Button
+                  size="sm"
+                  disabled
+                  title="File upload is not connected yet."
+                  className="flex-1 sm:flex-none"
+                >
+                  Download
+                </Button>
+              </div>
             </Card>
-          ) : (
-            <div className="grid-fluid-sm" style={{ gap: "1.25rem" }}>
-              {filtered.map((resource) => (
-                <Card key={resource.title} hover className="flex flex-col gap-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <Badge>{resource.category}</Badge>
-                    <span className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>{resource.type}</span>
-                  </div>
-                  <div className="flex flex-col gap-2 flex-1">
-                    <h3 className="text-sm font-semibold" style={{ color: "var(--color-sage-800)" }}>{resource.title}</h3>
-                    <p className="text-xs leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>{resource.description}</p>
-                  </div>
-                  <div className="flex items-center justify-between gap-3 mt-auto">
-                    <span className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>{resource.date}</span>
-                    <div className="flex items-center gap-3">
-                      <span
-                        className="text-xs font-medium"
-                        style={{ color: "var(--color-text-tertiary)", cursor: "not-allowed" }}
-                        title="File hosting isn't connected yet."
-                      >
-                        Preview
-                      </span>
-                      <span
-                        className="text-xs font-medium"
-                        style={{ color: "var(--color-text-tertiary)", cursor: "not-allowed" }}
-                        title="File hosting isn't connected yet."
-                      >
-                        Download
-                      </span>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          )}
+          ))}
         </div>
-      </div>
-
-      <MobileSidePanel
-        open={mobileFiltersOpen}
-        onClose={() => setMobileFiltersOpen(false)}
-        side="right"
-        hideAbove="lg"
-        background="var(--color-cream-100)"
-        borderColor="rgba(194,150,58,0.15)"
-        titleColor="var(--color-sage-900)"
-        closeColor="var(--color-text-secondary)"
-        title={
-          <div>
-            <p className="text-[11px] font-medium uppercase tracking-[0.24em] mb-2" style={{ color: "var(--color-sage-600)" }}>
-              Resource library
-            </p>
-            <span className="text-base font-semibold" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
-              Refine results
-            </span>
-          </div>
-        }
-      >
-        <div className="flex flex-col gap-6">
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search resources..."
-          />
-          {filterBlocks}
-          <div className="mt-auto pt-6 flex flex-col gap-3" style={{ borderTop: "1px solid var(--color-cream-300)" }}>
-            <button
-              type="button"
-              onClick={() => setMobileFiltersOpen(false)}
-              className="w-full py-3 rounded-full text-sm font-medium"
-              style={{ background: AMBER, color: "#fff" }}
-            >
-              Show {filtered.length} result{filtered.length !== 1 ? "s" : ""}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                clearFilters();
-                setMobileFiltersOpen(false);
-              }}
-              className="w-full py-3 rounded-full text-sm font-medium"
-              style={{ background: "#fff", color: "var(--color-sage-700)", border: "1px solid rgba(194,150,58,0.18)" }}
-            >
-              Clear filters
-            </button>
-          </div>
-        </div>
-      </MobileSidePanel>
+      )}
     </div>
   );
 }

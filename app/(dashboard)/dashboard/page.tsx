@@ -1,38 +1,46 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { cookies } from "next/headers";
-import { Badge } from "@/components/ui/Badge";
-import { Card } from "@/components/ui/Card";
 import Link from "next/link";
+import { CalendarDays, BookOpen, Folder, CreditCard, ArrowUpRight } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/shadcn/card";
+import { Badge } from "@/components/ui/shadcn/badge";
+import { Separator } from "@/components/ui/shadcn/separator";
 import { hasClerkCredentials } from "@/lib/env";
 import { daysFromNow, formatShortDate, formatShortWeekdayDate, nextFirstWeekdayOfMonth } from "@/lib/relativeDates";
 
 const THURSDAY = 4;
+const AMBER = "#C2963A";
+const SAGE = "#4A5E48";
 
 const upcomingEvents = [
   {
     title: "Monthly case consultation",
     date: `${formatShortWeekdayDate(nextFirstWeekdayOfMonth(THURSDAY, 0))} · 9:00–10:30am`,
-    format: "Virtual",
     rsvp: true,
   },
   {
     title: "Practice building workshop",
     date: `${formatShortWeekdayDate(daysFromNow(22))} · 12:00–1:00pm`,
-    format: "Virtual",
     rsvp: false,
   },
   {
     title: "Trauma-informed care CEU",
     date: `${formatShortWeekdayDate(daysFromNow(31))} · 10:00am–12:00pm`,
-    format: "Virtual",
     rsvp: false,
   },
 ];
 
 const recentResources = [
-  { title: "CBT Session Planning Template", category: "Clinical Tools" },
+  { title: "CBT Session Planning Template", category: "Clinical" },
   { title: "Fee Setting for Private Practice", category: "Business" },
   { title: "Psychoeducation: Anxiety Handout", category: "Handouts" },
+];
+
+const quickLinks = [
+  { href: "/dashboard/events", label: "Events", icon: CalendarDays },
+  { href: "/dashboard/resources", label: "Resources", icon: BookOpen },
+  { href: "/dashboard/files", label: "Files", icon: Folder },
+  { href: "/dashboard/billing", label: "Billing", icon: CreditCard },
 ];
 
 export default async function DashboardPage() {
@@ -43,164 +51,151 @@ export default async function DashboardPage() {
   } else {
     const jar = await cookies();
     const demoCookieName = jar.get("acc_demo_name")?.value;
-    if (demoCookieName) firstName = demoCookieName.replace(/^(Dr\.|Mr\.|Mrs\.|Ms\.)\s+/i, "").split(" ")[0];
+    if (demoCookieName) {
+      firstName = demoCookieName.replace(/^(Dr\.|Mr\.|Mrs\.|Ms\.)\s+/i, "").split(" ")[0];
+    }
   }
 
   return (
-    <div className="flex flex-col gap-10 2xl:gap-14">
-      {/* Header */}
-      <div>
-        <p
-          className="text-xs font-medium uppercase tracking-widest mb-2"
-          style={{ color: "var(--color-sage-600)" }}
-        >
-          Member dashboard
-        </p>
-        <h1 className="text-page-title">
-          Welcome back, {firstName}.
-        </h1>
-      </div>
-
-      {/* Quick actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        {[
-          { href: "/dashboard/events", label: "RSVP to next event", icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="14" x2="9" y2="18"/><line x1="15" y1="14" x2="15" y2="18"/></svg> },
-          { href: "/dashboard/network", label: "Add a referral", icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 13v4"/><path d="M8 17h8"/><circle cx="5" cy="7" r="2"/><circle cx="19" cy="7" r="2"/><path d="M6.5 8.5 9 10"/><path d="M15 10l2.5-1.5"/></svg> },
-          { href: "/dashboard/resources", label: "Browse resources", icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="14" y2="11"/></svg> },
-        ].map((action) => (
-          <Link
-            key={action.href}
-            href={action.href}
-            className="rounded-2xl px-5 py-4 flex items-center gap-4 transition-all duration-300 hover:-translate-y-0.5 no-underline group"
+    <div className="flex flex-col gap-8">
+      {/* Welcome band — text only (no portrait image) */}
+      <section
+        className="relative overflow-hidden rounded-2xl px-6 py-7 sm:px-8 sm:py-8"
+        style={{ background: SAGE }}
+      >
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 60% 80% at 100% 0%, rgba(194,150,58,0.28) 0%, transparent 55%)",
+          }}
+        />
+        <div className="relative min-w-0">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] mb-1.5" style={{ color: AMBER }}>
+            The Circle
+          </p>
+          <h1
+            className="text-2xl sm:text-3xl leading-tight"
             style={{
-              background: "var(--color-cream-100)",
-              border: "1px solid rgba(194,150,58,0.12)",
+              fontFamily: "var(--font-serif), Georgia, serif",
+              fontWeight: 400,
+              color: "#fff",
             }}
           >
+            Welcome back, {firstName}.
+          </h1>
+        </div>
+      </section>
+
+      {/* Quick links */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {quickLinks.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className="group flex items-center gap-3 rounded-2xl border bg-white px-4 py-3.5 transition-shadow hover:shadow-md"
+            style={{ borderColor: "rgba(45,59,44,0.08)" }}
+          >
             <span
-              className="w-9 h-9 rounded-xl flex items-center justify-center text-base shrink-0"
-              style={{ background: "var(--color-sage-100)", color: "var(--color-sage-600)" }}
+              className="flex size-10 items-center justify-center rounded-xl"
+              style={{ background: "rgba(45,59,44,0.06)", color: SAGE }}
             >
-              {action.icon}
+              <item.icon className="size-4.5" />
             </span>
-            <span className="text-sm font-medium group-hover:text-[var(--color-sage-800)]" style={{ color: "var(--color-sage-800)" }}>
-              {action.label} →
+            <span className="text-sm font-medium" style={{ color: SAGE }}>
+              {item.label}
             </span>
+            <ArrowUpRight className="ml-auto size-3.5 opacity-0 transition-opacity group-hover:opacity-50" style={{ color: SAGE }} />
           </Link>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Upcoming events */}
-        <Card className="flex flex-col gap-5">
-          <div className="flex items-center justify-between">
-            <h2
-              className="text-base font-semibold"
-              style={{ color: "var(--color-sage-800)" }}
-            >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <Card className="rounded-2xl border-0 shadow-sm gap-0 py-0 overflow-hidden" style={{ background: "#fff" }}>
+          <div className="flex items-center justify-between px-5 pt-5 pb-3">
+            <h2 className="text-sm font-semibold" style={{ color: SAGE }}>
               Upcoming events
             </h2>
-            <Link
-              href="/dashboard/events"
-              className="text-xs underline"
-              style={{ color: "var(--color-sage-600)", textUnderlineOffset: "3px" }}
-            >
+            <Link href="/dashboard/events" className="text-xs font-medium" style={{ color: AMBER }}>
               View all
             </Link>
           </div>
-          <div className="flex flex-col gap-4">
+          <Separator />
+          <CardContent className="px-5 py-4 flex flex-col gap-4">
             {upcomingEvents.map((ev) => (
-              <div
-                key={ev.title}
-                className="flex items-start justify-between gap-4 pb-4 border-b last:border-0 last:pb-0"
-                style={{ borderColor: "rgba(194,150,58,0.12)" }}
-              >
+              <div key={ev.title} className="flex items-start justify-between gap-3">
                 <div>
-                  <p
-                    className="text-sm font-medium"
-                    style={{ color: "var(--color-text-primary)" }}
-                  >
+                  <p className="text-sm font-medium" style={{ color: "var(--color-text-primary)" }}>
                     {ev.title}
                   </p>
-                  <p
-                    className="text-xs mt-0.5"
-                    style={{ color: "var(--color-text-tertiary)" }}
-                  >
+                  <p className="text-xs mt-0.5" style={{ color: "var(--color-text-tertiary)" }}>
                     {ev.date}
                   </p>
                 </div>
                 {ev.rsvp ? (
-                  <Badge variant="success">RSVP&apos;d</Badge>
+                  <Badge className="bg-[rgba(74,124,89,0.12)] text-[var(--color-success)] border-0">
+                    RSVP&apos;d
+                  </Badge>
                 ) : (
                   <Link href="/dashboard/events">
-                    <Badge>RSVP</Badge>
+                    <Badge variant="outline" className="border-[rgba(194,150,58,0.35)] text-[var(--color-sage-700)]">
+                      RSVP
+                    </Badge>
                   </Link>
                 )}
               </div>
             ))}
-          </div>
+          </CardContent>
         </Card>
 
-        {/* Recent resources */}
-        <Card className="flex flex-col gap-5">
-          <div className="flex items-center justify-between">
-            <h2
-              className="text-base font-semibold"
-              style={{ color: "var(--color-sage-800)" }}
-            >
+        <Card className="rounded-2xl border-0 shadow-sm gap-0 py-0 overflow-hidden" style={{ background: "#fff" }}>
+          <div className="flex items-center justify-between px-5 pt-5 pb-3">
+            <h2 className="text-sm font-semibold" style={{ color: SAGE }}>
               New resources
             </h2>
-            <Link
-              href="/dashboard/resources"
-              className="text-xs underline"
-              style={{ color: "var(--color-sage-600)", textUnderlineOffset: "3px" }}
-            >
+            <Link href="/dashboard/resources" className="text-xs font-medium" style={{ color: AMBER }}>
               View all
             </Link>
           </div>
-          <div className="flex flex-col gap-4">
+          <Separator />
+          <CardContent className="px-5 py-4 flex flex-col gap-4">
             {recentResources.map((r) => (
-              <div
-                key={r.title}
-                className="flex items-center justify-between gap-4 pb-4 border-b last:border-0 last:pb-0"
-                style={{ borderColor: "rgba(194,150,58,0.12)" }}
-              >
-                <p
-                  className="text-sm"
-                  style={{ color: "var(--color-text-primary)" }}
-                >
+              <div key={r.title} className="flex items-center justify-between gap-3">
+                <p className="text-sm" style={{ color: "var(--color-text-primary)" }}>
                   {r.title}
                 </p>
-                <Badge>{r.category}</Badge>
+                <Badge variant="secondary" className="font-normal">
+                  {r.category}
+                </Badge>
               </div>
             ))}
-          </div>
+          </CardContent>
         </Card>
       </div>
 
-      {/* Membership status */}
       <Card
-        className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-        style={{ border: "1px solid rgba(194,150,58,0.15)", background: "var(--color-cream-100)" }}
+        className="rounded-2xl border-0 shadow-sm py-0 overflow-hidden"
+        style={{ background: "linear-gradient(135deg, #F7F4EC 0%, #EDE8DC 100%)" }}
       >
-        <div>
-          <p
-            className="text-sm font-semibold"
-            style={{ color: "var(--color-sage-800)" }}
+        <CardContent className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-5 py-5">
+          <div>
+            <p className="text-sm font-semibold" style={{ color: SAGE }}>
+              Membership active
+            </p>
+            <p className="text-xs mt-0.5" style={{ color: "var(--color-text-tertiary)" }}>
+              $79/mo · Renews {formatShortDate(daysFromNow(18))}
+            </p>
+          </div>
+          <Link
+            href="/dashboard/billing"
+            className="text-xs font-semibold inline-flex items-center gap-1"
+            style={{ color: AMBER }}
           >
-            Active membership
-          </p>
-          <p className="text-xs mt-0.5" style={{ color: "var(--color-text-tertiary)" }}>
-            $79/month · Renews {formatShortDate(daysFromNow(18))}
-          </p>
-        </div>
-        <Link
-          href="/dashboard/billing"
-          className="text-xs font-medium underline"
-          style={{ color: "var(--color-sage-700)", textUnderlineOffset: "3px" }}
-        >
-          Manage billing →
-        </Link>
+            Billing
+            <ArrowUpRight className="size-3.5" />
+          </Link>
+        </CardContent>
       </Card>
     </div>
   );

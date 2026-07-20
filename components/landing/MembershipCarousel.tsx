@@ -162,10 +162,12 @@ function MembershipCard({ slide, index, total, progress, config }: CardProps) {
       )}
     >
       <Image
+        key={slide.image}
         src={slide.image}
         alt={slide.title}
         fill
-        className="object-cover pointer-events-none transition-transform duration-700 group-hover:scale-110"
+        sizes="(max-width: 640px) 208px, (max-width: 1024px) 256px, 320px"
+        className="object-cover object-center pointer-events-none transition-transform duration-700 group-hover:scale-110"
       />
 
       <motion.div style={{ opacity: dimOpacity }} className="absolute inset-0 bg-black pointer-events-none" />

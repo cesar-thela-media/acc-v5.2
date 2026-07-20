@@ -1,0 +1,62 @@
+# Production Dockerfile — Bun runtime variant for Railway.
+# Vercel builds continue to use `Dockerfile` (node:20-alpine). This file is
+# referenced by `railway.toml`. `package-lock.json` stays in the repo for
+# Vercel; `bun.lockb` is gitignored and intentionally not committed, so the
+# Dockerfile installs deps fresh instead of using --frozen-lockfile.
+
+FROM oven/bun:1.1-alpine AS base
+
+# ── Install system libs (libc6-compat for some node native modules, openssl for prisma) ──
+FROM base AS deps
+RUN apk add --no-cache libc6-compat openssl
+WORKDIR /app
+
+# Copy build-context files needed for install + prisma generate
+COPY package.json ./
+COPY scripts/prisma-generate.js ./scripts/prisma-generate.js
+COPY prisma ./prisma
+
+# Install deps (no --frozen-lockfile: bun.lockb is gitignored by design).
+# devDependencies are required at build-time (prisma CLI, typescript, tailwind).
+RUN bun install
+
+# Explicit prisma generate (bun's postinstall behavior differs from npm —
+# run the wrapper script we use in npm postinstall to be safe).
+RUN DATABASE_URL=${DATABASE_URL:-postgresql://localhost:5432/build-only} bun run scripts/prisma-generate.js || bun x prisma generate
+
+# ── Build ────────────────────────────────────────────────────────────────────
+FROM base AS builder
+RUN apk add --no-cache libc6-compat openssl
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NEXT_OUTPUT=standalone
+
+RUN bun run build
+
+# ── Runtime ───────────────────────────────────────────────────────────────────
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
+
+RUN addgroup --system --gid 1001 nodejs \
+  && adduser --system --uid 1001 nextjs
+
+# Standalone output layout — Next.js produces .next/standalone/* + .next/static/*
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+
+EXPOSE 3000
+
+# `server.js` lives at /app/server.js after the COPY above (Next standalone output).
+CMD ["bun", "run", "server.js"]

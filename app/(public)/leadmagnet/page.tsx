@@ -1,14 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-
-const WHAT_YOULL_GET = [
-  "A proven fee-setting framework: stop undercharging for good",
-  "The referral network blueprint: build trust before you need it",
-  "Burnout early-warning checklist for private practice clinicians",
-  "The Circle community playbook: what thriving practices do differently",
-];
 
 export default function LeadMagnetPage() {
   const [firstName, setFirstName] = useState("");
@@ -26,7 +20,6 @@ export default function LeadMagnetPage() {
     }
     setError("");
     setLoading(true);
-
     try {
       const res = await fetch("/api/leads", {
         method: "POST",
@@ -44,160 +37,100 @@ export default function LeadMagnetPage() {
       setLoading(false);
       return;
     }
-
     setLoading(false);
     setSubmitted(true);
   }
 
   return (
-    <div
-      className="min-h-screen flex flex-col relative overflow-hidden"
-      style={{ background: "var(--color-sage-800)" }}
-    >
-      {/* Decorative rings */}
+    <div className="relative min-h-[80vh] overflow-hidden" style={{ background: "var(--color-sage-800)" }}>
       <div
-        className="absolute -top-40 -right-32 w-[36rem] h-[36rem] rounded-full pointer-events-none"
-        style={{ border: "1px solid rgba(255,255,255,0.05)" }}
-      />
-      <div
-        className="absolute -bottom-32 -left-24 w-96 h-96 rounded-full pointer-events-none"
-        style={{ border: "1px solid rgba(255,255,255,0.04)" }}
-      />
-
-      {/* Subtle texture overlay */}
-      <div
-        className="fixed inset-0 pointer-events-none"
+        className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage:
-            "radial-gradient(circle at 70% 20%, rgba(194,150,58,0.10) 0%, transparent 55%), radial-gradient(circle at 20% 80%, rgba(74,94,72,0.22) 0%, transparent 50%)",
+            "radial-gradient(ellipse 50% 40% at 15% 20%, rgba(194,150,58,0.12) 0%, transparent 55%), radial-gradient(ellipse 40% 50% at 85% 70%, rgba(255,255,255,0.04) 0%, transparent 50%)",
         }}
       />
 
-      {/* Header */}
-      <header className="relative z-10 px-5 md:px-6 pt-6 md:pt-8">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <Link href="/" className="text-center sm:text-left no-underline">
-            <p
-              className="text-[11px] font-semibold uppercase tracking-[0.28em]"
-              style={{ color: "rgba(255,255,255,0.34)" }}
-            >
-              Free guide for therapists
-            </p>
-            <p
-              className="text-base font-semibold transition-opacity hover:opacity-80"
-              style={{ fontFamily: "var(--font-serif), Georgia, serif", fontWeight: 400, color: "#fff" }}
-            >
-              The Circle
-            </p>
-          </Link>
-
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href="/"
-              className="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium transition-colors hover:bg-white/10"
-              style={{ color: "#fff", border: "1px solid rgba(255,255,255,0.14)" }}
-            >
-              Back to site
-            </Link>
-            <Link
-              href="/join"
-              className="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium transition-opacity hover:opacity-90"
-              style={{ background: "var(--color-accent-highlight)", color: "#fff" }}
-            >
-              Join the circle
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      {/* Main */}
-      <main className="relative z-10 flex-1 flex items-center justify-center px-6 py-16">
-        <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-
-          {/* ── Left: copy ── */}
-          <div>
-            {/* Eyebrow */}
-            <div className="inline-flex items-center gap-2 mb-6 px-3.5 py-1.5 rounded-full" style={{ background: "var(--color-accent-highlight)", border: "1px solid rgba(27,27,27,0.08)" }}>
-              <span className="w-1.5 h-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.8)" }} />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.28em]" style={{ color: "#fff" }}>
-                Free guide for Austin therapists
-              </span>
-            </div>
-
-            <h1
-              className="leading-[1.08] mb-5"
-              style={{
-                fontFamily: "var(--font-serif), Georgia, serif",
-                fontSize: "clamp(2.25rem, 5vw, 3.75rem)",
-                fontWeight: 400,
-                color: "#fff",
-                letterSpacing: "-0.01em",
-              }}
-            >
-              Stop building your
-              <br />
-              <em style={{ color: "var(--color-cream-100)", fontStyle: "italic" }}>
-                practice alone.
-              </em>
-            </h1>
-
-            <p
-              className="text-lg leading-relaxed mb-8"
-              style={{ color: "rgba(255,255,255,0.6)", maxWidth: "30rem" }}
-            >
-              Download <strong style={{ color: "rgba(255,255,255,0.85)", fontWeight: 600 }}>The Private Practice Playbook</strong>, a free guide used by licensed therapists in Austin to build sustainable, fulfilling practices.
-            </p>
-
-            {/* What you'll get */}
-            <ul className="flex flex-col gap-3 mb-8">
-              {WHAT_YOULL_GET.map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <span
-                    className="mt-0.5 shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs"
-                    style={{ background: "rgba(194,150,58,0.20)", color: "var(--color-accent-highlight)" }}
-                  >
-                    ✓
-                  </span>
-                  <span className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.65)" }}>
-                    {item}
-                  </span>
-                </li>
-              ))}
-            </ul>
-
-          </div>
-
-          {/* ── Right: form or thank-you ── */}
-          <div>
-            {!submitted ? (
-              /* ── Opt-in form ── */
+      <main className="relative z-10 mx-auto max-w-7xl px-5 sm:px-8 py-12 md:py-16 lg:py-20">
+        {/* Two columns: left = copy + book, right = big form */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 xl:gap-20 items-start">
+          {/* Left column — badge, headline, body, book */}
+          <div className="flex flex-col gap-8 lg:gap-10">
+            <div>
               <div
-                className="rounded-3xl p-8 relative overflow-hidden"
+                className="inline-flex items-center gap-2 mb-5 px-3.5 py-1.5 rounded-full"
+                style={{ background: "var(--color-accent-highlight)" }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-white/80" />
+                <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-white">
+                  Free guide for Austin therapists
+                </span>
+              </div>
+              <h1
+                className="leading-[1.08] mb-5"
                 style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.09)",
-                  backdropFilter: "blur(12px)",
+                  fontFamily: "var(--font-serif), Georgia, serif",
+                  fontSize: "clamp(2.5rem, 5.5vw, 3.75rem)",
+                  fontWeight: 400,
+                  color: "#fff",
+                  letterSpacing: "-0.01em",
                 }}
               >
-                {/* Form card glow */}
-                <div
-                  className="absolute -top-20 -right-20 w-48 h-48 rounded-full pointer-events-none"
-                  style={{ background: "rgba(194,150,58,0.07)" }}
-                />
+                Stop building your{" "}
+                <em style={{ color: "var(--color-cream-100)", fontStyle: "italic" }}>practice alone.</em>
+              </h1>
+              <p
+                className="text-base md:text-lg leading-relaxed"
+                style={{ color: "rgba(255,255,255,0.62)", maxWidth: "32rem" }}
+              >
+                Download <strong className="font-semibold text-white/90">The Private Practice Playbook</strong>
+                {" "}— a free guide for licensed therapists building sustainable practices.
+              </p>
+            </div>
 
+            <div className="w-full max-w-[260px] sm:max-w-[280px]">
+              <Image
+                src="/playbook-cover.svg"
+                alt="The Private Practice Playbook"
+                width={520}
+                height={680}
+                className="w-full h-auto rounded-lg"
+                style={{ boxShadow: "0 24px 48px -12px rgba(0,0,0,0.5)" }}
+                priority
+              />
+            </div>
+          </div>
+
+          {/* Right column — large form */}
+          <div className="w-full lg:sticky lg:top-28">
+            {!submitted ? (
+              <div
+                className="rounded-2xl p-8 sm:p-10 lg:p-12"
+                style={{
+                  background: "#F7F4EC",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  boxShadow: "0 24px 56px -16px rgba(0,0,0,0.4)",
+                }}
+              >
                 <p
-                  className="text-base font-semibold mb-1 relative"
-                  style={{ color: "#fff" }}
+                  className="text-xl sm:text-2xl font-semibold mb-2"
+                  style={{
+                    fontFamily: "var(--font-serif), Georgia, serif",
+                    color: "var(--color-sage-800)",
+                  }}
                 >
                   Get the free playbook
                 </p>
-                <p className="text-sm mb-6 relative" style={{ color: "rgba(255,255,255,0.45)" }}>
-                  Delivered instantly to your inbox. No spam, ever.
+                <p className="text-base mb-8" style={{ color: "var(--color-text-secondary)" }}>
+                  Delivered to your inbox. No spam.
                 </p>
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4 relative" noValidate>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-medium uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
+                  <div className="flex flex-col gap-2">
+                    <label
+                      className="text-xs font-medium uppercase tracking-wider"
+                      style={{ color: "var(--color-text-tertiary)" }}
+                    >
                       First name
                     </label>
                     <input
@@ -206,25 +139,18 @@ export default function LeadMagnetPage() {
                       onChange={(e) => setFirstName(e.target.value)}
                       placeholder="Jane"
                       required
-                      className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-300"
+                      className="w-full px-5 py-4 rounded-xl text-base outline-none border bg-white"
                       style={{
-                        background: "rgba(255,255,255,0.07)",
-                        border: "1px solid rgba(255,255,255,0.12)",
-                        color: "#fff",
-                      }}
-                      onFocus={(e) => {
-                        e.currentTarget.style.borderColor = "var(--color-accent-highlight)";
-                        e.currentTarget.style.background = "rgba(255,255,255,0.10)";
-                      }}
-                      onBlur={(e) => {
-                        e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)";
-                        e.currentTarget.style.background = "rgba(255,255,255,0.07)";
+                        borderColor: "rgba(45,59,44,0.12)",
+                        color: "var(--color-text-primary)",
                       }}
                     />
                   </div>
-
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-medium uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>
+                  <div className="flex flex-col gap-2">
+                    <label
+                      className="text-xs font-medium uppercase tracking-wider"
+                      style={{ color: "var(--color-text-tertiary)" }}
+                    >
                       Email address
                     </label>
                     <input
@@ -233,176 +159,62 @@ export default function LeadMagnetPage() {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="jane@example.com"
                       required
-                      className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-300"
+                      className="w-full px-5 py-4 rounded-xl text-base outline-none border bg-white"
                       style={{
-                        background: "rgba(255,255,255,0.07)",
-                        border: "1px solid rgba(255,255,255,0.12)",
-                        color: "#fff",
-                      }}
-                      onFocus={(e) => {
-                        e.currentTarget.style.borderColor = "var(--color-accent-highlight)";
-                        e.currentTarget.style.background = "rgba(255,255,255,0.10)";
-                      }}
-                      onBlur={(e) => {
-                        e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)";
-                        e.currentTarget.style.background = "rgba(255,255,255,0.07)";
+                        borderColor: "rgba(45,59,44,0.12)",
+                        color: "var(--color-text-primary)",
                       }}
                     />
                   </div>
-
-                  {error && (
-                    <p className="text-xs" style={{ color: "#B54B4B" }}>{error}</p>
-                  )}
-
+                  {error && <p className="text-sm text-red-700">{error}</p>}
                   <button
                     type="submit"
                     disabled={loading || !firstName.trim() || !email.trim()}
-                    className="w-full py-3.5 rounded-full text-sm font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                    style={{
-                      background: loading ? "rgba(194,150,58,0.7)" : "var(--color-accent-highlight)",
-                      color: "#fff",
-                    }}
+                    className="w-full py-4 sm:py-4.5 rounded-full text-base font-semibold transition-opacity disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 mt-1"
+                    style={{ background: "var(--color-accent-highlight)", color: "#fff" }}
                   >
                     {loading ? "Sending…" : "Send me the playbook →"}
                   </button>
-
-                  <p className="text-center text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>
-                    By submitting you agree to receive occasional emails from The Circle. Unsubscribe anytime. See our{" "}
-                    <Link href="/privacy" className="underline hover:text-white" style={{ color: "rgba(255,255,255,0.4)" }}>
-                      privacy policy
-                    </Link>.
+                  <p className="text-center text-sm" style={{ color: "var(--color-text-tertiary)" }}>
+                    Occasional emails from The Circle.{" "}
+                    <Link href="/privacy" className="underline" style={{ color: "var(--color-sage-700)" }}>
+                      Privacy
+                    </Link>
                   </p>
                 </form>
               </div>
             ) : (
-              /* ── Tripwire reveal ── */
               <div
-                className="rounded-3xl p-8 flex flex-col gap-6"
+                className="rounded-2xl p-8 sm:p-10 lg:p-12 flex flex-col gap-5"
                 style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.09)",
-                  backdropFilter: "blur(12px)",
+                  background: "#F7F4EC",
+                  boxShadow: "0 24px 56px -16px rgba(0,0,0,0.4)",
                 }}
               >
-                {/* Confirmation */}
-                <div className="flex flex-col gap-2">
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-base mb-1"
-                    style={{ background: "rgba(74,124,89,0.16)", color: "var(--color-success)" }}
-                  >
-                    ✓
-                  </div>
-                  <p className="text-base font-semibold" style={{ color: "#fff" }}>
-                    Check your inbox, {firstName}!
-                  </p>
-                  <p className="text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
-                    The Private Practice Playbook is on its way to <span style={{ color: "rgba(255,255,255,0.75)" }}>{email}</span>.
-                  </p>
-                </div>
-
-                {/* Divider */}
-                <div style={{ height: 1, background: "rgba(255,255,255,0.08)" }} />
-
-                {/* Tripwire offer */}
-                <div className="flex flex-col gap-3">
-                  <div className="inline-flex items-center gap-2 self-start px-3 py-1 rounded-full" style={{ background: "var(--color-accent-highlight)", border: "1px solid rgba(27,27,27,0.08)" }}>
-                    <span className="text-[11px] font-semibold uppercase tracking-[0.28em]" style={{ color: "#fff" }}>
-                      One more thing
-                    </span>
-                  </div>
-                  <p
-                    className="text-xl leading-snug"
-                    style={{
-                      fontFamily: "var(--font-serif), Georgia, serif",
-                      fontWeight: 400,
-                      color: "#fff",
-                    }}
-                  >
-                    You&apos;re invited to become a founding member.
-                  </p>
-                  <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.55)" }}>
-                    Every application is reviewed personally by Sarah. We&apos;re intentionally keeping this a close, high-trust professional community rather than a mass platform.
-                  </p>
-
-                  <Link
-                    href="/join"
-                    className="w-full text-center py-3.5 rounded-full text-sm font-semibold transition-all hover:opacity-90"
-                    style={{ background: "#fff", color: "var(--color-sage-800)" }}
-                  >
-                    Apply for founding membership →
-                  </Link>
-                  <p className="text-center text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>
-                    Applications reviewed weekly · No commitment required
-                  </p>
-                </div>
+                <p
+                  className="text-xl sm:text-2xl font-semibold"
+                  style={{
+                    fontFamily: "var(--font-serif), Georgia, serif",
+                    color: "var(--color-sage-800)",
+                  }}
+                >
+                  Check your inbox, {firstName}.
+                </p>
+                <p className="text-base" style={{ color: "var(--color-text-secondary)" }}>
+                  The playbook is on its way to {email}.
+                </p>
+                <Link
+                  href="/join"
+                  className="w-full text-center py-4 rounded-full text-base font-semibold mt-2"
+                  style={{ background: "var(--color-sage-800)", color: "#fff" }}
+                >
+                  Apply for membership →
+                </Link>
               </div>
             )}
           </div>
-
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="relative z-10 px-5 md:px-6 pb-8 md:pb-10 pt-10">
-        <div className="max-w-6xl mx-auto border-t pt-8 md:pt-10" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
-            <div>
-              <p
-                className="text-sm mb-3"
-                style={{ fontFamily: "var(--font-serif), Georgia, serif", fontWeight: 400, color: "#fff" }}
-              >
-                The Circle
-              </p>
-              <p className="text-sm leading-relaxed max-w-sm mx-auto md:mx-0" style={{ color: "rgba(255,255,255,0.52)" }}>
-                A grounded professional community for licensed therapists who want consultation, connection, and sustainable private practice.
-              </p>
-            </div>
-
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] mb-4" style={{ color: "rgba(255,255,255,0.34)" }}>
-                What&apos;s inside the playbook
-              </p>
-              <div className="flex flex-col gap-2 text-sm" style={{ color: "rgba(255,255,255,0.56)" }}>
-                <p>Fee setting and messaging guidance</p>
-                <p>Referral network blueprint</p>
-                <p>Burnout early-warning checklist</p>
-              </div>
-            </div>
-
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] mb-4" style={{ color: "rgba(255,255,255,0.34)" }}>
-                Next steps
-              </p>
-              <div className="flex flex-col gap-2.5">
-                <Link href="/what-we-offer" className="text-sm transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.56)" }}>
-                  Explore membership
-                </Link>
-                <Link href="/join" className="text-sm transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.56)" }}>
-                  Apply for founding membership
-                </Link>
-                <Link href="/find-a-clinician" className="text-sm transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.56)" }}>
-                  Preview the therapist directory
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-8 pt-6 border-t flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
-            <p className="text-xs" style={{ color: "rgba(255,255,255,0.26)" }}>
-              Founded by Sarah Arnold, LPC-S · Austin, TX
-            </p>
-            <a
-              href="https://www.restoredfamily.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs underline transition-colors hover:text-white"
-              style={{ color: "rgba(255,255,255,0.34)" }}
-            >
-              Restored Family Counseling
-            </a>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

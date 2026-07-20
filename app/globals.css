@@ -26,6 +26,10 @@ html, body {
   --color-sage-800: #2D3B2C;   /* hero · footer · CTA  */
   --color-sage-900: #1A1A1A;   /* body text            */
 
+  /* Member + admin chrome (mid sage — not forest dark) */
+  --color-app-shell: #4A5E48;
+  --color-app-shell-rgb: 74, 94, 72;
+
   /* ── Parchment surfaces ──────────────────────────────────── */
   --color-cream-100: #F0EDE6;   /* sections 3-5 parchment */
   --color-cream-200: #E7E3DA;
@@ -120,8 +124,11 @@ html, body {
   --color-amber:     #C2963A;
   --color-amber-rgb: 194, 150, 58;
 
-  --color-admin-sidebar:     #C2963A;
-  --color-admin-sidebar-rgb: 194, 150, 58;
+  /* App shells (member + admin chrome) — mid sage, not forest dark */
+  --color-app-shell:         #4A5E48;
+  --color-app-shell-rgb:     74, 94, 72;
+  --color-admin-sidebar:     #4A5E48;
+  --color-admin-sidebar-rgb: 74, 94, 72;
 
   --color-text-accent-primary:    #4A5E48;
   --color-text-accent-highlight:  #C2963A;
@@ -328,7 +335,20 @@ button, a {
 /* ── Container ───────────────────────────────────────────────── */
 .container-fluid {
   width: 100%;
-  max-width: 1440px;
+  max-width: 1680px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(1rem, 3vw, 2rem);
+  padding-right: clamp(1rem, 3vw, 2rem);
+}
+
+/* Wider container variant for hero / band sections that should fill
+   >1920px displays without leaving a thin column of background showing
+   on either side. Use sparingly — content sections that should still
+   feel centered at 1280–1440px should stay on .container-fluid. */
+.container-fluid-wide {
+  width: 100%;
+  max-width: 1880px;
   margin-left: auto;
   margin-right: auto;
   padding-left: clamp(1rem, 3vw, 2rem);

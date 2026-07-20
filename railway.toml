@@ -1,0 +1,25 @@
+[build]
+builder = "DOCKER"
+dockerfilePath = "Dockerfile.bun"
+
+[deploy]
+startCommand = "bun run server.js"
+healthcheckPath = "/"
+restartPolicyType = "ON_FAILURE"
+
+[env]
+NODE_ENV = "production"
+NEXT_TELEMETRY_DISABLED = "1"
+NEXT_OUTPUT = "standalone"
+
+# ── Documentation-only (Railway injects real values via the Variables tab):
+# DATABASE_URL            – provided by Railway Postgres plugin
+# NEXT_PUBLIC_APP_URL     – set to your Railway service domain (https://<service>.up.railway.app)
+# CLERK_*                 – from Clerk production env
+# STRIPE_*                – from Stripe production
+# RESEND_*                – from Resend
+# CLERK_ADMIN_EMAILS      – comma-separated admin emails
+# ROBOLLY_*               – for CEU certificate generation
+# R2_*                    – Cloudflare R2 storage
+# NEXT_PUBLIC_CALENDLY_URL
+# SARAH_EMAIL

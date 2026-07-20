@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Toggle } from "@/components/ui/Toggle";
+import { readStoredProfilePhoto, writeStoredProfilePhoto } from "@/lib/profilePhoto";
 
 const LICENSE_TYPES = ["LPC", "LCSW", "LMFT", "LPC-S", "PhD", "PsyD", "Other"];
 const SPECIALTIES = [
@@ -40,6 +41,12 @@ export function ProfileForm({
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Restore photo across navigations (localStorage — no file host in demo).
+  useEffect(() => {
+    const stored = readStoredProfilePhoto();
+    if (stored) setPhotoPreview(stored);
+  }, []);
+
   function handlePhotoClick() {
     fileInputRef.current?.click();
   }
@@ -47,8 +54,16 @@ export function ProfileForm({
   function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        setError("Photo must be 2MB or smaller.");
+        return;
+      }
       const reader = new FileReader();
-      reader.onload = (ev) => setPhotoPreview(ev.target?.result as string);
+      reader.onload = (ev) => {
+        const dataUrl = ev.target?.result as string;
+        setPhotoPreview(dataUrl);
+        writeStoredProfilePhoto(dataUrl);
+      };
       reader.readAsDataURL(file);
     }
   }
@@ -86,6 +101,8 @@ export function ProfileForm({
         const body = await res.json().catch(() => ({}));
         throw new Error(body.error || "Failed to save profile.");
       }
+      // Re-persist photo on save so nav avatar stays in sync.
+      if (photoPreview) writeStoredProfilePhoto(photoPreview);
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (err) {

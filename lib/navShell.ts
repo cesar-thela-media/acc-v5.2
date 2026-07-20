@@ -14,7 +14,6 @@ export const MEMBER_FEATURE_HREFS = [
   "/dashboard/resources",
   "/dashboard/files",
   "/dashboard/events",
-  "/dashboard/network",
 ] as const;
 
 export const MEMBER_SETTINGS_HREFS = [
@@ -32,10 +31,14 @@ export const ADMIN_FEATURE_HREFS = [
 
 export const ADMIN_SETTINGS_HREFS = [] as const;
 
-/** Free-tier surfaces live under /dashboard/free (account-based preview). */
+/**
+ * Free-tier surfaces used to live under /dashboard/free (account-based preview).
+ * No longer in use after free-tier removal — kept as a defensive no-op so callers
+ * that still import it compile and behave as if no path qualifies.
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function isFreeTierPath(pathname: string | null | undefined): boolean {
-  if (!pathname) return false;
-  return pathname === "/dashboard/free" || pathname.startsWith("/dashboard/free/");
+  return false;
 }
 
 export function isExactOrChildPath(pathname: string | null | undefined, href: string): boolean {

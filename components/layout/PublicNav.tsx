@@ -27,6 +27,8 @@ const navigationData = [
   { name: "Who We Are", href: "/who-we-are" },
   { name: "What We Offer", href: "/what-we-offer" },
   { name: "Find a Clinician", href: "/find-a-clinician" },
+  // Temporary nav entry so the free playbook is easy to open without typing /leadmagnet
+  { name: "Free playbook", href: "/leadmagnet" },
 ];
 
 export function PublicNav() {
@@ -44,9 +46,8 @@ export function PublicNav() {
   return (
     <header className="sticky top-0 z-40 p-4 pt-4" style={{ background: "transparent" }}>
       <div className="max-w-7xl mx-auto w-full">
-        {/* Bezel rectangle (phone-like corners) — not a stadium/pill (rounded-full). */}
         <nav
-          className="w-full flex items-center h-fit justify-between gap-3.5 lg:gap-6 p-2.5 rounded-2xl shadow-xl"
+          className="w-full flex items-center h-fit justify-between gap-3.5 lg:gap-6 p-2.5 rounded-full shadow-md mt-2 px-4"
           style={{
             background: "var(--color-sage-800)",
             border: "1px solid rgba(255,255,255,0.12)",
@@ -94,6 +95,13 @@ export function PublicNav() {
           {/* Right actions */}
           <div className="hidden lg:flex items-center gap-2">
             <Link
+              href="/admin/login"
+              className="h-10 flex items-center px-4 text-sm font-medium rounded-xl transition-colors hover:bg-white/10"
+              style={{ color: "rgba(255,255,255,0.72)" }}
+            >
+              Admin
+            </Link>
+            <Link
               href="/sign-in"
               className="h-10 flex items-center px-5 text-sm font-medium rounded-xl transition-colors hover:bg-white/10"
               style={{ color: "#fff" }}
@@ -110,7 +118,7 @@ export function PublicNav() {
             </Button>
           </div>
 
-          {/* Mobile menu */}
+          {/* Mobile menu — icon must live on the button (empty render hid the Menu glyph). */}
           <div className="lg:hidden pr-1">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger
@@ -118,14 +126,18 @@ export function PublicNav() {
                   <Button
                     variant="outline"
                     size="icon"
-                    className="rounded-xl border p-2 h-10 w-10 cursor-pointer"
-                    style={{ borderColor: "rgba(255,255,255,0.3)", color: "#fff" }}
-                  />
+                    className="rounded-xl border h-10 w-10 cursor-pointer inline-flex items-center justify-center"
+                    style={{
+                      borderColor: "rgba(255,255,255,0.35)",
+                      color: "#fff",
+                      background: "rgba(255,255,255,0.08)",
+                    }}
+                    aria-label="Open menu"
+                  >
+                    <Menu size={20} strokeWidth={2} />
+                  </Button>
                 }
-              >
-                <Menu size={20} />
-                <span className="sr-only">Toggle menu</span>
-              </SheetTrigger>
+              />
               <SheetContent showCloseButton={false} side="right" className="min-w-80 p-0">
                 <ScrollArea className="h-full">
                   <SheetHeader className="p-4">
@@ -154,6 +166,14 @@ export function PublicNav() {
                       })}
                     </div>
                     <div className="mt-4 flex flex-col gap-2">
+                      <Link
+                        href="/admin/login"
+                        onClick={() => setIsOpen(false)}
+                        className="text-center py-2.5 rounded-xl text-sm"
+                        style={{ color: "rgba(26,26,26,0.65)" }}
+                      >
+                        Admin
+                      </Link>
                       <Link
                         href="/sign-in"
                         onClick={() => setIsOpen(false)}

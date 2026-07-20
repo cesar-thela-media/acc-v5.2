@@ -4,7 +4,7 @@ import { hasClerkCredentials } from "@/lib/env";
 
 export default function SignInPage() {
   if (!hasClerkCredentials) {
-    return <MockSignIn />;
+    return <MockSignIn showFreePreview={false} />;
   }
 
   return (

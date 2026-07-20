@@ -1,0 +1,15 @@
+# Reserve Nixpacks config for Railway (optional path).
+# Primary Railway path uses Docker + Dockerfile.bun (see railway.toml).
+# Vercel deploys via vercel.json + npm — do not rely on this file for Vercel.
+
+[phases.setup]
+nixPkgs = ["bun", "nodejs_20"]
+
+[phases.install]
+cmds = ["bun install"]
+
+[phases.build]
+cmds = ["bun run build"]
+
+[start]
+cmd = "bun run start"

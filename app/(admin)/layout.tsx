@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { AdminNav } from "@/components/layout/AdminNav";
-import { getCurrentViewer } from "@/lib/auth";
+import { getCurrentMemberName, getCurrentViewer } from "@/lib/auth";
 import { hasClerkCredentials } from "@/lib/env";
 
 export const metadata: Metadata = {
@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description:
     "Admin dashboard for managing members, applications, events, and resources.",
 };
+
+const DEFAULT_PHOTO = "/sarah-arnold.jpeg";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   if (hasClerkCredentials) {
@@ -24,10 +26,17 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     }
   }
 
+  const [{ firstName }, viewer] = await Promise.all([
+    getCurrentMemberName(),
+    getCurrentViewer(),
+  ]);
+  const viewerName = firstName || "Account";
+  const viewerPhotoUrl = hasClerkCredentials && viewer.user?.imageUrl ? viewer.user.imageUrl : DEFAULT_PHOTO;
+
   return (
     <div className="flex min-h-screen md:h-screen md:overflow-hidden" style={{ background: "var(--color-cream-100)" }}>
-      <AdminNav />
-      <main className="flex-1 min-w-0 overflow-visible md:h-screen md:overflow-y-auto pt-14" style={{ background: "var(--color-cream-100)", color: "var(--color-text-primary)" }}>
+      <AdminNav viewerName={viewerName} viewerPhotoUrl={viewerPhotoUrl} />
+      <main className="flex-1 min-w-0 overflow-visible md:h-screen md:overflow-y-auto pt-16" style={{ background: "var(--color-cream-100)", color: "var(--color-text-primary)" }}>
         <div className="container-fluid py-8 md:py-10">{children}</div>
       </main>
     </div>

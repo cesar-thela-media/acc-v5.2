@@ -78,24 +78,24 @@ const statusBreakdown = (() => {
 
 const stats = [
   {
-    label: "Total members",
+    label: "Members",
     value: ALL_MEMBERS.length,
-    delta: `+${latestMonth?.members ?? 0} this month`,
+    delta: `+${latestMonth?.members ?? 0}`,
     icon: Users,
     href: "/admin/members",
   },
   {
-    label: "Pending applications",
+    label: "Applications",
     value: pendingApplications.length,
-    delta: pendingApplications.length > 0 ? "Needs review" : "All clear",
+    delta: pendingApplications.length > 0 ? "Pending" : "Clear",
     icon: FileClock,
     href: "/admin/applications",
     urgent: pendingApplications.length > 0,
   },
   {
-    label: "Upcoming events",
+    label: "Events",
     value: INITIAL_EVENTS.length,
-    delta: "Next 8 weeks",
+    delta: "Scheduled",
     icon: CalendarDays,
     href: "/admin/events",
   },

@@ -1,5 +1,5 @@
 import { SignIn } from "@clerk/nextjs";
-import { MockSignIn } from "@/components/auth/MockSignIn";
+import { AdminSignIn } from "@/components/auth/AdminSignIn";
 import { hasClerkCredentials } from "@/lib/env";
 import type { Metadata } from "next";
 
@@ -9,20 +9,12 @@ export const metadata: Metadata = {
 };
 
 /**
- * Dedicated admin auth surface — distinct from member `/sign-in`.
+ * Dedicated admin auth surface — visually distinct from member `/sign-in`.
  * Demo/mock mode posts cookies then routes to `/admin`.
  */
 export default function AdminLoginPage() {
   if (!hasClerkCredentials) {
-    return (
-      <MockSignIn
-        redirectTo="/admin"
-        title="Admin log in"
-        description="Owner access for members, applications, events, and resources. Clerk isn’t configured — enter any name and email to open the admin dashboard."
-        showFreePreview={false}
-        showJoinLink={false}
-      />
-    );
+    return <AdminSignIn />;
   }
 
   return (

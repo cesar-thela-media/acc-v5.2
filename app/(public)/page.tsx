@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Award, MapPin, Quote } from "lucide-react";
+import { ArrowRight, Award, MapPin, Quote } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -10,6 +10,14 @@ import {
 } from "@/components/ui/shadcn/carousel";
 import { Separator } from "@/components/ui/shadcn/separator";
 import { MembershipCarousel } from "@/components/landing/MembershipCarousel";
+import { GrowthFocusCta } from "@/components/cta/GrowthFocusCta";
+import { CTA_FILMSTRIP, MEMBERSHIP_ITEMS } from "@/lib/membershipAssets";
+
+/* HIDDEN SECTIONS (toggle to restore):
+   - homepage testimonials carousel + filmstrip   (HIDE_TESTIMONIALS)
+   - /who-we-are What-We-Believe cards                (HIDE_VALUES)
+*/
+const HIDE_TESTIMONIALS = true; /* flip to false to restore the hidden block below */
 
 /* ── Reference design tokens ───────────────────────────────── */
 const HERO_BG   = "#2D3B2C";   // deep forest sage — hero, CTA band, footer
@@ -19,32 +27,12 @@ const AMBER     = "#C2963A";   // muted warm amber — accents, CTAs
 const pricingFeatures = [
   ["Monthly case consultation",       "Public directory listing"],
   ["Full access to resource library", "Practice coaching support"],
-  ["Referral network connection",     "Professional will designation"],
-  ["Continuing education discounts",  "Private online community"],
+  ["Referral network connection",     "Continuing education discounts"],
+  ["Private online community",        "Professional will designation"],
 ];
 
-/* ── Membership cards (feature-19 header + carousel-07 stacked-card carousel) ── */
-/* badge: a short label derived directly from each item's own title — not new claims. */
-const membershipItems = [
-  { title: "Monthly case consultation", badge: "Consultation", body: "A structured consultation group led by Sarah Arnold, LPC-S. Bring a real case, get real support from peers who understand the clinical realities of your work.", img: "/membership-consultation.jpg" },
-  { title: "Curated resource library", badge: "Resources", body: "Clinical tools, handouts, and business guides, organized, downloadable, and built for active private practice.", img: "/membership-resources.jpg" },
-  { title: "Referral network", badge: "Referrals", body: "A trusted, vetted circle of clinicians. Get referred, refer with confidence. Build relationships that last longer than a single consult.", img: "/membership-referral.jpg" },
-  { title: "Continuing education", badge: "CEUs", body: "CEU trainings each month on clinical and business topics, all virtual, all archived, and all included in your membership.", img: "/membership-ce.jpg" },
-  { title: "Public directory listing", badge: "Directory", body: "A professionally crafted listing in our public clinician directory, searchable by specialty, format, and availability. Clients find you here.", img: "/membership-directory.jpg" },
-  { title: "Practice coaching access", badge: "Coaching", body: "Discounted one-on-one practice-building sessions with Sarah Arnold, LPC-S on fees, marketing, burnout, and long-term sustainability.", img: "/membership-coaching.jpg" },
-  { title: "Professional Will designation", badge: "Will Planning", body: "Guidance and structure for putting a professional will in place so your practice is cared for responsibly.", img: "/membership-will.jpg" },
-  { title: "Private online community", badge: "Community", body: "A private online community for real-time support, connection, and steady encouragement between meetings.", img: "/membership-community.jpg" },
-];
-
-/* ── CTA filmstrip (cta-12) ───────────────────────────────── */
-/* cta-3 reserved for Who We Are end CTA — do not reuse paths across major slots. */
-const ctaImages = [
-  { src: "/cta-1.jpg", height: "h-[154px] md:h-[214px]" },
-  { src: "/cta-2.jpg", height: "h-[244px] md:h-[324px]" },
-  { src: "/cta-4.jpg", height: "h-[176px] md:h-[226px]" },
-  { src: "/cta-5.jpg", height: "h-[230px] md:h-[300px]" },
-  { src: "/cta-6.jpg", height: "h-[154px] md:h-[214px]" },
-];
+const membershipItems = MEMBERSHIP_ITEMS;
+const ctaImages = CTA_FILMSTRIP;
 
 /* ── Testimonials (testimonial-02) — optional / preview only ─ */
 const placeholderTestimonials = [
@@ -83,7 +71,7 @@ export default function HomePage() {
           className="relative flex flex-col items-start justify-end overflow-hidden rounded-3xl"
           style={{ minHeight: "calc(100svh - 88px)" }}
         >
-          {/* Background video */}
+          {/* Background video — calm nature stock (real footage, not Ken Burns) */}
           <video
             src="/hero-video.mp4"
             poster="/hero-bg-2.jpg"
@@ -91,8 +79,9 @@ export default function HomePage() {
             loop
             muted
             playsInline
+            preload="metadata"
             className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: "50% 35%" }}
+            style={{ objectPosition: "50% 40%" }}
           />
 
           {/* Dark gradient scrim for legibility */}
@@ -188,6 +177,20 @@ export default function HomePage() {
               "radial-gradient(circle at 38% 38%, rgba(194,150,58,0.48) 0%, rgba(194,150,58,0.22) 38%, rgba(74,94,72,0.12) 58%, transparent 72%)",
           }}
         />
+        {/* Mirror amber bloom — bottom-right, slightly smaller, sits inside section padding. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute"
+          style={{
+            bottom: "-18%",
+            right: "-12%",
+            width: "min(46vw, 420px)",
+            height: "min(46vw, 420px)",
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle at 60% 60%, rgba(194,150,58,0.38) 0%, rgba(232,213,163,0.16) 45%, transparent 72%)",
+          }}
+        />
         <div className="container-fluid relative z-10" style={{ maxWidth: 1100 }}>
           <div className="grid grid-cols-12 gap-8 items-stretch">
             {/* Left: content */}
@@ -241,11 +244,12 @@ export default function HomePage() {
               style={{ minHeight: "clamp(420px, 62vh, 560px)" }}
             >
               <Image
-                src="/about-us.jpg"
-                alt="Sarah Arnold, founder of The Circle, meeting with a fellow clinician"
+                src="/private-practice-can.jpg"
+                alt="Private practice can feel isolating — The Circle offers connection"
                 fill
                 className="object-cover object-center"
                 sizes="(max-width: 768px) 100vw, 40vw"
+                priority
               />
             </div>
           </div>
@@ -260,7 +264,26 @@ export default function HomePage() {
           className="relative overflow-hidden rounded-3xl"
           style={{ background: "#4A5E48", padding: "clamp(2.5rem,5vw,4rem) 0" }}
         >
-        {/* Distinct placement: bottom-right amber bloom + soft top-right wash (not top-left twin). */}
+        {/* Abstract decorative layers — organic sage/amber linework in place of plain radial blobs. */}
+        <Image
+          src="/membership-abstract-top.svg"
+          alt=""
+          fill
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 object-cover opacity-35 mix-blend-screen"
+          sizes="100vw"
+          priority={false}
+        />
+        <Image
+          src="/membership-abstract-bottom.svg"
+          alt=""
+          fill
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 object-cover opacity-30 mix-blend-screen"
+          sizes="100vw"
+          priority={false}
+        />
+        {/* Soft warm bloom retained for depth — sits between the two abstract layers and content. */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute"
@@ -271,19 +294,7 @@ export default function HomePage() {
             height: "min(62vw, 540px)",
             borderRadius: "50%",
             background:
-              "radial-gradient(circle at 55% 55%, rgba(194,150,58,0.5) 0%, rgba(232,213,163,0.2) 40%, transparent 70%)",
-          }}
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute"
-          style={{
-            top: "-10%",
-            right: "18%",
-            width: "min(36vw, 280px)",
-            height: "min(36vw, 280px)",
-            borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 68%)",
+              "radial-gradient(circle at 55% 55%, rgba(194,150,58,0.32) 0%, rgba(232,213,163,0.12) 40%, transparent 70%)",
           }}
         />
         <div className="container-fluid relative z-10">
@@ -328,19 +339,6 @@ export default function HomePage() {
       <section className="relative overflow-hidden" style={{ paddingTop: "clamp(2.5rem,5vw,4rem)", paddingBottom: "clamp(5rem,10vw,8rem)" }}>
         <Image src="/pricing-bg.jpg" alt="" fill className="object-cover" />
         <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(rgba(45,59,44,0.88), rgba(45,59,44,0.92))" }} />
-        {/* Abstract decorative layer — bottom ~40% under text/card UI */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-[1]"
-          style={{ height: "42%" }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element -- decorative SVG layer */}
-          <img
-            src="/membership-abstract.svg"
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover object-bottom"
-          />
-        </div>
         <div className="container-fluid relative z-10">
           {/* Centered header */}
           <div className="text-center mb-8" data-aos="fade-in-up">
@@ -413,6 +411,7 @@ export default function HomePage() {
           Testimonials section would mean two competing background images back to
           back. One light section instead — CTA's heading just loses its dark bg
           and goes to dark-on-light text, matching Testimonials' existing palette. */}
+      {!HIDE_TESTIMONIALS && (
       <section className="relative overflow-hidden text-center" style={{ paddingTop: "clamp(2.5rem,5vw,4rem)" }}>
         <Image src="/testimonials-cta-bg.jpg" alt="" fill className="object-cover" />
         <div className="absolute inset-0 pointer-events-none" style={{ background: "rgba(240,237,230,0.90)" }} />
@@ -499,36 +498,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* CTA heading + button — recolored dark-on-light, same section as above */}
-        <div className="relative z-10" style={{ padding: "0 1.5rem", marginBottom: "clamp(2.5rem,5vw,4rem)" }}>
-          <h2
-            data-aos="fade-in-up"
-            style={{
-              fontFamily: "var(--font-serif), Georgia, serif",
-              fontSize: "clamp(2.2rem, 6vw, 4.5rem)",
-              fontWeight: 400,
-              letterSpacing: "-0.02em",
-              lineHeight: 1.08,
-              color: "#1A1A1A",
-              marginBottom: "2.25rem",
-            }}
-          >
-            You&apos;ve been doing this alone
-            <br />
-            <em style={{ color: AMBER, fontStyle: "italic" }}>long enough.</em>
-          </h2>
-          <Link
-            href="/join"
-            data-aos="fade-in-up"
-            data-delay="100"
-            className="inline-flex items-center justify-center rounded-lg text-base font-medium group"
-            style={{ background: AMBER, color: "#fff", padding: "0.75rem 1.5rem" }}
-          >
-            Join the Circle
-            <ArrowUpRight className="ml-2 size-4 group-hover:rotate-45 transition-transform duration-300" />
-          </Link>
-        </div>
-
         {/* Filmstrip — stays at the very bottom of the merged section */}
         <div className="relative z-10 w-full overflow-hidden">
           <div className="flex w-full items-end justify-center min-w-[600px] md:min-w-full">
@@ -548,6 +517,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      )}
+
+      <GrowthFocusCta />
     </>
   );
 }

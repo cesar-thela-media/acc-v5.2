@@ -35,7 +35,7 @@ export default function InvitePage() {
       <header className="relative z-10 px-5 md:px-6 pt-6 md:pt-8">
         <div className="max-w-3xl mx-auto flex items-center justify-center">
           <Link href="/" aria-label="The Circle" className="no-underline flex items-center gap-3">
-            <Image src="/logo-mark.png" alt="" width={2000} height={732} className="h-16 w-auto object-contain" />
+            <Image src="/logo-mark.png" alt="The Circle" width={2000} height={732} className="h-16 w-auto object-contain" />
           </Link>
         </div>
       </header>

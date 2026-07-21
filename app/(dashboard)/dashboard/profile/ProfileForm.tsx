@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Toggle } from "@/components/ui/Toggle";
 import { readStoredProfilePhoto, writeStoredProfilePhoto } from "@/lib/profilePhoto";
+import type { StoredProfile } from "@/lib/profile-store";
 
 const LICENSE_TYPES = ["LPC", "LCSW", "LMFT", "LPC-S", "PhD", "PsyD", "Other"];
 const SPECIALTIES = [
@@ -17,27 +18,28 @@ const FORMATS = ["In-person", "Telehealth", "Both"];
 export function ProfileForm({
   initialFirstName,
   initialLastName,
+  initialProfile,
 }: {
   initialFirstName: string;
   initialLastName: string;
+  initialProfile: StoredProfile | null;
 }) {
+  const p = initialProfile;
   const [firstName, setFirstName] = useState(initialFirstName);
   const [lastName, setLastName] = useState(initialLastName);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [email, setEmail] = useState("jane@example.com");
-  const [city, setCity] = useState("Austin, TX");
-  const [licenseType, setLicenseType] = useState("LPC");
-  const [licenseNumber, setLicenseNumber] = useState("LPC-80042");
-  const [supervisor, setSupervisor] = useState("");
-  const [bio, setBio] = useState(
-    "I'm a licensed professional counselor in Austin, TX with a focus on trauma and anxiety. I work primarily with adults using EMDR and somatic approaches."
-  );
-  const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>(["Anxiety", "Trauma", "EMDR"]);
-  const [format, setFormat] = useState("Both");
-  const [officeLocation, setOfficeLocation] = useState("");
-  const [accepting, setAccepting] = useState(true);
+  const [email, setEmail] = useState(p?.email ?? "jane@example.com");
+  const [city, setCity] = useState(p?.city ?? "Austin, TX");
+  const [licenseType, setLicenseType] = useState(p?.licenseType ?? "LPC");
+  const [licenseNumber, setLicenseNumber] = useState(p?.licenseNumber ?? "LPC-80042");
+  const [supervisor, setSupervisor] = useState(p?.supervisor ?? "");
+  const [bio, setBio] = useState(p?.bio ?? "I'm a licensed professional counselor in Austin, TX with a focus on trauma and anxiety. I work primarily with adults using EMDR and somatic approaches.");
+  const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>(p?.specialties ?? ["Anxiety", "Trauma", "EMDR"]);
+  const [format, setFormat] = useState(p?.format ?? "Both");
+  const [officeLocation, setOfficeLocation] = useState(p?.officeLocation ?? "");
+  const [accepting, setAccepting] = useState(p?.accepting ?? true);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 

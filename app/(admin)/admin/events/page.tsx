@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/shadcn/dropdown-menu";
 import { daysFromNow, formatAbbrevDate, nextFirstWeekdayOfMonth } from "@/lib/relativeDates";
+import { usePersistedState } from "@/lib/admin-store";
 
 const CATEGORIES = ["Consultation", "Workshop", "CEU", "Self-Care"];
 const THURSDAY = 4;
@@ -65,7 +66,7 @@ const CATEGORY_VARIANTS: Record<string, "default" | "accent" | "success" | "warn
 const BLANK_FORM = { title: "", date: "", time: "", format: "Virtual (Zoom)", category: "Consultation", ceus: "", description: "", spots: "" };
 
 export default function AdminEventsPage() {
-  const [events, setEvents] = useState<EventEntry[]>(INITIAL_EVENTS);
+  const [events, setEvents] = usePersistedState<EventEntry[]>("admin-events", INITIAL_EVENTS);
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
   const [form, setForm] = useState(BLANK_FORM);

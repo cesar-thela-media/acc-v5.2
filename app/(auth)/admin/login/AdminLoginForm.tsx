@@ -51,7 +51,7 @@ export function AdminLoginForm() {
       <div className="relative hidden lg:block overflow-hidden" style={{ background: SAGE_DEEP }}>
         <Image
           src="/admin-login-bg.jpg"
-          alt=""
+          alt="The Circle membership"
           fill
           priority
           className="object-cover"

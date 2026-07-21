@@ -170,12 +170,12 @@ export function Footer() {
             </div>
             {/* social links */}
             <div className="flex items-center gap-4">
-              <a href="#" aria-label="Instagram" className="transition-colors duration-150 hover:text-white" style={{ color: "rgba(255,255,255,0.55)" }}>
+              <span role="img" aria-label="Instagram" className="transition-colors duration-150" style={{ color: "rgba(255,255,255,0.55)" }}>
                 <InstagramIcon />
-              </a>
-              <a href="#" aria-label="LinkedIn" className="transition-colors duration-150 hover:text-white" style={{ color: "rgba(255,255,255,0.55)" }}>
+              </span>
+              <span role="img" aria-label="LinkedIn" className="transition-colors duration-150" style={{ color: "rgba(255,255,255,0.55)" }}>
                 <LinkedinIcon />
-              </a>
+              </span>
               <a href="mailto:sarah@restoredfamily.com" aria-label="Email" className="transition-colors duration-150 hover:text-white" style={{ color: "rgba(255,255,255,0.55)" }}>
                 <Mail width={16} height={16} />
               </a>

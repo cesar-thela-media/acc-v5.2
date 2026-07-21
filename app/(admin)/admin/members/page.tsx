@@ -12,6 +12,7 @@ import {
   type SortingState,
 } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/Badge";
+import { usePersistedState } from "@/lib/admin-store";
 
 export type Status = "active" | "inactive" | "suspended";
 
@@ -60,7 +61,7 @@ export default function AdminMembersPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | Status>("all");
   const [sorting, setSorting] = useState<SortingState>([{ id: "joinedSort", desc: true }]);
-  const [statusOverrides, setStatusOverrides] = useState<Record<number, Status>>({});
+  const [statusOverrides, setStatusOverrides] = usePersistedState<Record<number, Status>>("admin-members", {});
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [expandedId, setExpandedId] = useState<number | null>(null);
 

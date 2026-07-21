@@ -5,6 +5,7 @@ import { EllipsisVertical, FileText, BookOpen, ClipboardList, PlayCircle, type L
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Input, Textarea } from "@/components/ui/Input";
+import { usePersistedState } from "@/lib/admin-store";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,7 +46,7 @@ export const RESOURCES = [
 ];
 
 export default function AdminResourcesPage() {
-  const [resources, setResources] = useState(RESOURCES);
+  const [resources, setResources] = usePersistedState("admin-resources", RESOURCES);
   const [category, setCategory] = useState("All");
   const [showForm, setShowForm] = useState(false);
   const [formCategory, setFormCategory] = useState("Clinical Tools");
@@ -111,7 +112,7 @@ export default function AdminResourcesPage() {
         <button
           onClick={() => setShowForm((v) => !v)}
           className="inline-flex items-center justify-center px-5 py-2 rounded-full text-sm font-medium transition-opacity hover:opacity-90 w-full sm:w-auto"
-          style={{ background: "#C2963A", color: "#fff" }}
+          style={{ background: "var(--color-accent-highlight)", color: "#fff" }}
         >
           {showForm ? "Cancel" : "+ Upload resource"}
         </button>
@@ -147,9 +148,9 @@ export default function AdminResourcesPage() {
                       onClick={() => setFormCategory(c)}
                       className="px-3 py-1 rounded-full text-xs font-medium transition-colors"
                       style={{
-                        background: formCategory === c ? "#C2963A" : "#fff",
+                        background: formCategory === c ? "var(--color-accent-highlight)" : "#fff",
                         color: formCategory === c ? "#fff" : "var(--color-sage-700)",
-                        border: `1px solid ${formCategory === c ? "#C2963A" : "rgba(194,150,58,0.20)"}`,
+                        border: `1px solid ${formCategory === c ? "var(--color-accent-highlight)" : "rgba(194,150,58,0.20)"}`,
                       }}
                     >{c}</button>
                   ))}
@@ -165,9 +166,9 @@ export default function AdminResourcesPage() {
                       onClick={() => setFormType(t)}
                       className="px-3 py-1 rounded-full text-xs font-medium transition-colors"
                       style={{
-                        background: formType === t ? "#C2963A" : "#fff",
+                        background: formType === t ? "var(--color-accent-highlight)" : "#fff",
                         color: formType === t ? "#fff" : "var(--color-sage-700)",
-                        border: `1px solid ${formType === t ? "#C2963A" : "rgba(194,150,58,0.20)"}`,
+                        border: `1px solid ${formType === t ? "var(--color-accent-highlight)" : "rgba(194,150,58,0.20)"}`,
                       }}
                     >{t}</button>
                   ))}
@@ -182,7 +183,7 @@ export default function AdminResourcesPage() {
               >
                 <p className="text-sm" style={{ color: "var(--color-text-tertiary)" }}>
                   Drag & drop a file or{" "}
-                  <button type="button" className="underline" style={{ color: "#C2963A", textUnderlineOffset: "3px" }} onClick={() => alert("File upload is coming soon. For now, publishing just adds the title/category/type to the list.")}>
+                  <button type="button" className="underline" style={{ color: "var(--color-accent-highlight)", textUnderlineOffset: "3px" }} onClick={() => alert("File upload is coming soon. For now, publishing just adds the title/category/type to the list.")}>
                     browse
                   </button>
                 </p>
@@ -193,7 +194,7 @@ export default function AdminResourcesPage() {
               <button
                 type="submit"
                 className="inline-flex items-center justify-center px-5 py-2 rounded-full text-sm font-medium transition-opacity hover:opacity-90"
-                style={{ background: "#C2963A", color: "#fff" }}
+                style={{ background: "var(--color-accent-highlight)", color: "#fff" }}
               >
                 {submitted ? "Publishing…" : "Publish resource"}
               </button>
@@ -213,7 +214,7 @@ export default function AdminResourcesPage() {
             onClick={() => setCategory(c)}
             className="px-3 py-1.5 rounded text-xs font-medium transition-colors"
             style={{
-              background: category === c ? "#C2963A" : "var(--color-cream-100)",
+              background: category === c ? "var(--color-accent-highlight)" : "var(--color-cream-100)",
               color: category === c ? "#fff" : "var(--color-sage-700)",
               border: category === c ? "none" : "1px solid rgba(194,150,58,0.20)",
             }}
@@ -235,7 +236,7 @@ export default function AdminResourcesPage() {
                 <div className="flex items-start gap-3">
                   <div
                     className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ background: "rgba(194,150,58,0.10)", color: "#C2963A" }}
+                    style={{ background: "rgba(194,150,58,0.10)", color: "var(--color-accent-highlight)" }}
                   >
                     <TypeIcon size={16} />
                   </div>
@@ -274,7 +275,7 @@ export default function AdminResourcesPage() {
           <button
             onClick={() => setCategory("All")}
             className="text-xs font-medium underline"
-            style={{ color: "#C2963A", textUnderlineOffset: "3px" }}
+            style={{ color: "var(--color-accent-highlight)", textUnderlineOffset: "3px" }}
           >
             View all categories
           </button>
@@ -289,7 +290,7 @@ export default function AdminResourcesPage() {
               <tr style={{ borderBottom: "1px solid rgba(194,150,58,0.12)", background: "var(--color-cream-100)" }}>
                 <th
                   className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] cursor-pointer select-none hover:opacity-70 transition-opacity"
-                  style={{ color: "#C2963A" }}
+                  style={{ color: "var(--color-accent-highlight)" }}
                   onClick={() => toggleSort("title")}
                 >
                   Title
@@ -297,7 +298,7 @@ export default function AdminResourcesPage() {
                 </th>
                 <th
                   className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] cursor-pointer select-none hover:opacity-70 transition-opacity"
-                  style={{ color: "#C2963A" }}
+                  style={{ color: "var(--color-accent-highlight)" }}
                   onClick={() => toggleSort("category")}
                 >
                   Category
@@ -305,7 +306,7 @@ export default function AdminResourcesPage() {
                 </th>
                 <th
                   className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] cursor-pointer select-none hover:opacity-70 transition-opacity"
-                  style={{ color: "#C2963A" }}
+                  style={{ color: "var(--color-accent-highlight)" }}
                   onClick={() => toggleSort("type")}
                 >
                   Type
@@ -313,7 +314,7 @@ export default function AdminResourcesPage() {
                 </th>
                 <th
                   className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] cursor-pointer select-none hover:opacity-70 transition-opacity"
-                  style={{ color: "#C2963A" }}
+                  style={{ color: "var(--color-accent-highlight)" }}
                   onClick={() => toggleSort("published")}
                 >
                   Published
@@ -321,7 +322,7 @@ export default function AdminResourcesPage() {
                 </th>
                 <th
                   className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] cursor-pointer select-none hover:opacity-70 transition-opacity"
-                  style={{ color: "#C2963A" }}
+                  style={{ color: "var(--color-accent-highlight)" }}
                   onClick={() => toggleSort("downloads")}
                 >
                   Downloads
@@ -345,7 +346,7 @@ export default function AdminResourcesPage() {
                       <div className="flex items-center gap-3">
                         <div
                           className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                          style={{ background: "rgba(194,150,58,0.10)", color: "#C2963A" }}
+                          style={{ background: "rgba(194,150,58,0.10)", color: "var(--color-accent-highlight)" }}
                         >
                           <TypeIcon size={15} />
                         </div>

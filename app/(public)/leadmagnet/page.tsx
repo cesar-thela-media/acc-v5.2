@@ -7,6 +7,7 @@ import Link from "next/link";
 export default function LeadMagnetPage() {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
+  const [consent, setConsent] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -14,6 +15,10 @@ export default function LeadMagnetPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!firstName.trim() || !email.trim()) return;
+    if (!consent) {
+      setError("Please agree to the privacy policy to receive your playbook.");
+      return;
+    }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError("Please enter a valid email address.");
       return;
@@ -167,9 +172,25 @@ export default function LeadMagnetPage() {
                     />
                   </div>
                   {error && <p className="text-sm text-red-700">{error}</p>}
+
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={consent}
+                      onChange={(e) => setConsent(e.target.checked)}
+                      className="mt-0.5 accent-[var(--color-accent-highlight)]"
+                    />
+                    <span className="text-sm leading-snug" style={{ color: "var(--color-text-secondary)" }}>
+                      I agree to receive emails and have read the{" "}
+                      <Link href="/privacy" className="underline" style={{ color: "var(--color-sage-700)" }}>
+                        Privacy Policy
+                      </Link>
+                    </span>
+                  </label>
+
                   <button
                     type="submit"
-                    disabled={loading || !firstName.trim() || !email.trim()}
+                    disabled={loading || !firstName.trim() || !email.trim() || !consent}
                     className="w-full py-4 sm:py-4.5 rounded-full text-base font-semibold transition-opacity disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 mt-1"
                     style={{ background: "var(--color-accent-highlight)", color: "#fff" }}
                   >

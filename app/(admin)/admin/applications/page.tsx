@@ -20,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/shadcn/dropdown-menu";
 import { daysAgo, formatAbbrevDate } from "@/lib/relativeDates";
+import { usePersistedState } from "@/lib/admin-store";
 
 export type AppStatus = "pending" | "approved" | "rejected";
 
@@ -123,7 +124,8 @@ function exportCSV(rows: Application[]) {
 const columnHelper = createColumnHelper<Application>();
 
 export default function AdminApplicationsPage() {
-  const [statuses, setStatuses] = useState<Record<number, AppStatus>>(
+  const [statuses, setStatuses] = usePersistedState<Record<number, AppStatus>>(
+    "admin-applications",
     Object.fromEntries(APPLICATIONS.map((a) => [a.id, a.status]))
   );
   const [filter, setFilter] = useState<"all" | AppStatus>("pending");

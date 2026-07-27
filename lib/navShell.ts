@@ -64,15 +64,39 @@ export function partitionShellLinks<T extends { href: string }>(
   return { features, settings };
 }
 
-/** Active item styles without heavy glow/shadow “AI slop”. */
-export function shellActiveStyle(active: boolean): {
+/** Active item styles without heavy glow/shadow “AI slop”.
+ *  `light` = Shadcn Space template (white sidebar, near-black active pill).
+ *  `dark`  = sage chrome (white text on dark green).
+ *  `admin` = bright gold admin shell (#ffb900) with dark text.
+ */
+export function shellActiveStyle(
+  active: boolean,
+  mode: "dark" | "light" | "admin" = "dark",
+): {
   background: string;
   color: string;
   borderLeft: string;
   boxShadow: string;
 } {
+  if (mode === "light") {
+    return {
+      background: active ? "#1A1A1A" : "transparent",
+      color: active ? "#FFFFFF" : "rgba(26,26,26,0.62)",
+      borderLeft: "2px solid transparent",
+      boxShadow: "none",
+    };
+  }
+  if (mode === "admin") {
+    // Muted amber shell — light text like dark mode, soft white active pill
+    return {
+      background: active ? "rgba(255,255,255,0.16)" : "transparent",
+      color: active ? "#FFFFFF" : "rgba(255,255,255,0.78)",
+      borderLeft: active ? "2px solid #F0EDE6" : "2px solid transparent",
+      boxShadow: "none",
+    };
+  }
   return {
-    background: active ? "rgba(255,255,255,0.10)" : "transparent",
+    background: active ? "rgba(255,255,255,0.12)" : "transparent",
     color: active ? "#FFFFFF" : "rgba(255,255,255,0.72)",
     borderLeft: active ? "2px solid #C2963A" : "2px solid transparent",
     boxShadow: "none",

@@ -51,7 +51,7 @@ export function AdminLoginForm() {
       <div className="relative hidden lg:block overflow-hidden" style={{ background: SAGE_DEEP }}>
         <Image
           src="/admin-login-bg.jpg"
-          alt="The Circle membership"
+          alt="Austin Clinician Circle membership"
           fill
           priority
           className="object-cover"
@@ -101,7 +101,7 @@ export function AdminLoginForm() {
           }}
         />
         <div className="relative w-full max-w-md flex flex-col gap-8">
-          <Link href="/" aria-label="The Circle" className="flex justify-center">
+          <Link href="/" aria-label="Austin Clinician Circle" className="flex justify-center">
             <Image
               src="/logo-with-ACC-text.png"
               alt="Austin Clinician Circle"

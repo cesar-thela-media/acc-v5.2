@@ -10,8 +10,8 @@ const SAGE_800 = "#2D3B2C";
 const AMBER = "#C2963A";
 
 export const metadata: Metadata = {
-  title: "You're Invited | The Circle",
-  description: "The Circle's member portal is almost ready. You've been personally invited to join as a founding member.",
+  title: "You're Invited | Austin Clinician Circle",
+  description: "Austin Clinician Circle's member portal is almost ready. You've been personally invited to join as a founding member.",
   robots: { index: false, follow: false },
 };
 
@@ -34,8 +34,8 @@ export default function InvitePage() {
       {/* Header */}
       <header className="relative z-10 px-5 md:px-6 pt-6 md:pt-8">
         <div className="max-w-3xl mx-auto flex items-center justify-center">
-          <Link href="/" aria-label="The Circle" className="no-underline flex items-center gap-3">
-            <Image src="/logo-mark.png" alt="The Circle" width={2000} height={732} className="h-16 w-auto object-contain" />
+          <Link href="/" aria-label="Austin Clinician Circle" className="no-underline flex items-center gap-3">
+            <Image src="/logo-mark.png" alt="Austin Clinician Circle" width={2000} height={732} className="h-16 w-auto object-contain" />
           </Link>
         </div>
       </header>
@@ -63,7 +63,7 @@ export default function InvitePage() {
               letterSpacing: "-0.01em",
             }}
           >
-            The Circle is almost ready.
+            Austin Clinician Circle is almost ready.
           </h1>
 
           <p

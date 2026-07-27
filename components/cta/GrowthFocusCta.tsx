@@ -30,7 +30,7 @@ export function GrowthFocusCta({
     </>
   ),
   subheading,
-  ctaLabel = "Join the Circle",
+  ctaLabel = "Join Austin Clinician Circle",
   ctaHref = "/join",
   showFilmstrip = true,
 }: Props) {

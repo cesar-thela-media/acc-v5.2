@@ -40,7 +40,7 @@ export default function NotFound() {
           className="text-sm leading-relaxed mb-8"
           style={{ color: "rgba(255,255,255,0.48)" }}
         >
-          This page doesn&apos;t exist or has been moved. The Circle is still
+          This page doesn&apos;t exist or has been moved. Austin Clinician Circle is still
           growing, and some pages may have shifted.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">

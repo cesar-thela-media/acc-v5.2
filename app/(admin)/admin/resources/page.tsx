@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { EllipsisVertical, FileText, BookOpen, ClipboardList, PlayCircle, type LucideIcon } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Input, Textarea } from "@/components/ui/Input";
+import { CardBox } from "@/components/dashboard/CardBox";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 import { usePersistedState } from "@/lib/admin-store";
+import { downloadResourcePacket } from "@/lib/demoDownload";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,15 +48,22 @@ export const RESOURCES = [
   { id: 8, title: "Trauma-Informed Care Intro", category: "Clinical Tools", type: "Video", published: "Feb 28, 2026", publishedSort: "2026-02-28", downloads: 42 },
 ];
 
+type ResourceRow = (typeof RESOURCES)[number];
+
 export default function AdminResourcesPage() {
   const [resources, setResources] = usePersistedState("admin-resources", RESOURCES);
   const [category, setCategory] = useState("All");
   const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState<number | null>(null);
+  const [formTitle, setFormTitle] = useState("");
+  const [formDescription, setFormDescription] = useState("");
   const [formCategory, setFormCategory] = useState("Clinical Tools");
   const [formType, setFormType] = useState("PDF");
+  const [fileName, setFileName] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("published");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
@@ -64,8 +74,37 @@ export default function AdminResourcesPage() {
     }
   }
 
+  function resetForm() {
+    setEditId(null);
+    setFormTitle("");
+    setFormDescription("");
+    setFormCategory("Clinical Tools");
+    setFormType("PDF");
+    setFileName(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
+  function openCreate() {
+    resetForm();
+    setShowForm(true);
+  }
+
+  function openEdit(r: ResourceRow) {
+    setEditId(r.id);
+    setFormTitle(r.title);
+    setFormDescription(`${r.type} · ${r.category}`);
+    setFormCategory(r.category);
+    setFormType(r.type);
+    setFileName(null);
+    setShowForm(true);
+  }
+
   function handleDelete(id: number) {
     setResources((prev) => prev.filter((r) => r.id !== id));
+    if (editId === id) {
+      setShowForm(false);
+      resetForm();
+    }
   }
 
   const filtered = resources.filter((r) => category === "All" || r.category === category);
@@ -80,50 +119,63 @@ export default function AdminResourcesPage() {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const title = String(data.get("title") || "").trim() || "Untitled resource";
+    const title = formTitle.trim() || "Untitled resource";
     const today = new Date();
-    setResources((prev) => [
-      {
-        id: Math.max(0, ...prev.map((r) => r.id)) + 1,
-        title,
-        category: formCategory,
-        type: formType,
-        published: today.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
-        publishedSort: today.toISOString().slice(0, 10),
-        downloads: 0,
-      },
-      ...prev,
-    ]);
+    if (editId != null) {
+      setResources((prev) =>
+        prev.map((r) =>
+          r.id === editId
+            ? { ...r, title, category: formCategory, type: formType }
+            : r,
+        ),
+      );
+    } else {
+      setResources((prev) => [
+        {
+          id: Math.max(0, ...prev.map((r) => r.id)) + 1,
+          title,
+          category: formCategory,
+          type: formType,
+          published: today.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+          publishedSort: today.toISOString().slice(0, 10),
+          downloads: 0,
+        },
+        ...prev,
+      ]);
+    }
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
       setShowForm(false);
-    }, 2000);
+      resetForm();
+    }, 800);
   }
 
   return (
-    <div className="flex flex-col gap-8">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <p className="text-eyebrow mb-1">Admin</p>
-          <h1 className="text-page-title">Resources</h1>
-        </div>
-        <button
-          onClick={() => setShowForm((v) => !v)}
-          className="inline-flex items-center justify-center px-5 py-2 rounded-full text-sm font-medium transition-opacity hover:opacity-90 w-full sm:w-auto"
-          style={{ background: "var(--color-accent-highlight)", color: "#fff" }}
-        >
-          {showForm ? "Cancel" : "+ Upload resource"}
-        </button>
-      </div>
+    <div className="flex flex-col gap-4 sm:gap-6 w-full min-w-0">
+      <PageHeader
+        eyebrow="Admin"
+        title="Resources"
+        description="Publish clinical tools, handouts, and guides for members."
+        action={
+          <button
+            type="button"
+            onClick={() => (showForm ? (setShowForm(false), resetForm()) : openCreate())}
+            className="inline-flex items-center justify-center px-5 py-2 rounded-full text-sm font-medium transition-opacity hover:opacity-90 w-full sm:w-auto"
+            style={{ background: "#B8892E", color: "#fff" }}
+          >
+            {showForm ? "Cancel" : "+ Upload resource"}
+          </button>
+        }
+      />
 
-      {/* Upload form */}
+      {/* Upload / edit form */}
       {showForm && (
-        <div
-          className="rounded-2xl border p-6 bg-white flex flex-col gap-5"
-          style={{ borderColor: "rgba(194,150,58,0.12)" }}
-        >
+        <CardBox className="flex flex-col gap-5">
           <h2
             className="text-base"
             style={{
@@ -132,11 +184,26 @@ export default function AdminResourcesPage() {
               color: "var(--color-sage-800)",
             }}
           >
-            Upload new resource
+            {editId != null ? "Edit resource" : "Upload new resource"}
           </h2>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <Input label="Title" name="title" placeholder="Resource title" required />
-            <Textarea label="Description" name="description" rows={3} placeholder="Brief description shown to members" required />
+            <Input
+              label="Title"
+              name="title"
+              placeholder="Resource title"
+              required
+              value={formTitle}
+              onChange={(e) => setFormTitle(e.target.value)}
+            />
+            <Textarea
+              label="Description"
+              name="description"
+              rows={3}
+              placeholder="Brief description shown to members"
+              required
+              value={formDescription}
+              onChange={(e) => setFormDescription(e.target.value)}
+            />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium mb-2" style={{ color: "var(--color-text-secondary)" }}>Category</label>
@@ -148,9 +215,9 @@ export default function AdminResourcesPage() {
                       onClick={() => setFormCategory(c)}
                       className="px-3 py-1 rounded-full text-xs font-medium transition-colors"
                       style={{
-                        background: formCategory === c ? "var(--color-accent-highlight)" : "#fff",
+                        background: formCategory === c ? "#B8892E" : "#fff",
                         color: formCategory === c ? "#fff" : "var(--color-sage-700)",
-                        border: `1px solid ${formCategory === c ? "var(--color-accent-highlight)" : "rgba(194,150,58,0.20)"}`,
+                        border: `1px solid ${formCategory === c ? "#B8892E" : "rgba(45,59,44,0.12)"}`,
                       }}
                     >{c}</button>
                   ))}
@@ -166,9 +233,9 @@ export default function AdminResourcesPage() {
                       onClick={() => setFormType(t)}
                       className="px-3 py-1 rounded-full text-xs font-medium transition-colors"
                       style={{
-                        background: formType === t ? "var(--color-accent-highlight)" : "#fff",
+                        background: formType === t ? "#B8892E" : "#fff",
                         color: formType === t ? "#fff" : "var(--color-sage-700)",
-                        border: `1px solid ${formType === t ? "var(--color-accent-highlight)" : "rgba(194,150,58,0.20)"}`,
+                        border: `1px solid ${formType === t ? "#B8892E" : "rgba(45,59,44,0.12)"}`,
                       }}
                     >{t}</button>
                   ))}
@@ -177,33 +244,72 @@ export default function AdminResourcesPage() {
             </div>
             <div>
               <label className="block text-xs font-medium mb-2" style={{ color: "var(--color-text-secondary)" }}>File</label>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.doc,.docx,.mp4,.png,.jpg,.jpeg"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  setFileName(f ? f.name : null);
+                  if (f && !formTitle.trim()) {
+                    setFormTitle(f.name.replace(/\.[^.]+$/, ""));
+                  }
+                }}
+              />
               <div
-                className="border-2 border-dashed rounded-xl p-8 text-center"
+                className="border-2 border-dashed rounded-xl p-6 sm:p-8 text-center cursor-pointer hover:bg-[rgba(255,185,0,0.04)]"
                 style={{ borderColor: "rgba(194,150,58,0.25)" }}
+                onClick={() => fileInputRef.current?.click()}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") fileInputRef.current?.click();
+                }}
+                role="button"
+                tabIndex={0}
               >
                 <p className="text-sm" style={{ color: "var(--color-text-tertiary)" }}>
-                  Drag & drop a file or{" "}
-                  <button type="button" className="underline" style={{ color: "var(--color-accent-highlight)", textUnderlineOffset: "3px" }} onClick={() => alert("File upload is coming soon. For now, publishing just adds the title/category/type to the list.")}>
-                    browse
-                  </button>
+                  {fileName ? (
+                    <>
+                      Selected: <strong style={{ color: "var(--color-sage-800)" }}>{fileName}</strong>
+                      {" · "}
+                      <span className="underline" style={{ color: "#9A7426" }}>change</span>
+                    </>
+                  ) : (
+                    <>
+                      Drag & drop a file or{" "}
+                      <span className="underline" style={{ color: "#9A7426" }}>
+                        browse
+                      </span>
+                    </>
+                  )}
                 </p>
-                <p className="text-xs mt-1" style={{ color: "var(--color-text-tertiary)" }}>PDF, DOC, MP4 · 50MB max</p>
+                <p className="text-xs mt-1" style={{ color: "var(--color-text-tertiary)" }}>
+                  PDF, DOC, MP4 · 50MB max · demo stores metadata only
+                </p>
               </div>
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
               <button
                 type="submit"
                 className="inline-flex items-center justify-center px-5 py-2 rounded-full text-sm font-medium transition-opacity hover:opacity-90"
-                style={{ background: "var(--color-accent-highlight)", color: "#fff" }}
+                style={{ background: "#B8892E", color: "#fff" }}
               >
-                {submitted ? "Publishing…" : "Publish resource"}
+                {submitted ? "Saving…" : editId != null ? "Save changes" : "Publish resource"}
               </button>
-              <Button type="button" variant="ghost" size="sm" onClick={() => setShowForm(false)}>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setShowForm(false);
+                  resetForm();
+                }}
+              >
                 Cancel
               </Button>
             </div>
           </form>
-        </div>
+        </CardBox>
       )}
 
       {/* Category filter */}
@@ -214,9 +320,9 @@ export default function AdminResourcesPage() {
             onClick={() => setCategory(c)}
             className="px-3 py-1.5 rounded text-xs font-medium transition-colors"
             style={{
-              background: category === c ? "var(--color-accent-highlight)" : "var(--color-cream-100)",
+              background: category === c ? "#B8892E" : "var(--color-cream-100)",
               color: category === c ? "#fff" : "var(--color-sage-700)",
-              border: category === c ? "none" : "1px solid rgba(194,150,58,0.20)",
+              border: category === c ? "none" : "1px solid rgba(45,59,44,0.12)",
             }}
           >{c}</button>
         ))}
@@ -236,7 +342,7 @@ export default function AdminResourcesPage() {
                 <div className="flex items-start gap-3">
                   <div
                     className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ background: "rgba(194,150,58,0.10)", color: "var(--color-accent-highlight)" }}
+                    style={{ background: "rgba(194,150,58,0.10)", color: "#B8892E" }}
                   >
                     <TypeIcon size={16} />
                   </div>
@@ -252,7 +358,20 @@ export default function AdminResourcesPage() {
                       <EllipsisVertical size={16} style={{ color: "var(--color-text-tertiary)" }} />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => alert(`Editing "${r.title}" is coming soon.`)}>Edit</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => openEdit(r)}>Edit</DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          downloadResourcePacket({
+                            title: r.title,
+                            category: r.category,
+                            type: r.type,
+                            description: `${r.type} resource published ${r.published}.`,
+                            date: r.published,
+                          })
+                        }
+                      >
+                        Download preview
+                      </DropdownMenuItem>
                       <DropdownMenuItem variant="destructive" onClick={() => handleDelete(r.id)}>Delete</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -275,7 +394,7 @@ export default function AdminResourcesPage() {
           <button
             onClick={() => setCategory("All")}
             className="text-xs font-medium underline"
-            style={{ color: "var(--color-accent-highlight)", textUnderlineOffset: "3px" }}
+            style={{ color: "#B8892E", textUnderlineOffset: "3px" }}
           >
             View all categories
           </button>
@@ -290,7 +409,7 @@ export default function AdminResourcesPage() {
               <tr style={{ borderBottom: "1px solid rgba(194,150,58,0.12)", background: "var(--color-cream-100)" }}>
                 <th
                   className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] cursor-pointer select-none hover:opacity-70 transition-opacity"
-                  style={{ color: "var(--color-accent-highlight)" }}
+                  style={{ color: "#B8892E" }}
                   onClick={() => toggleSort("title")}
                 >
                   Title
@@ -298,7 +417,7 @@ export default function AdminResourcesPage() {
                 </th>
                 <th
                   className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] cursor-pointer select-none hover:opacity-70 transition-opacity"
-                  style={{ color: "var(--color-accent-highlight)" }}
+                  style={{ color: "#B8892E" }}
                   onClick={() => toggleSort("category")}
                 >
                   Category
@@ -306,7 +425,7 @@ export default function AdminResourcesPage() {
                 </th>
                 <th
                   className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] cursor-pointer select-none hover:opacity-70 transition-opacity"
-                  style={{ color: "var(--color-accent-highlight)" }}
+                  style={{ color: "#B8892E" }}
                   onClick={() => toggleSort("type")}
                 >
                   Type
@@ -314,7 +433,7 @@ export default function AdminResourcesPage() {
                 </th>
                 <th
                   className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] cursor-pointer select-none hover:opacity-70 transition-opacity"
-                  style={{ color: "var(--color-accent-highlight)" }}
+                  style={{ color: "#B8892E" }}
                   onClick={() => toggleSort("published")}
                 >
                   Published
@@ -322,7 +441,7 @@ export default function AdminResourcesPage() {
                 </th>
                 <th
                   className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] cursor-pointer select-none hover:opacity-70 transition-opacity"
-                  style={{ color: "var(--color-accent-highlight)" }}
+                  style={{ color: "#B8892E" }}
                   onClick={() => toggleSort("downloads")}
                 >
                   Downloads
@@ -346,7 +465,7 @@ export default function AdminResourcesPage() {
                       <div className="flex items-center gap-3">
                         <div
                           className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                          style={{ background: "rgba(194,150,58,0.10)", color: "var(--color-accent-highlight)" }}
+                          style={{ background: "rgba(194,150,58,0.10)", color: "#B8892E" }}
                         >
                           <TypeIcon size={15} />
                         </div>
@@ -364,7 +483,20 @@ export default function AdminResourcesPage() {
                             <EllipsisVertical size={16} style={{ color: "var(--color-text-tertiary)" }} />
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => alert(`Editing "${r.title}" is coming soon.`)}>Edit</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => openEdit(r)}>Edit</DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                downloadResourcePacket({
+                                  title: r.title,
+                                  category: r.category,
+                                  type: r.type,
+                                  description: `${r.type} resource published ${r.published}.`,
+                                  date: r.published,
+                                })
+                              }
+                            >
+                              Download preview
+                            </DropdownMenuItem>
                             <DropdownMenuItem variant="destructive" onClick={() => handleDelete(r.id)}>Delete</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>

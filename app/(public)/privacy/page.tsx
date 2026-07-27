@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | The Circle",
-  description: "Privacy policy for The Circle.",
+  title: "Privacy Policy | Austin Clinician Circle",
+  description: "Privacy policy for Austin Clinician Circle.",
 };
 
 const SECTIONS = [
@@ -12,7 +12,7 @@ const SECTIONS = [
   },
   {
     title: "How we use it",
-    body: "We use your information to review membership applications, deliver the resources you request, send you information about events and your account, and process billing. We don't use your information for anything beyond running The Circle.",
+    body: "We use your information to review membership applications, deliver the resources you request, send you information about events and your account, and process billing. We don't use your information for anything beyond running Austin Clinician Circle.",
   },
   {
     title: "What we don't do",

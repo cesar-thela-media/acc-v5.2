@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import Image from "next/image";
@@ -6,6 +6,10 @@ import Link from "next/link";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Separator } from "@/components/ui/shadcn/separator";
+import {
+  appendSubmittedApplication,
+  buildApplicationFromJoin,
+} from "@/lib/applications";
 
 const STEPS = ["About you", "Your practice", "Confirm"];
 
@@ -121,6 +125,9 @@ export default function JoinPage() {
         body: JSON.stringify(form),
       });
       if (res.ok) {
+        // Persist into the same localStorage list admin applications reads,
+        // so Sarah sees this applicant under Pending immediately (demo store).
+        appendSubmittedApplication(buildApplicationFromJoin(form));
         setSubmitted(true);
       } else {
         const data = await res.json().catch(() => ({}));
@@ -158,7 +165,7 @@ export default function JoinPage() {
             className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-8 text-2xl"
             style={{ background: "#C2963A", color: "#fff" }}
           >
-            {"?"}
+            ✓
           </div>
           <h1 className="text-page-title mb-4" style={{ fontFamily: "var(--font-serif), Georgia, serif", fontWeight: 400, color: "#fff" }}>
             Application received.
@@ -177,10 +184,10 @@ export default function JoinPage() {
       style={{ background: "#2D3B2C" }}
     >
       <nav className="relative z-20 w-full flex items-center justify-center py-3 md:py-4 px-4">
-        <Link href="/" aria-label="The Circle" className="inline-flex items-center no-underline">
+        <Link href="/" aria-label="Austin Clinician Circle" className="inline-flex items-center no-underline">
           <Image
             src="/logo-mark.png"
-            alt="The Circle"
+            alt="Austin Clinician Circle"
             width={200}
             height={72}
             className="h-14 w-auto object-contain"
@@ -212,7 +219,7 @@ export default function JoinPage() {
                         color: i <= step ? "#fff" : "var(--color-text-tertiary)",
                       }}
                     >
-                      {i < step ? "?" : i + 1}
+                      {i < step ? "✓" : i + 1}
                     </div>
                     <span className="text-xs font-medium hidden sm:block" style={{ color: i === step ? "var(--color-accent-highlight)" : "var(--color-text-tertiary)" }}>
                       {label}
@@ -258,7 +265,7 @@ export default function JoinPage() {
                       <p className="text-sm text-center" style={{ color: "var(--color-error)" }}>{stepError}</p>
                     )}
                     <Button onClick={() => goToStep(1)} className="w-full mt-2">
-                      Continue ?
+                      Continue
                     </Button>
                   </div>
                 )}
@@ -337,13 +344,13 @@ export default function JoinPage() {
                       placeholder="A short paragraph about your clinical background and approach (this will appear on your directory profile)."
                       hint="This will appear on your public directory listing."
                     />
-                    <Textarea label="Why do you want to join The Circle?" rows={3} value={form.whyCircle} onChange={(e) => set("whyCircle", e.target.value)} placeholder="What are you hoping to get from this community?" />
+                    <Textarea label="Why do you want to join Austin Clinician Circle?" rows={3} value={form.whyCircle} onChange={(e) => set("whyCircle", e.target.value)} placeholder="What are you hoping to get from this community?" />
                     {stepError && step === 1 && (
                       <p className="text-sm text-center" style={{ color: "var(--color-error)" }}>{stepError}</p>
                     )}
                     <div className="flex flex-col sm:flex-row gap-3 mt-2">
-                      <Button variant="secondary" onClick={() => { setStepError(""); setStep(0); }} className="flex-1">? Back</Button>
-                      <Button onClick={() => goToStep(2)} className="flex-1">Continue ?</Button>
+                      <Button variant="secondary" onClick={() => { setStepError(""); setStep(0); }} className="flex-1">Back</Button>
+                      <Button onClick={() => goToStep(2)} className="flex-1">Continue</Button>
                     </div>
                   </div>
                 )}
@@ -377,7 +384,7 @@ export default function JoinPage() {
                       <p className="text-sm text-center" style={{ color: "var(--color-error)" }}>{submitError}</p>
                     )}
                     <div className="flex flex-col sm:flex-row gap-3">
-                      <Button variant="secondary" onClick={() => setStep(1)} className="flex-1" disabled={submitting}>? Back</Button>
+                      <Button variant="secondary" onClick={() => setStep(1)} className="flex-1" disabled={submitting}>Back</Button>
                       <Button onClick={handleSubmit} className="flex-1" disabled={submitting}>{submitting ? "Submitting…" : "Submit application"}</Button>
                     </div>
                   </div>
@@ -394,7 +401,7 @@ export default function JoinPage() {
             <div className="flex flex-col gap-4">
               <p className="text-[11px] font-semibold uppercase tracking-[0.28em]" style={{ color: "#C2963A" }}>Membership application</p>
               <h2 className="leading-tight" style={{ fontFamily: "var(--font-serif), Georgia, serif", fontSize: "clamp(1.8rem, 3vw, 2.5rem)", fontWeight: 400, color: "#fff" }}>
-                Join The Circle.
+                Join Austin Clinician Circle.
               </h2>
               <p className="text-base" style={{ color: "rgba(255,255,255,0.55)" }}>
                 A professional community for licensed therapists. Sarah reviews every application personally.

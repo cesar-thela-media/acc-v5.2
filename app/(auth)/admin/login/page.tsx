@@ -4,7 +4,7 @@ import { hasClerkCredentials } from "@/lib/env";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Admin Log In | The Circle",
+  title: "Admin Log In | Austin Clinician Circle",
   description: "Log in to the Austin Clinician Circle admin dashboard.",
 };
 

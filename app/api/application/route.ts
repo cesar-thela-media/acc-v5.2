@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 const SARAH_EMAIL = process.env.SARAH_EMAIL ?? "sarah@restoredfamily.com";
 const FROM_EMAIL =
   process.env.RESEND_FROM_EMAIL ??
-  "The Circle <sarah@restoredfamily.com>";
+  "Austin Clinician Circle <sarah@restoredfamily.com>";
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
 <body style="font-family:Helvetica,Arial,sans-serif;background:#F8FAF3;padding:32px 16px;margin:0;">
   <table width="580" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 16px rgba(74,93,78,0.07);">
     <tr><td style="background:#2D3B2C;padding:28px 36px;">
-      <p style="margin:0 0 4px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);">The Circle</p>
+      <p style="margin:0 0 4px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);">Austin Clinician Circle</p>
       <h1 style="margin:0;font-size:22px;font-weight:400;color:#fff;">New membership application</h1>
     </td></tr>
     <tr><td style="padding:28px 36px;">
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
         ${row("Specialties", specialties)}
         ${row("Modalities", modalities)}
         ${row("Bio", String(body.bio || ""))}
-        ${row("Why The Circle", String(body.whyCircle || ""))}
+        ${row("Why Austin Clinician Circle", String(body.whyCircle || ""))}
       </table>
     </td></tr>
     <tr><td style="padding:16px 36px 28px;border-top:1px solid #ECEFE8;">
@@ -116,12 +116,12 @@ export async function POST(req: NextRequest) {
 <body style="font-family:Helvetica,Arial,sans-serif;background:#F8FAF3;padding:32px 16px;margin:0;">
   <table width="560" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(74,93,78,0.08);">
     <tr><td style="background:#2D3B2C;padding:32px 40px;">
-      <p style="margin:0 0 8px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);">The Circle</p>
+      <p style="margin:0 0 8px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);">Austin Clinician Circle</p>
       <h1 style="margin:0;font-size:24px;font-weight:400;color:#fff;line-height:1.25;">Your application is in, ${safeFirst}.</h1>
     </td></tr>
     <tr><td style="padding:36px 40px;">
       <p style="margin:0 0 16px;font-size:15px;color:#444841;line-height:1.65;">
-        Thank you for applying to The Circle. Sarah reviews every application personally and will be in touch within a few business days.
+        Thank you for applying to Austin Clinician Circle. Sarah reviews every application personally and will be in touch within a few business days.
       </p>
       <p style="margin:0 0 28px;font-size:15px;color:#444841;line-height:1.65;">
         In the meantime, if you have any questions you can reply to this email or reach Sarah directly at
@@ -129,7 +129,7 @@ export async function POST(req: NextRequest) {
       </p>
       <hr style="border:none;border-top:1px solid #DFE3DA;margin:0 0 28px;" />
       <p style="margin:0;font-size:13px;color:#75796E;line-height:1.6;">
-        Sarah Arnold, LPC-S · The Circle · Austin, TX
+        Sarah Arnold, LPC-S · Austin Clinician Circle · Austin, TX
       </p>
     </td></tr>
   </table>
@@ -140,7 +140,7 @@ export async function POST(req: NextRequest) {
     .send({
       from: FROM_EMAIL,
       to: safeEmail,
-      subject: "Your application to The Circle, received",
+      subject: "Your application to Austin Clinician Circle, received",
       html: confirmHtml,
     })
     .catch((err) => console.error("[application] confirmation email failed:", err));

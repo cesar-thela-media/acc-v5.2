@@ -143,7 +143,7 @@ export function AdminSignIn({
           }}
         />
         <div className="relative w-full max-w-md flex flex-col gap-8">
-          <Link href="/" aria-label="The Circle" className="flex justify-center w-full">
+          <Link href="/" aria-label="Austin Clinician Circle" className="flex justify-center w-full">
             <Image
               src="/logo-with-ACC-text.png"
               alt="Austin Clinician Circle"

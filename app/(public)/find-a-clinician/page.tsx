@@ -6,8 +6,8 @@ const AMBER = "#C2963A";
 const PARCHMENT = "#F0EDE6";
 
 export const metadata: Metadata = {
-  title: "Find a Clinician | The Circle",
-  description: "The Circle clinician directory — coming soon.",
+  title: "Find a Clinician | Austin Clinician Circle",
+  description: "Austin Clinician Circle clinician directory — coming soon.",
 };
 
 export default function FindAClinicianPage() {
@@ -39,7 +39,7 @@ export default function FindAClinicianPage() {
           style={{ color: "var(--color-text-secondary)" }}
         >
           Our clinician directory will go live after launch. Licensed members
-          of The Circle will be searchable by specialty, modality, location,
+          of Austin Clinician Circle will be searchable by specialty, modality, location,
           and availability.
         </p>
         <Link

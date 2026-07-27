@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { ArrowUpRight, BookOpen, MessageCircle, UserPlus } from "lucide-react";
 
 type Choice = {
@@ -34,7 +34,7 @@ const DEFAULT_CHOICES: Choice[] = [
     icon: <MessageCircle className="size-5" />,
     eyebrow: "Discovery",
     title: "Talk it through with Sarah first.",
-    description: "Have questions, or want to know whether The Circle is the right fit before you commit to an application? Sarah reads every email.",
+    description: "Have questions, or want to know whether Austin Clinician Circle is the right fit before you commit to an application? Sarah reads every email.",
     cta: "Email Sarah",
     variant: "secondary",
   },

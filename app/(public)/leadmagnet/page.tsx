@@ -197,7 +197,7 @@ export default function LeadMagnetPage() {
                     {loading ? "Sending…" : "Send me the playbook →"}
                   </button>
                   <p className="text-center text-sm" style={{ color: "var(--color-text-tertiary)" }}>
-                    Occasional emails from The Circle.{" "}
+                    Occasional emails from Austin Clinician Circle.{" "}
                     <Link href="/privacy" className="underline" style={{ color: "var(--color-sage-700)" }}>
                       Privacy
                     </Link>

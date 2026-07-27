@@ -1,10 +1,33 @@
 import Stripe from "stripe";
 import { BillingActions } from "@/components/billing/BillingActions";
 import { Badge } from "@/components/ui/Badge";
-import { Card } from "@/components/ui/Card";
+import { CardBox } from "@/components/dashboard/CardBox";
+import { PageHeader } from "@/components/dashboard/PageHeader";
+import {
+  Progress,
+  ProgressLabel,
+  ProgressValue,
+} from "@/components/ui/shadcn/progress";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/shadcn/table";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/shadcn/alert";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/shadcn/empty";
 import { getCurrentViewer } from "@/lib/auth";
 import { hasClerkCredentials, hasStripeSandboxConfig } from "@/lib/env";
 import { findSandboxCustomerByEmail, getStripe } from "@/lib/stripe";
+import { CreditCard, Info, Receipt } from "lucide-react";
 
 function formatMoney(amount?: number | null, currency = "usd") {
   if (amount == null) return "Not available yet";
@@ -76,29 +99,80 @@ export default async function BillingPage() {
     ? "Stripe is configured for test mode. Use test cards and webhook forwarding to validate checkout, renewals, failures, and cancellation flows safely."
     : "Add STRIPE_SECRET_KEY, STRIPE_PRICE_ID, and STRIPE_WEBHOOK_SECRET test values in .env to enable sandbox billing.";
 
+  const isActive =
+    subscription?.status === "active" || subscription?.status === "trialing";
+
   return (
-    <div className="flex flex-col gap-10 max-w-4xl w-full">
-      <div>
-        <p className="text-xs font-medium uppercase tracking-widest mb-2" style={{ color: "var(--color-sage-600)" }}>Billing</p>
-        <h1 className="text-page-title">
-          Subscription & billing
-        </h1>
-        <p className="text-sm mt-3" style={{ color: "var(--color-text-secondary)" }}>
-          Sandbox-ready Stripe billing for The Circle membership.
-        </p>
+    <div className="flex flex-col gap-4 sm:gap-5 w-full min-w-0 max-w-full">
+      <PageHeader
+        eyebrow="Billing"
+        title="Subscription & billing"
+        description="Sandbox-ready Stripe billing for Austin Clinician Circle membership."
+      />
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 lg:gap-5 w-full min-w-0">
+        <CardBox>
+          <p className="text-xs font-medium uppercase tracking-wide" style={{ color: "var(--color-text-tertiary)" }}>
+            Plan
+          </p>
+          <p className="text-xl mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", color: "var(--color-sage-800)" }}>
+            {formatMoney(planAmount, planCurrency)}
+            <span className="text-sm font-normal ml-1" style={{ color: "var(--color-text-tertiary)" }}>/mo</span>
+          </p>
+        </CardBox>
+        <CardBox>
+          <p className="text-xs font-medium uppercase tracking-wide" style={{ color: "var(--color-text-tertiary)" }}>
+            Status
+          </p>
+          <div className="mt-2">
+            <Badge variant={toBadgeVariant(subscription?.status)}>
+              {toLabel(subscription?.status, Boolean(customer))}
+            </Badge>
+          </div>
+        </CardBox>
+        <CardBox>
+          <p className="text-xs font-medium uppercase tracking-wide" style={{ color: "var(--color-text-tertiary)" }}>
+            Renewal
+          </p>
+          <p className="text-sm mt-2 font-medium" style={{ color: "var(--color-sage-800)" }}>
+            {renewalDate}
+          </p>
+        </CardBox>
       </div>
 
-      <Card className="flex flex-col gap-5">
+      {isActive && (
+        <CardBox>
+          <Progress value={72}>
+            <ProgressLabel>Billing period</ProgressLabel>
+            <ProgressValue />
+          </Progress>
+          <p className="text-xs mt-2" style={{ color: "var(--color-text-tertiary)" }}>
+            Approximate progress through the current membership period.
+          </p>
+        </CardBox>
+      )}
+
+      <CardBox className="flex flex-col gap-5">
         <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
-          <div>
-            <h2 className="text-base font-semibold" style={{ color: "var(--color-sage-800)" }}>
-              The Circle membership
-            </h2>
-            <p className="text-sm mt-1" style={{ color: "var(--color-text-secondary)" }}>
-              Full access to community resources, events, and the member directory, powered by Stripe test mode while sandbox credentials are in use.
-            </p>
+          <div className="flex items-start gap-3">
+            <span
+              className="flex size-11 items-center justify-center rounded-xl shrink-0"
+              style={{ background: "rgba(194,150,58,0.14)", color: "#C2963A" }}
+            >
+              <CreditCard className="size-5" />
+            </span>
+            <div>
+              <h2 className="text-base font-semibold" style={{ color: "var(--color-sage-800)" }}>
+                Austin Clinician Circle membership
+              </h2>
+              <p className="text-sm mt-1" style={{ color: "var(--color-text-secondary)" }}>
+                Full access to community resources, events, and the member directory.
+              </p>
+            </div>
           </div>
-          <Badge variant={toBadgeVariant(subscription?.status)}>{toLabel(subscription?.status, Boolean(customer))}</Badge>
+          <Badge variant={toBadgeVariant(subscription?.status)}>
+            {toLabel(subscription?.status, Boolean(customer))}
+          </Badge>
         </div>
 
         <div
@@ -106,16 +180,26 @@ export default async function BillingPage() {
           style={{ background: "var(--color-cream-100)", border: "1px solid var(--color-cream-300)" }}
         >
           <div>
-            <p className="text-2xl font-light" style={{ fontFamily: "var(--font-serif), Georgia, serif", fontWeight: 400, color: "var(--color-sage-700)" }}>
+            <p
+              className="text-2xl font-light"
+              style={{
+                fontFamily: "var(--font-serif), Georgia, serif",
+                fontWeight: 400,
+                color: "var(--color-sage-700)",
+              }}
+            >
               {formatMoney(planAmount, planCurrency)}
-              <span className="text-sm font-normal ml-1" style={{ color: "var(--color-text-tertiary)" }}>/month</span>
+              <span className="text-sm font-normal ml-1" style={{ color: "var(--color-text-tertiary)" }}>
+                /month
+              </span>
             </p>
             <p className="text-xs mt-0.5" style={{ color: "var(--color-text-tertiary)" }}>
               {renewalDate} · {hasStripeSandboxConfig ? "Sandbox billing active" : "Sandbox not configured"}
             </p>
           </div>
-          <div className="text-xs text-right" style={{ color: "var(--color-text-tertiary)" }}>
-            {viewer.primaryEmail || "Sign in with Clerk sandbox auth to attach billing to an account."}
+          <div className="text-xs sm:text-right" style={{ color: "var(--color-text-tertiary)" }}>
+            {viewer.primaryEmail ||
+              "Sign in with Clerk sandbox auth to attach billing to an account."}
           </div>
         </div>
 
@@ -123,12 +207,17 @@ export default async function BillingPage() {
           className="rounded-xl px-4 sm:px-5 py-4 flex flex-col gap-1"
           style={{ background: "var(--color-cream-100)", border: "1px solid var(--color-cream-300)" }}
         >
-          <p className="text-xs font-medium" style={{ color: "var(--color-text-secondary)" }}>Sandbox customer</p>
+          <p className="text-xs font-medium" style={{ color: "var(--color-text-secondary)" }}>
+            Sandbox customer
+          </p>
           <p className="text-sm mt-1" style={{ color: "var(--color-text-primary)" }}>
-            {customer ? `Stripe customer ${customer.id}` : "No sandbox customer exists for this account yet."}
+            {customer
+              ? `Stripe customer ${customer.id}`
+              : "No sandbox customer exists for this account yet."}
           </p>
           <p className="text-xs mt-1" style={{ color: "var(--color-text-tertiary)" }}>
-            Payment methods, invoices, and cancellations are managed through Stripe&apos;s test customer portal.
+            Payment methods, invoices, and cancellations are managed through Stripe&apos;s test
+            customer portal.
           </p>
         </div>
 
@@ -136,113 +225,139 @@ export default async function BillingPage() {
           hasStripeSandboxConfig={hasStripeSandboxConfig && hasClerkCredentials}
           hasActiveCustomer={Boolean(customer)}
         />
-      </Card>
+      </CardBox>
 
-      <Card
-        className="flex flex-col gap-3"
-        style={{ background: "var(--color-sage-50)", borderColor: "var(--color-sage-100)" }}
-      >
-        <div>
-          <p className="text-sm font-semibold" style={{ color: "var(--color-sage-800)" }}>
-            Stripe sandbox mode
-          </p>
-          <p className="text-sm mt-1" style={{ color: "var(--color-text-secondary)" }}>
-            {sandboxCopy}
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2 text-xs" style={{ color: "var(--color-text-tertiary)" }}>
-          <span>Recommended test card: 4242 4242 4242 4242</span>
-          <span>•</span>
-          <span>Webhook endpoint: /api/stripe/webhook</span>
-        </div>
-      </Card>
+      <Alert variant="sage">
+        <Info />
+        <AlertTitle>Stripe sandbox mode</AlertTitle>
+        <AlertDescription>
+          {sandboxCopy} Recommended test card: 4242 4242 4242 4242 · Webhook: /api/stripe/webhook
+        </AlertDescription>
+      </Alert>
 
       <div>
-        <h2 className="text-base font-semibold mb-4" style={{ color: "var(--color-sage-900)" }}>Invoice history</h2>
+        <h2 className="text-base font-semibold mb-4" style={{ color: "var(--color-sage-900)" }}>
+          Invoice history
+        </h2>
         {invoices.length === 0 ? (
-          <Card>
-            <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>
-              No sandbox invoices yet. Once you complete a test checkout, invoice history will appear here.
-            </p>
-          </Card>
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <Receipt />
+              </EmptyMedia>
+              <EmptyTitle>No invoices yet</EmptyTitle>
+              <EmptyDescription>
+                Once you complete a test checkout, invoice history will appear here.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
         ) : (
           <>
             <div className="md:hidden flex flex-col gap-3">
               {invoices.map((invoice) => (
-                <Card key={invoice.id} className="flex flex-col gap-3">
+                <CardBox key={invoice.id} className="flex flex-col gap-3">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="text-sm font-semibold" style={{ color: "var(--color-text-primary)" }}>{invoice.number || invoice.id}</p>
-                      <p className="text-xs mt-1" style={{ color: "var(--color-text-tertiary)" }}>{formatDate(invoice.created)}</p>
+                      <p className="text-sm font-semibold" style={{ color: "var(--color-text-primary)" }}>
+                        {invoice.number || invoice.id}
+                      </p>
+                      <p className="text-xs mt-1" style={{ color: "var(--color-text-tertiary)" }}>
+                        {formatDate(invoice.created)}
+                      </p>
                     </div>
-                    <Badge variant={toBadgeVariant(invoice.status)}>{toLabel(invoice.status, true)}</Badge>
+                    <Badge variant={toBadgeVariant(invoice.status)}>
+                      {toLabel(invoice.status, true)}
+                    </Badge>
                   </div>
                   <div className="flex items-center justify-between gap-3">
-                    <p className="text-sm font-medium" style={{ color: "var(--color-text-primary)" }}>{formatMoney(invoice.amount_paid || invoice.amount_due, invoice.currency || "usd")}</p>
+                    <p className="text-sm font-medium" style={{ color: "var(--color-text-primary)" }}>
+                      {formatMoney(
+                        invoice.amount_paid || invoice.amount_due,
+                        invoice.currency || "usd",
+                      )}
+                    </p>
                     {invoice.invoice_pdf ? (
-                      <a href={invoice.invoice_pdf} target="_blank" rel="noreferrer" className="text-xs underline" style={{ color: "var(--color-sage-700)", textUnderlineOffset: "3px" }}>
+                      <a
+                        href={invoice.invoice_pdf}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs underline"
+                        style={{ color: "var(--color-sage-700)", textUnderlineOffset: "3px" }}
+                      >
                         Download
                       </a>
                     ) : null}
                   </div>
-                </Card>
+                </CardBox>
               ))}
             </div>
-            <Card className="hidden md:block overflow-hidden" style={{ padding: 0 }}>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr style={{ borderBottom: "1px solid var(--color-cream-300)", background: "var(--color-cream-100)" }}>
-                      <th className="text-left px-6 py-3 text-xs font-semibold" style={{ color: "var(--color-text-tertiary)" }}>Invoice</th>
-                      <th className="text-left px-6 py-3 text-xs font-semibold" style={{ color: "var(--color-text-tertiary)" }}>Date</th>
-                      <th className="text-left px-6 py-3 text-xs font-semibold" style={{ color: "var(--color-text-tertiary)" }}>Amount</th>
-                      <th className="text-left px-6 py-3 text-xs font-semibold" style={{ color: "var(--color-text-tertiary)" }}>Status</th>
-                      <th className="px-6 py-3" />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {invoices.map((invoice, index) => (
-                      <tr
-                        key={invoice.id}
-                        style={{ borderBottom: index < invoices.length - 1 ? "1px solid var(--color-cream-200)" : "none" }}
-                      >
-                        <td className="px-6 py-3.5" style={{ color: "var(--color-text-primary)", fontFamily: "var(--font-sans)" }}>
-                          {invoice.number || invoice.id}
-                        </td>
-                        <td className="px-6 py-3.5" style={{ color: "var(--color-text-secondary)" }}>{formatDate(invoice.created)}</td>
-                        <td className="px-6 py-3.5" style={{ color: "var(--color-text-primary)", fontWeight: 500 }}>{formatMoney(invoice.amount_paid || invoice.amount_due, invoice.currency || "usd")}</td>
-                        <td className="px-6 py-3.5"><Badge variant={toBadgeVariant(invoice.status)}>{toLabel(invoice.status, true)}</Badge></td>
-                        <td className="px-6 py-3.5 text-right">
-                          {invoice.invoice_pdf ? (
-                            <a href={invoice.invoice_pdf} target="_blank" rel="noreferrer" className="text-xs underline" style={{ color: "var(--color-sage-700)", textUnderlineOffset: "3px" }}>
-                              Download
-                            </a>
-                          ) : null}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </Card>
+            <CardBox className="hidden md:block !p-0 overflow-hidden" padding={false}>
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-[var(--color-cream-100)] hover:bg-[var(--color-cream-100)]">
+                    <TableHead className="px-6">Invoice</TableHead>
+                    <TableHead className="px-6">Date</TableHead>
+                    <TableHead className="px-6">Amount</TableHead>
+                    <TableHead className="px-6">Status</TableHead>
+                    <TableHead className="px-6" />
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {invoices.map((invoice) => (
+                    <TableRow key={invoice.id}>
+                      <TableCell className="px-6" style={{ color: "var(--color-text-primary)" }}>
+                        {invoice.number || invoice.id}
+                      </TableCell>
+                      <TableCell className="px-6" style={{ color: "var(--color-text-secondary)" }}>
+                        {formatDate(invoice.created)}
+                      </TableCell>
+                      <TableCell className="px-6 font-medium" style={{ color: "var(--color-text-primary)" }}>
+                        {formatMoney(
+                          invoice.amount_paid || invoice.amount_due,
+                          invoice.currency || "usd",
+                        )}
+                      </TableCell>
+                      <TableCell className="px-6">
+                        <Badge variant={toBadgeVariant(invoice.status)}>
+                          {toLabel(invoice.status, true)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="px-6 text-right">
+                        {invoice.invoice_pdf ? (
+                          <a
+                            href={invoice.invoice_pdf}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-xs underline"
+                            style={{ color: "var(--color-sage-700)", textUnderlineOffset: "3px" }}
+                          >
+                            Download
+                          </a>
+                        ) : null}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardBox>
           </>
         )}
       </div>
 
-      <div
-        className="rounded-2xl border px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-        style={{ borderColor: "var(--color-cream-300)", background: "#fff" }}
-      >
+      <CardBox className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold" style={{ color: "var(--color-text-primary)" }}>Cancellation flow</p>
+          <p className="text-sm font-semibold" style={{ color: "var(--color-text-primary)" }}>
+            Cancellation flow
+          </p>
           <p className="text-xs mt-0.5" style={{ color: "var(--color-text-tertiary)" }}>
-            Sandbox cancellations are handled through the Stripe customer portal so you can validate end-of-period cancellation behavior without touching live billing.
+            Sandbox cancellations are handled through the Stripe customer portal so you can validate
+            end-of-period cancellation without touching live billing.
           </p>
         </div>
         <Badge variant={hasStripeSandboxConfig ? "warning" : "default"}>
           {hasStripeSandboxConfig ? "Test mode only" : "Awaiting Stripe config"}
         </Badge>
-      </div>
+      </CardBox>
     </div>
   );
 }

@@ -56,7 +56,7 @@ export function PublicNav() {
         >
           <div className="flex items-center justify-center gap-5 pl-2">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label="The Circle">
+            <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label="Austin Clinician Circle">
               <Image src="/logo-mark.png" alt="" width={160} height={58} className="h-14 w-auto object-contain" priority />
             </Link>
 
@@ -114,7 +114,7 @@ export function PublicNav() {
               className="h-10 px-5 rounded-xl cursor-pointer"
               style={{ background: "#fff", color: "var(--color-sage-800)" }}
             >
-              Join the Circle
+              Join Austin Clinician Circle
             </Button>
           </div>
 
@@ -142,7 +142,7 @@ export function PublicNav() {
                 <ScrollArea className="h-full">
                   <SheetHeader className="p-4">
                     <SheetTitle className="text-left">
-                      <Image src="/logo-mark.png" alt="The Circle" width={160} height={58} className="h-12 w-auto object-contain" />
+                      <Image src="/logo-mark.png" alt="Austin Clinician Circle" width={160} height={58} className="h-12 w-auto object-contain" />
                     </SheetTitle>
                     <SheetClose className="absolute top-4 right-4 rounded-xl bg-black text-white p-2.5 cursor-pointer">
                       <X size={16} />
@@ -188,7 +188,7 @@ export function PublicNav() {
                         className="w-full rounded-xl h-10 cursor-pointer"
                         style={{ background: "var(--color-sage-800)", color: "#fff" }}
                       >
-                        Join the Circle
+                        Join Austin Clinician Circle
                       </Button>
                     </div>
                   </div>

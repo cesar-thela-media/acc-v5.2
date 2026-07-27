@@ -64,12 +64,14 @@ export function MobileSidePanel({
           boxShadow: "0 24px 64px rgba(15, 23, 42, 0.24)",
         }}
       >
-        <div className="flex items-start justify-between gap-4 mb-8">
-          <div style={{ color: titleColor }}>{title}</div>
+        <div className="relative flex items-center justify-center mb-8 min-h-14">
+          <div className="flex flex-1 items-center justify-center pr-8" style={{ color: titleColor }}>
+            {title}
+          </div>
           <button
             type="button"
             onClick={onClose}
-            className="flex items-center justify-center transition-opacity hover:opacity-70"
+            className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center transition-opacity hover:opacity-70"
             style={{ color: closeColor }}
             aria-label="Close menu"
           >

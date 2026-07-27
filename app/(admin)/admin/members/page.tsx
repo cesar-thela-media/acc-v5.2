@@ -1,9 +1,9 @@
 "use client";
 
-import { Fragment, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   createColumnHelper,
-  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
@@ -11,7 +11,22 @@ import {
   useReactTable,
   type SortingState,
 } from "@tanstack/react-table";
-import { Badge } from "@/components/ui/Badge";
+import { EllipsisVertical, Search } from "lucide-react";
+import { CardBox } from "@/components/dashboard/CardBox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/shadcn/dropdown-menu";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/shadcn/table";
 import { usePersistedState } from "@/lib/admin-store";
 
 export type Status = "active" | "inactive" | "suspended";
@@ -40,30 +55,67 @@ export const ALL_MEMBERS: Member[] = [
   { id: 10, name: "Christine Walsh", credentials: "LPC-S", email: "christine@example.com", joined: "Feb 22, 2026", joinedSort: "2026-02-22", status: "suspended", accepting: false },
 ];
 
-const STATUS_LABELS: Record<Status, string> = { active: "Active", inactive: "Inactive", suspended: "Suspended" };
-const STATUS_VARIANTS: Record<Status, "success" | "default" | "error"> = {
-  active: "success",
-  inactive: "default",
-  suspended: "error",
+const STATUS_LABELS: Record<Status, string> = {
+  active: "Active",
+  inactive: "Inactive",
+  suspended: "Suspended",
 };
 
-function SortIcon({ direction }: { direction: false | "asc" | "desc" }) {
+/** Template-style solid status pills (Space basic table) with ACC colors */
+function StatusPill({ status }: { status: Status }) {
+  const styles: Record<Status, { bg: string; color: string }> = {
+    active: { bg: "#2D3B2C", color: "#fff" },
+    inactive: { bg: "rgba(45,59,44,0.12)", color: "#3D4F3B" },
+    suspended: { bg: "#B54B4B", color: "#fff" },
+  };
+  const s = styles[status];
   return (
-    <span className="inline-block ml-1 text-xs" style={{ opacity: direction ? 1 : 0.25 }}>
-      {direction === "asc" ? "▲" : "▼"}
+    <span
+      className="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold"
+      style={{ background: s.bg, color: s.color }}
+    >
+      {STATUS_LABELS[status]}
     </span>
+  );
+}
+
+const AVATAR_COLORS = [
+  "#4A5E48",
+  "#B8892E",
+  "#4A7C59",
+  "#6B8A69",
+  "#9A7426",
+  "#3D4F3B",
+  "#B8892E",
+  "#5A7A58",
+];
+
+function MemberAvatar({ name, id }: { name: string; id: number }) {
+  const bg = AVATAR_COLORS[id % AVATAR_COLORS.length];
+  const initial = name.replace(/^Dr\.\s*/i, "").charAt(0).toUpperCase();
+  return (
+    <div
+      className="flex size-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white ring-2 ring-white"
+      style={{ background: bg }}
+      aria-hidden
+    >
+      {initial}
+    </div>
   );
 }
 
 const columnHelper = createColumnHelper<Member>();
 
 export default function AdminMembersPage() {
-  const [search, setSearch] = useState("");
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState(() => searchParams.get("q") ?? "");
   const [statusFilter, setStatusFilter] = useState<"all" | Status>("all");
   const [sorting, setSorting] = useState<SortingState>([{ id: "joinedSort", desc: true }]);
-  const [statusOverrides, setStatusOverrides] = usePersistedState<Record<number, Status>>("admin-members", {});
+  const [statusOverrides, setStatusOverrides] = usePersistedState<Record<number, Status>>(
+    "admin-members",
+    {},
+  );
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-  const [expandedId, setExpandedId] = useState<number | null>(null);
 
   function setMemberStatus(id: number, status: Status) {
     setStatusOverrides((prev) => ({ ...prev, [id]: status }));
@@ -71,22 +123,26 @@ export default function AdminMembersPage() {
 
   const dataWithLiveStatus = useMemo(
     () => ALL_MEMBERS.map((m) => ({ ...m, status: statusOverrides[m.id] ?? m.status })),
-    [statusOverrides]
+    [statusOverrides],
   );
 
   const filteredByStatus = useMemo(
-    () => (statusFilter === "all" ? dataWithLiveStatus : dataWithLiveStatus.filter((m) => m.status === statusFilter)),
-    [dataWithLiveStatus, statusFilter]
+    () =>
+      statusFilter === "all"
+        ? dataWithLiveStatus
+        : dataWithLiveStatus.filter((m) => m.status === statusFilter),
+    [dataWithLiveStatus, statusFilter],
   );
 
   const columns = useMemo(
     () => [
-      columnHelper.accessor("name", { header: "Name", sortingFn: "alphanumeric" }),
+      columnHelper.accessor("name", { header: "Member", sortingFn: "alphanumeric" }),
       columnHelper.accessor("email", { header: "Email", enableSorting: false }),
-      columnHelper.accessor("joinedSort", { header: "Joined", sortingFn: "alphanumeric" }),
+      columnHelper.accessor("credentials", { header: "License", enableSorting: false }),
       columnHelper.accessor("status", { header: "Status" }),
+      columnHelper.accessor("joinedSort", { header: "Joined", sortingFn: "alphanumeric" }),
     ],
-    []
+    [],
   );
 
   const table = useReactTable({
@@ -111,242 +167,370 @@ export default function AdminMembersPage() {
   const total = table.getFilteredRowModel().rows.length;
 
   return (
-    <div className="flex flex-col gap-8">
-      <div>
-        <p className="text-eyebrow mb-1">Admin</p>
-        <h1 className="text-page-title">Members</h1>
-      </div>
+    <div className="flex flex-col gap-5 w-full">
+      {/* Template page title bar */}
+      <CardBox className="!py-4 !px-5 sm:!px-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <h1
+            className="text-xl sm:text-2xl leading-tight"
+            style={{
+              fontFamily: "var(--font-serif), Georgia, serif",
+              fontWeight: 400,
+              color: "var(--color-sage-800)",
+            }}
+          >
+            Members
+          </h1>
+          <p className="text-sm" style={{ color: "var(--color-text-tertiary)" }}>
+            <span style={{ color: "var(--color-text-secondary)" }}>Admin</span>
+            <span className="mx-1.5">/</span>
+            Members
+          </p>
+        </div>
+      </CardBox>
 
-      {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <input
-          type="text"
-          placeholder="Search by name or email..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 px-4 py-2.5 text-sm rounded-lg border outline-none transition-colors"
-          style={{ borderColor: "rgba(194,150,58,0.20)", background: "#fff", color: "var(--color-text-primary)" }}
-          onFocus={(e) => { e.currentTarget.style.borderColor = "#C2963A"; }}
-          onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(194,150,58,0.20)"; }}
-        />
-        <div className="flex gap-2 flex-wrap">
-          {(["all", "active", "inactive", "suspended"] as const).map((s) => (
-            <button
-              key={s}
-              onClick={() => setStatusFilter(s)}
-              className="px-3 py-1.5 rounded text-xs font-medium capitalize transition-colors"
+      {/* Basic table card — Space shadcn-tables/basic layout */}
+      <CardBox className="!p-0 overflow-hidden" padding={false}>
+        <div
+          className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 sm:px-6 py-4 border-b"
+          style={{ borderColor: "rgba(45,59,44,0.08)" }}
+        >
+          <div>
+            <h2 className="text-base font-semibold" style={{ color: "var(--color-sage-800)" }}>
+              Member roster
+            </h2>
+            <p className="text-xs mt-0.5" style={{ color: "var(--color-text-tertiary)" }}>
+              {total} member{total !== 1 ? "s" : ""}
+              {statusFilter !== "all" ? ` · ${STATUS_LABELS[statusFilter]}` : ""}
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+            <div
+              className="relative flex items-center gap-2 h-9 rounded-lg px-3 min-w-[200px]"
               style={{
-                background: statusFilter === s ? "#C2963A" : "var(--color-cream-100)",
-                color: statusFilter === s ? "#fff" : "var(--color-sage-700)",
-                border: statusFilter === s ? "none" : "1px solid rgba(194,150,58,0.20)",
+                background: "var(--color-cream-100)",
+                border: "1px solid rgba(45,59,44,0.1)",
               }}
             >
-              {s === "all" ? "All" : STATUS_LABELS[s]}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
-        {total} member{total !== 1 ? "s" : ""}
-      </p>
-
-      {/* Mobile cards */}
-      {rows.length > 0 && (
-        <div className="md:hidden flex flex-col gap-3">
-          {rows.map(({ original: m }) => (
-            <div key={m.id} className="rounded-2xl border bg-white p-4 flex flex-col gap-4" style={{ borderColor: "rgba(194,150,58,0.12)" }}>
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-medium shrink-0" style={{ background: "rgba(194,150,58,0.10)", color: "#C2963A" }}>
-                    {m.name.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="font-medium" style={{ color: "var(--color-text-primary)" }}>{m.name}</p>
-                    <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>{m.credentials}</p>
-                  </div>
-                </div>
-                <Badge variant={STATUS_VARIANTS[m.status]}>{STATUS_LABELS[m.status]}</Badge>
-              </div>
-              <div className="text-sm flex flex-col gap-1.5">
-                <p style={{ color: "var(--color-text-secondary)" }}>{m.email}</p>
-                <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>Joined {m.joined}</p>
-                <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
-                  {m.accepting ? "Accepting clients" : "Not accepting clients"}
-                </p>
-              </div>
-              <div className="flex flex-wrap items-center gap-4">
-                <button className="text-xs underline" style={{ color: "#C2963A", textUnderlineOffset: "3px" }} onClick={() => setExpandedId(expandedId === m.id ? null : m.id)}>
-                  {expandedId === m.id ? "Hide details" : "View"}
+              <Search className="size-3.5 shrink-0" style={{ color: "var(--color-text-tertiary)" }} />
+              <input
+                type="search"
+                placeholder="Search…"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="flex-1 bg-transparent text-sm outline-none min-w-0"
+                style={{ color: "var(--color-text-primary)" }}
+                aria-label="Search members"
+              />
+            </div>
+            <div className="flex gap-1.5 flex-wrap">
+              {(["all", "active", "inactive", "suspended"] as const).map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setStatusFilter(s)}
+                  className="px-2.5 py-1.5 rounded-full text-[11px] font-medium capitalize transition-colors"
+                  style={{
+                    background: statusFilter === s ? "#2D3B2C" : "var(--color-cream-100)",
+                    color: statusFilter === s ? "#fff" : "var(--color-sage-700)",
+                    border:
+                      statusFilter === s ? "none" : "1px solid rgba(45,59,44,0.1)",
+                  }}
+                >
+                  {s === "all" ? "All" : STATUS_LABELS[s]}
                 </button>
-                {m.status === "active" && (
-                  <button className="text-xs underline" style={{ color: "var(--color-error)", textUnderlineOffset: "3px" }} onClick={() => setMemberStatus(m.id, "suspended")}>
-                    Suspend
-                  </button>
-                )}
-                {m.status === "suspended" && (
-                  <button className="text-xs underline" style={{ color: "var(--color-success)", textUnderlineOffset: "3px" }} onClick={() => setMemberStatus(m.id, "active")}>
-                    Reinstate
-                  </button>
-                )}
-              </div>
-              {expandedId === m.id && (
-                <div className="pt-3 border-t flex flex-col gap-1.5" style={{ borderColor: "rgba(194,150,58,0.10)" }}>
-                  <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>Credentials: {m.credentials}</p>
-                  <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>Email: {m.email}</p>
-                  <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>Member since {m.joined}</p>
-                  <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
-                    {m.accepting ? "Currently accepting new clients" : "Not currently accepting new clients"}
-                  </p>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile list */}
+        <div className="md:hidden divide-y" style={{ borderColor: "rgba(45,59,44,0.08)" }}>
+          {rows.map(({ original: m }) => (
+            <div key={m.id} className="px-5 py-4 flex items-start gap-3">
+              <MemberAvatar name={m.name} id={m.id} />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold" style={{ color: "var(--color-text-primary)" }}>
+                  {m.name}
+                </p>
+                <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
+                  {m.credentials} · {m.email}
+                </p>
+                <div className="flex items-center gap-2 mt-2 flex-wrap">
+                  <StatusPill status={m.status} />
+                  <span className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
+                    {m.joined}
+                  </span>
                 </div>
-              )}
+              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="rounded-full p-1.5 hover:bg-black/5 outline-none">
+                  <EllipsisVertical size={16} style={{ color: "var(--color-text-tertiary)" }} />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {m.status === "active" && (
+                    <DropdownMenuItem
+                      variant="destructive"
+                      onClick={() => setMemberStatus(m.id, "suspended")}
+                    >
+                      Suspend
+                    </DropdownMenuItem>
+                  )}
+                  {m.status === "suspended" && (
+                    <DropdownMenuItem onClick={() => setMemberStatus(m.id, "active")}>
+                      Reinstate
+                    </DropdownMenuItem>
+                  )}
+                  {m.status === "inactive" && (
+                    <DropdownMenuItem onClick={() => setMemberStatus(m.id, "active")}>
+                      Mark active
+                    </DropdownMenuItem>
+                  )}
+                  {m.status === "active" && (
+                    <DropdownMenuItem onClick={() => setMemberStatus(m.id, "inactive")}>
+                      Mark inactive
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           ))}
+          {rows.length === 0 && (
+            <p className="px-5 py-12 text-center text-sm" style={{ color: "var(--color-text-tertiary)" }}>
+              No members match your filters.
+            </p>
+          )}
         </div>
-      )}
 
-      {/* Desktop table */}
-      <div className="hidden md:block rounded-2xl border overflow-hidden bg-white" style={{ borderColor: "rgba(194,150,58,0.12)" }}>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr style={{ borderBottom: "1px solid rgba(194,150,58,0.12)", background: "var(--color-cream-100)" }}>
-                {table.getFlatHeaders().map((header) => (
-                  <th
-                    key={header.id}
-                    className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] select-none"
-                    style={{ color: "#C2963A", cursor: header.column.getCanSort() ? "pointer" : "default" }}
-                    onClick={header.column.getToggleSortingHandler()}
-                  >
-                    {flexRender(header.column.columnDef.header, header.getContext())}
-                    {header.column.getCanSort() && <SortIcon direction={header.column.getIsSorted()} />}
-                  </th>
-                ))}
-                <th className="px-5 py-3" />
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map(({ original: m }, i) => (
-                <Fragment key={m.id}>
-                  <tr
-                    className="transition-colors duration-150"
-                    style={{ borderBottom: expandedId === m.id ? "none" : i < rows.length - 1 ? "1px solid rgba(194,150,58,0.08)" : "none" }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLTableRowElement).style.background = "rgba(194,150,58,0.04)"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLTableRowElement).style.background = ""; }}
-                  >
-                    <td className="px-5 py-3.5">
-                      <div className="flex items-center gap-3">
-                        <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium shrink-0" style={{ background: "rgba(194,150,58,0.10)", color: "#C2963A" }}>
-                          {m.name.charAt(0)}
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <p className="font-medium text-sm" style={{ color: "var(--color-text-primary)" }}>{m.name}</p>
-                            {m.accepting && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "var(--color-success)" }} />}
-                          </div>
-                          <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>{m.credentials}</p>
-                        </div>
+        {/* Desktop table — Space basic table pattern */}
+        <div className="hidden md:block">
+          <Table>
+            <TableHeader>
+              <TableRow
+                className="hover:bg-transparent border-b"
+                style={{ borderColor: "rgba(45,59,44,0.08)" }}
+              >
+                <TableHead
+                  className="h-12 px-6 font-medium normal-case tracking-normal text-[13px]"
+                  style={{ color: "var(--color-text-secondary)" }}
+                >
+                  Member
+                </TableHead>
+                <TableHead
+                  className="h-12 px-4 font-medium normal-case tracking-normal text-[13px]"
+                  style={{ color: "var(--color-text-secondary)" }}
+                >
+                  Email
+                </TableHead>
+                <TableHead
+                  className="h-12 px-4 font-medium normal-case tracking-normal text-[13px]"
+                  style={{ color: "var(--color-text-secondary)" }}
+                >
+                  Clients
+                </TableHead>
+                <TableHead
+                  className="h-12 px-4 font-medium normal-case tracking-normal text-[13px]"
+                  style={{ color: "var(--color-text-secondary)" }}
+                >
+                  Status
+                </TableHead>
+                <TableHead
+                  className="h-12 px-4 font-medium normal-case tracking-normal text-[13px] cursor-pointer select-none"
+                  style={{ color: "var(--color-text-secondary)" }}
+                  onClick={() =>
+                    setSorting((prev) => {
+                      const cur = prev[0];
+                      if (cur?.id === "joinedSort") {
+                        return [{ id: "joinedSort", desc: !cur.desc }];
+                      }
+                      return [{ id: "joinedSort", desc: true }];
+                    })
+                  }
+                >
+                  Joined
+                </TableHead>
+                <TableHead className="h-12 w-12 px-4" />
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {rows.map(({ original: m }) => (
+                <TableRow
+                  key={m.id}
+                  className="border-b last:border-0"
+                  style={{ borderColor: "rgba(45,59,44,0.06)" }}
+                >
+                  {/* User column: avatar + name + role */}
+                  <TableCell className="px-6 py-4">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <MemberAvatar name={m.name} id={m.id} />
+                      <div className="min-w-0">
+                        <p
+                          className="text-sm font-semibold truncate"
+                          style={{ color: "var(--color-text-primary)" }}
+                        >
+                          {m.name}
+                        </p>
+                        <p className="text-xs truncate" style={{ color: "var(--color-text-tertiary)" }}>
+                          {m.credentials}
+                        </p>
                       </div>
-                    </td>
-                    <td className="px-5 py-3.5" style={{ color: "var(--color-text-secondary)" }}>{m.email}</td>
-                    <td className="px-5 py-3.5" style={{ color: "var(--color-text-tertiary)" }}>{m.joined}</td>
-                    <td className="px-5 py-3.5">
-                      <Badge variant={STATUS_VARIANTS[m.status]}>{STATUS_LABELS[m.status]}</Badge>
-                    </td>
-                    <td className="px-5 py-3.5 text-right">
-                      <div className="flex items-center justify-end gap-3">
-                        <button className="text-xs underline" style={{ color: "#C2963A", textUnderlineOffset: "3px" }} onClick={() => setExpandedId(expandedId === m.id ? null : m.id)}>
-                          {expandedId === m.id ? "Hide" : "View"}
-                        </button>
+                    </div>
+                  </TableCell>
+                  <TableCell className="px-4 py-4" style={{ color: "var(--color-text-secondary)" }}>
+                    {m.email}
+                  </TableCell>
+                  <TableCell className="px-4 py-4">
+                    <div className="flex items-center -space-x-1.5">
+                      {m.accepting ? (
+                        <span
+                          className="inline-flex size-7 items-center justify-center rounded-full text-[10px] font-bold text-white ring-2 ring-white"
+                          style={{ background: "#4A7C59" }}
+                          title="Accepting clients"
+                        >
+                          ✓
+                        </span>
+                      ) : (
+                        <span
+                          className="inline-flex size-7 items-center justify-center rounded-full text-[10px] font-bold ring-2 ring-white"
+                          style={{ background: "var(--color-cream-300)", color: "var(--color-text-tertiary)" }}
+                          title="Not accepting"
+                        >
+                          —
+                        </span>
+                      )}
+                      <span
+                        className="inline-flex size-7 items-center justify-center rounded-full text-[10px] font-semibold text-white ring-2 ring-white"
+                        style={{ background: "#B8892E", color: "#1A1A1A" }}
+                        title={m.credentials}
+                      >
+                        {m.credentials.slice(0, 1)}
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="px-4 py-4">
+                    <StatusPill status={m.status} />
+                  </TableCell>
+                  <TableCell
+                    className="px-4 py-4 tabular-nums"
+                    style={{ color: "var(--color-text-secondary)" }}
+                  >
+                    {m.joined}
+                  </TableCell>
+                  <TableCell className="px-4 py-4 text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="rounded-full p-1.5 hover:bg-black/5 outline-none inline-flex">
+                        <EllipsisVertical size={16} style={{ color: "var(--color-text-tertiary)" }} />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
                         {m.status === "active" && (
-                          <button className="text-xs underline" style={{ color: "var(--color-error)", textUnderlineOffset: "3px" }} onClick={() => setMemberStatus(m.id, "suspended")}>
-                            Suspend
-                          </button>
+                          <>
+                            <DropdownMenuItem onClick={() => setMemberStatus(m.id, "inactive")}>
+                              Mark inactive
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              variant="destructive"
+                              onClick={() => setMemberStatus(m.id, "suspended")}
+                            >
+                              Suspend
+                            </DropdownMenuItem>
+                          </>
                         )}
                         {m.status === "suspended" && (
-                          <button className="text-xs underline" style={{ color: "var(--color-success)", textUnderlineOffset: "3px" }} onClick={() => setMemberStatus(m.id, "active")}>
+                          <DropdownMenuItem onClick={() => setMemberStatus(m.id, "active")}>
                             Reinstate
-                          </button>
+                          </DropdownMenuItem>
                         )}
-                      </div>
-                    </td>
-                  </tr>
-                  {expandedId === m.id && (
-                    <tr style={{ borderBottom: i < rows.length - 1 ? "1px solid rgba(194,150,58,0.08)" : "none" }}>
-                      <td colSpan={5} className="px-5 pb-4 pt-0 bg-white">
-                        <div className="rounded-xl p-4 flex flex-wrap gap-x-8 gap-y-1.5" style={{ background: "var(--color-cream-100)" }}>
-                          <p className="text-xs" style={{ color: "var(--color-text-secondary)" }}>Credentials: {m.credentials}</p>
-                          <p className="text-xs" style={{ color: "var(--color-text-secondary)" }}>Member since {m.joined}</p>
-                          <p className="text-xs" style={{ color: "var(--color-text-secondary)" }}>
-                            {m.accepting ? "Currently accepting new clients" : "Not currently accepting new clients"}
-                          </p>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </Fragment>
+                        {m.status === "inactive" && (
+                          <DropdownMenuItem onClick={() => setMemberStatus(m.id, "active")}>
+                            Mark active
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+              {rows.length === 0 && (
+                <TableRow className="hover:bg-transparent">
+                  <TableCell colSpan={6} className="px-6 py-16 text-center">
+                    <p className="text-sm" style={{ color: "var(--color-text-tertiary)" }}>
+                      No members match your filters.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearch("");
+                        setStatusFilter("all");
+                      }}
+                      className="text-xs font-medium underline mt-2"
+                      style={{ color: "#2D3B2C", textUnderlineOffset: "3px" }}
+                    >
+                      Reset filters
+                    </button>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </div>
-      </div>
 
-      {/* Pagination */}
-      {total > 0 && (
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>Show</p>
-            <select
-              value={pagination.pageSize}
-              onChange={(e) => setPagination(() => ({ pageIndex: 0, pageSize: Number(e.target.value) }))}
-              className="text-xs px-2 py-1.5 rounded border"
-              style={{ borderColor: "rgba(194,150,58,0.20)", color: "var(--color-text-primary)" }}
-            >
-              {[5, 10, 20, 50].map((size) => (
-                <option key={size} value={size}>{size}</option>
-              ))}
-            </select>
-            <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>per page</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
-              Page {table.getState().pagination.pageIndex + 1} of {Math.max(table.getPageCount(), 1)}
-            </p>
+        {/* Pagination footer */}
+        {total > 0 && (
+          <div
+            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 sm:px-6 py-3.5 border-t"
+            style={{ borderColor: "rgba(45,59,44,0.08)", background: "var(--color-cream-100)" }}
+          >
             <div className="flex items-center gap-2">
-              <button
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-                className="px-2.5 py-1 rounded text-xs font-medium border disabled:opacity-40"
-                style={{ borderColor: "rgba(194,150,58,0.20)", color: "var(--color-sage-700)" }}
+              <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
+                Show
+              </p>
+              <select
+                value={pagination.pageSize}
+                onChange={(e) =>
+                  setPagination(() => ({ pageIndex: 0, pageSize: Number(e.target.value) }))
+                }
+                className="text-xs px-2 py-1.5 rounded-md border bg-white"
+                style={{ borderColor: "rgba(45,59,44,0.12)", color: "var(--color-text-primary)" }}
               >
-                ← Prev
-              </button>
-              <button
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-                className="px-2.5 py-1 rounded text-xs font-medium border disabled:opacity-40"
-                style={{ borderColor: "rgba(194,150,58,0.20)", color: "var(--color-sage-700)" }}
-              >
-                Next →
-              </button>
+                {[5, 10, 20, 50].map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
+              <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
+                per page
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
+                Page {table.getState().pagination.pageIndex + 1} of{" "}
+                {Math.max(table.getPageCount(), 1)}
+              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                  className="px-3 py-1.5 rounded-full text-xs font-medium border bg-white disabled:opacity-40"
+                  style={{ borderColor: "rgba(45,59,44,0.12)", color: "var(--color-sage-800)" }}
+                >
+                  Prev
+                </button>
+                <button
+                  type="button"
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                  className="px-3 py-1.5 rounded-full text-xs font-medium text-white disabled:opacity-40"
+                  style={{ background: "#2D3B2C" }}
+                >
+                  Next
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-
-      {total === 0 && (
-        <div className="py-20 text-center flex flex-col items-center gap-3" style={{ color: "var(--color-text-tertiary)" }}>
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.3 }}><circle cx="12" cy="10" r="3"/><path d="M12 13v4"/><path d="M8 17h8"/><circle cx="5" cy="7" r="2"/><circle cx="19" cy="7" r="2"/><path d="M6.5 8.5 9 10"/><path d="M15 10l2.5-1.5"/></svg>
-          <p className="text-sm">No members match your filters.</p>
-          <button
-            onClick={() => { setSearch(""); setStatusFilter("all"); }}
-            className="text-xs font-medium underline"
-            style={{ color: "#C2963A", textUnderlineOffset: "3px" }}
-          >
-            Reset all filters
-          </button>
-        </div>
-      )}
+        )}
+      </CardBox>
     </div>
   );
 }

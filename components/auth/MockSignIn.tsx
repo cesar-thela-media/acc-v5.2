@@ -24,7 +24,7 @@ type Props = {
 
 export function MockSignIn({
   redirectTo = "/dashboard",
-  title = "Log in to The Circle",
+  title = "Log in to Austin Clinician Circle",
   description = "Clerk auth isn't configured. Enter any name and email to access the member dashboard.",
   /** Free-tier preview link is hidden by default. Pass `true` to re-show (currently never enabled). */
   showFreePreview = false,
@@ -93,7 +93,7 @@ export function MockSignIn({
           >
             <CardHeader className="p-0 flex gap-6 flex-col">
               {/* Logo centered; card stays left-aligned on large screens */}
-              <Link href="/" aria-label="The Circle" className="flex justify-center w-full">
+              <Link href="/" aria-label="Austin Clinician Circle" className="flex justify-center w-full">
                 <Image src="/logo-mark.png" alt="" width={200} height={72} className="h-20 w-auto object-contain brightness-110" />
               </Link>
               <div className="flex gap-2 flex-col">
@@ -178,7 +178,7 @@ export function MockSignIn({
               <p className="text-center text-sm mt-6" style={{ color: "rgba(255,255,255,0.65)" }}>
                 Don&apos;t have an account?{" "}
                 <Link href="/join" className="font-medium underline" style={{ color: AMBER }}>
-                  Join The Circle
+                  Join Austin Clinician Circle
                 </Link>
               </p>
               )}

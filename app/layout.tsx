@@ -26,9 +26,9 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
-  title: "The Circle",
+  title: "Austin Clinician Circle",
   description:
-    "The Circle, a membership community for licensed clinicians in Austin, TX. Deepen your work. Find your community.",
+    "Austin Clinician Circle, a membership community for licensed clinicians in Austin, TX. Deepen your work. Find your community.",
   icons: {
     icon: "/icon.png",
   },

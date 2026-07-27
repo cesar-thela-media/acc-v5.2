@@ -9,7 +9,7 @@ export const runtime = "nodejs";
 
 const SARAH_EMAIL = process.env.SARAH_EMAIL ?? "sarah@restoredfamily.com";
 const FROM_EMAIL =
-  process.env.RESEND_FROM_EMAIL ?? "The Circle <sarah@restoredfamily.com>";
+  process.env.RESEND_FROM_EMAIL ?? "Austin Clinician Circle <sarah@restoredfamily.com>";
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
   const deliveryResult = await resend.emails.send({
     from: FROM_EMAIL,
     to: safeEmail,
-    subject: "Your Private Practice Playbook: The Circle",
+    subject: "Your Private Practice Playbook: Austin Clinician Circle",
     html: buildDeliveryEmail(safeName),
     attachments: [
       {
@@ -105,7 +105,7 @@ function buildDeliveryEmail(firstName: string) {
           <!-- Header -->
           <tr>
             <td style="background:#1B1B1B;padding:36px 40px;">
-              <p style="margin:0 0 8px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);">The Circle</p>
+              <p style="margin:0 0 8px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);">Austin Clinician Circle</p>
               <h1 style="margin:0;font-size:24px;font-weight:400;color:#ffffff;line-height:1.2;">Your playbook is attached, ${firstName}.</h1>
             </td>
           </tr>
@@ -127,7 +127,7 @@ function buildDeliveryEmail(firstName: string) {
               <p style="margin:0 0 12px;font-size:13px;color:#5A7060;font-weight:600;letter-spacing:1px;text-transform:uppercase;">One more thing</p>
               <p style="margin:0 0 16px;font-size:15px;color:#1B1B1B;font-weight:500;">We're accepting founding members right now.</p>
               <p style="margin:0 0 20px;font-size:14px;color:#444841;line-height:1.65;">
-                The Circle is a virtual membership network for licensed therapists with monthly case consultation, a vetted referral network, clinical resources, and CEU trainings each month. We're launching with a founding cohort of therapists.
+                Austin Clinician Circle is a virtual membership network for licensed therapists with monthly case consultation, a vetted referral network, clinical resources, and CEU trainings each month. We're launching with a founding cohort of therapists.
               </p>
               <a href="${appUrl}/join"
                  style="display:inline-block;background:#4A5D4E;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:100px;font-size:14px;font-weight:600;">

@@ -17,8 +17,8 @@ const AMBER = "#C2963A";
 const SAGE_800 = "#2D3B2C";
 
 export const metadata: Metadata = {
-  title: "Who We Are | The Circle",
-  description: "Learn the story behind The Circle. Founded by Sarah Arnold, LPC-S, The Circle is a professional home and community for licensed therapists in Austin, TX.",
+  title: "Who We Are | Austin Clinician Circle",
+  description: "Learn the story behind Austin Clinician Circle. Founded by Sarah Arnold, LPC-S, Austin Clinician Circle is a professional home and community for licensed therapists in Austin, TX.",
 };
 
 export default function WhoWeArePage() {
@@ -82,7 +82,7 @@ export default function WhoWeArePage() {
                     became, almost overnight, a practice of one.
                   </p>
                   <p>
-                    The Circle is Sarah&apos;s answer to that problem. It is not
+                    Austin Clinician Circle is Sarah&apos;s answer to that problem. It is not
                     a supervision group, a continuing education provider, or a
                     therapist directory, though it includes elements of all
                     three. It is a membership network: a professional community for
@@ -169,7 +169,7 @@ export default function WhoWeArePage() {
               color: SAGE_800,
             }}
           >
-            Why The Circle exists.
+            Why Austin Clinician Circle exists.
           </h2>
           <div
             className="flex flex-col gap-6 text-lg leading-[1.65] text-center px-2 sm:px-4"
@@ -182,7 +182,7 @@ export default function WhoWeArePage() {
               more noticeable than others.
             </p>
             <p>
-              The Circle was designed to address that gap: a small network of
+              Austin Clinician Circle was designed to address that gap: a small network of
               clinicians who meet regularly, share resources, make referrals to
               each other, and show up for one another professionally and in real
               community.
@@ -190,7 +190,7 @@ export default function WhoWeArePage() {
             <p>
               Founding members are therapists who have been part of Sarah&apos;s
               professional circle, former associates, trusted colleagues, and
-              clinicians she has supervised. As The Circle grows, membership is
+              clinicians she has supervised. As Austin Clinician Circle grows, membership is
               open to any licensed therapist who shares this commitment to
               ongoing clinical growth and community.
             </p>

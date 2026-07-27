@@ -3,14 +3,13 @@ import type { Metadata } from "next";
 import { DashboardNav } from "@/components/layout/DashboardNav";
 import { getCurrentMemberName, getCurrentViewer } from "@/lib/auth";
 import { hasClerkCredentials } from "@/lib/env";
+import { DEFAULT_PROFILE_PHOTO } from "@/lib/profilePhoto";
 
 export const metadata: Metadata = {
-  title: "Dashboard | The Circle",
+  title: "Dashboard | Austin Clinician Circle",
   description:
     "Your member dashboard. Access resources, events, your referral network, billing, and profile settings.",
 };
-
-const DEFAULT_PHOTO = "/sarah-arnold.jpeg";
 
 export default async function DashboardLayout({
   children,
@@ -29,17 +28,14 @@ export default async function DashboardLayout({
     getCurrentViewer(),
   ]);
   const viewerName = firstName || "Account";
-  const viewerPhotoUrl = hasClerkCredentials && viewer.user?.imageUrl ? viewer.user.imageUrl : DEFAULT_PHOTO;
+  const viewerPhotoUrl =
+    hasClerkCredentials && viewer.user?.imageUrl
+      ? viewer.user.imageUrl
+      : DEFAULT_PROFILE_PHOTO;
 
   return (
-    <div className="flex min-h-screen md:h-screen md:overflow-hidden" style={{ background: "var(--color-cream-100)" }}>
-      <DashboardNav viewerName={viewerName} viewerPhotoUrl={viewerPhotoUrl} />
-      <main
-        className="flex-1 min-w-0 overflow-visible md:h-screen md:overflow-y-auto pt-16"
-        style={{ background: "var(--color-cream-100)", color: "var(--color-text-primary)" }}
-      >
-        <div className="container-fluid py-8 md:py-10">{children}</div>
-      </main>
-    </div>
+    <DashboardNav viewerName={viewerName} viewerPhotoUrl={viewerPhotoUrl}>
+      {children}
+    </DashboardNav>
   );
 }

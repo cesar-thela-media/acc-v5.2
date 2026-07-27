@@ -39,13 +39,13 @@ const placeholderTestimonials = [
   {
     quote: "This is placeholder testimonial text, shown here so we can preview how member testimonials would look on the page. Not a real quote from a real member.",
     author: "Member Name",
-    role: "Licensed Clinician, The Circle",
+    role: "Licensed Clinician, Austin Clinician Circle",
     image: "/testimonial-1.jpg",
   },
   {
     quote: "A second placeholder quote for layout purposes only. Once Sarah approves real member testimonials, they would replace this text.",
     author: "Member Name",
-    role: "Licensed Clinician, The Circle",
+    role: "Licensed Clinician, Austin Clinician Circle",
     image: "/testimonial-2.jpg",
   },
 ];
@@ -158,7 +158,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ══ WHY THE CIRCLE EXISTS (about-us-section-09) ══════ */}
+      {/* ══ WHY AUSTIN CLINICIAN CIRCLE EXISTS (about-us-section-09) ══════ */}
       <section
         className="relative overflow-hidden"
         style={{ background: "#F7F5F0", padding: "clamp(3rem,6vw,5.5rem) 0" }}
@@ -196,7 +196,7 @@ export default function HomePage() {
             {/* Left: content */}
             <div className="md:col-span-6 col-span-12 flex flex-col justify-center" data-aos="fade-in-up">
               <p className="uppercase tracking-[0.28em] font-medium text-[11px] mb-5" style={{ color: `rgba(194,150,58,0.85)` }}>
-                Why The Circle exists
+                Why Austin Clinician Circle exists
               </p>
 
               <h2
@@ -218,7 +218,7 @@ export default function HomePage() {
                 When you leave an agency, you gain autonomy and lose the built-in support from colleagues that keeps your clinical work sharp. Most private practitioners never fully replace it.
               </p>
               <p className="text-lg font-semibold mb-8" style={{ color: "#1A1A1A" }}>
-                The Circle is here to change that.
+                Austin Clinician Circle is here to change that.
               </p>
 
               <ul className="flex flex-col gap-4">
@@ -245,7 +245,7 @@ export default function HomePage() {
             >
               <Image
                 src="/private-practice-can.jpg"
-                alt="Private practice can feel isolating — The Circle offers connection"
+                alt="Private practice can feel isolating — Austin Clinician Circle offers connection"
                 fill
                 className="object-cover object-center"
                 sizes="(max-width: 768px) 100vw, 40vw"
@@ -399,7 +399,7 @@ export default function HomePage() {
                 className="block text-center w-full rounded-lg text-sm font-medium"
                 style={{ background: AMBER, color: "#fff", padding: "0.7rem 1.5rem" }}
               >
-                Join the Circle
+                Join Austin Clinician Circle
               </Link>
             </div>
           </div>
@@ -439,7 +439,7 @@ export default function HomePage() {
                 color: "#1A1A1A",
               }}
             >
-              From members of The Circle.
+              From members of Austin Clinician Circle.
             </h2>
           </div>
 

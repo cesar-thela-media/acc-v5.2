@@ -39,7 +39,7 @@ export default function OpengraphImage() {
             display: "flex",
           }}
         >
-          The Circle
+          Austin Clinician Circle
         </div>
         <div
           style={{

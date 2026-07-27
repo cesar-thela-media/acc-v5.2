@@ -32,7 +32,7 @@ export function downloadIcsEvent(params: {
   const ics = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//The Circle//Events//EN",
+    "PRODID:-//Austin Clinician Circle//Events//EN",
     "BEGIN:VEVENT",
     `UID:${Date.now()}@thecircle`,
     `DTSTAMP:${toIcsDate(new Date())}`,

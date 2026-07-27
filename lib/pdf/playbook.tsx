@@ -323,7 +323,7 @@ function NumItem({ n, text }: { n: number; text: string }) {
 function Footer({ page }: { page: number }) {
   return (
     <View style={s.footer} fixed>
-      <Text style={s.footerLeft}>The Private Practice Playbook · The Circle</Text>
+      <Text style={s.footerLeft}>The Private Practice Playbook · Austin Clinician Circle</Text>
       <Text style={s.footerRight}>{page}</Text>
     </View>
   );
@@ -337,12 +337,12 @@ export function PlaybookDocument({ firstName }: { firstName: string }): ReactEle
       title="The Private Practice Playbook"
       author="Sarah Arnold, LPC-S"
       subject="Building a sustainable, fulfilling private practice"
-      creator="The Circle"
+      creator="Austin Clinician Circle"
     >
       {/* ── COVER ── */}
       <Page size="A4" style={s.coverPage}>
         <View>
-          <Text style={s.coverEyebrow}>The Circle</Text>
+          <Text style={s.coverEyebrow}>Austin Clinician Circle</Text>
           <Text style={s.coverTitle}>
             The Private{"\n"}
             <Text style={s.coverTitleAccent}>Practice</Text>
@@ -354,7 +354,7 @@ export function PlaybookDocument({ firstName }: { firstName: string }): ReactEle
           <View style={s.coverDivider} />
           <Text style={s.coverByline}>
             <Text style={s.coverName}>Sarah Arnold, LPC-S</Text>
-            {"\n"}Founder, The Circle{"\n"}
+            {"\n"}Founder, Austin Clinician Circle{"\n"}
             Restored Family Counseling · Austin, TX
           </Text>
         </View>
@@ -371,7 +371,7 @@ export function PlaybookDocument({ firstName }: { firstName: string }): ReactEle
           ["01", "The Fee-Setting Framework", "3"],
           ["02", "The Referral Network Blueprint", "6"],
           ["03", "The Burnout Early-Warning Checklist", "9"],
-          ["04", "The Circle Community Playbook", "12"],
+          ["04", "Austin Clinician Circle Community Playbook", "12"],
         ].map(([num, label, pg]) => (
           <View key={num} style={s.tocRow}>
             <Text style={s.tocNum}>{num}</Text>
@@ -572,7 +572,7 @@ export function PlaybookDocument({ firstName }: { firstName: string }): ReactEle
         <View style={s.goldBox}>
           <Text style={s.goldBoxTitle}>The Most Protective Structure Known</Text>
           <Text style={s.goldBoxText}>
-            Research consistently shows that peer consultation, regular, structured, honest clinical consultation with colleagues, is the single most protective factor against burnout in licensed therapists. Not self-care in the conventional sense. Community. That&apos;s what The Circle is built for.
+            Research consistently shows that peer consultation, regular, structured, honest clinical consultation with colleagues, is the single most protective factor against burnout in licensed therapists. Not self-care in the conventional sense. Community. That&apos;s what Austin Clinician Circle is built for.
           </Text>
         </View>
 
@@ -588,7 +588,7 @@ export function PlaybookDocument({ firstName }: { firstName: string }): ReactEle
       <Page size="A4" style={s.page}>
         <View style={s.sectionHeader}>
           <Text style={s.sectionNum}>Section 04</Text>
-          <Text style={s.sectionTitle}>The Circle Community Playbook</Text>
+          <Text style={s.sectionTitle}>Austin Clinician Circle Community Playbook</Text>
           <Text style={s.sectionTagline}>What thriving private practices have in common, and what you can start doing today.</Text>
         </View>
 
@@ -611,9 +611,9 @@ export function PlaybookDocument({ firstName }: { firstName: string }): ReactEle
       </Page>
 
       <Page size="A4" style={s.page}>
-        <Text style={s.h2}>What The Circle offers</Text>
+        <Text style={s.h2}>What Austin Clinician Circle offers</Text>
         <Text style={s.p}>
-          The Circle is a curated membership community for licensed therapists, built around the structures that research and experience show actually protect clinician longevity:
+          Austin Clinician Circle is a curated membership community for licensed therapists, built around the structures that research and experience show actually protect clinician longevity:
         </Text>
         <CheckItem text="Monthly group case consultation led by Sarah Arnold, LPC-S, bring a real case and get real support." />
         <CheckItem text="CEU trainings each month on clinical and business topics, all archived." />
@@ -624,7 +624,7 @@ export function PlaybookDocument({ firstName }: { firstName: string }): ReactEle
 
         <Text style={s.h2}>Your next step</Text>
         <Text style={s.p}>
-          We&apos;re currently accepting founding members, therapists who will help shape the community from its first year. Founding members lock in the lowest membership rate The Circle will ever offer, receive priority access to all programming, and have direct input with Sarah on what gets built.
+          We&apos;re currently accepting founding members, therapists who will help shape the community from its first year. Founding members lock in the lowest membership rate Austin Clinician Circle will ever offer, receive priority access to all programming, and have direct input with Sarah on what gets built.
         </Text>
 
         <View style={s.goldBox}>
@@ -640,7 +640,7 @@ export function PlaybookDocument({ firstName }: { firstName: string }): ReactEle
 
         <View style={{ marginTop: 32, paddingTop: 20, borderTopWidth: 1, borderTopColor: SAGE_100 }}>
           <Text style={{ fontSize: 8, color: "rgba(0,0,0,0.3)", lineHeight: 1.6 }}>
-            This guide is provided for educational purposes and reflects the professional experience and perspective of Sarah Arnold, LPC-S. It is not a substitute for clinical supervision, consultation, or personal therapy. The Circle is a membership community for licensed mental health professionals.
+            This guide is provided for educational purposes and reflects the professional experience and perspective of Sarah Arnold, LPC-S. It is not a substitute for clinical supervision, consultation, or personal therapy. Austin Clinician Circle is a membership community for licensed mental health professionals.
           </Text>
         </View>
         <Footer page={13} />

@@ -1,11 +1,21 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Card } from "@/components/ui/Card";
+import { useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/Badge";
-import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { FileText, Search, X } from "lucide-react";
+import { Input } from "@/components/ui/Input";
+import { CardBox } from "@/components/dashboard/CardBox";
+import { PageHeader } from "@/components/dashboard/PageHeader";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/shadcn/empty";
+import { FileText, Search, X, Download } from "lucide-react";
+import { downloadResourcePacket } from "@/lib/demoDownload";
 
 const AMBER = "var(--color-accent-highlight)";
 
@@ -35,8 +45,9 @@ const RESOURCES: Resource[] = [
 const CATEGORIES = ["All", "Clinical Tools", "Handouts", "Business", "Self-Care"] as const;
 
 export default function ResourcesPage() {
+  const searchParams = useSearchParams();
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("All");
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(() => searchParams.get("q") ?? "");
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -55,137 +66,142 @@ export default function ResourcesPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-4xl">
-      {/* Header */}
-      <div>
-        <p className="text-eyebrow">Resources</p>
-        <h1 className="text-page-title">Resource library</h1>
-        <p className="text-sm mt-2 max-w-xl" style={{ color: "var(--color-text-secondary)" }}>
-          Clinical tools, handouts, and practice guides for members. Downloads open once files are uploaded.
-        </p>
-      </div>
+    <div className="flex flex-col gap-4 sm:gap-5 w-full min-w-0 max-w-full">
+      <PageHeader
+        eyebrow="Resources"
+        title="Resource library"
+        description="Clinical tools, handouts, and practice guides for members. Downloads open once files are uploaded."
+      />
 
-      {/* Search + categories — one control strip */}
-      <div className="flex flex-col gap-4">
-        <div className="relative">
-          <Search
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 pointer-events-none"
-            style={{ color: "var(--color-text-tertiary)" }}
-          />
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by title or topic…"
-            className="h-11 pl-10"
-          />
-          {search ? (
-            <button
-              type="button"
-              onClick={() => setSearch("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-black/5"
-              aria-label="Clear search"
-            >
-              <X className="size-4" style={{ color: "var(--color-text-tertiary)" }} />
-            </button>
-          ) : null}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          {CATEGORIES.map((item) => {
-            const active = category === item;
-            return (
+      <CardBox className="!p-3 sm:!p-4 md:!p-5 w-full min-w-0">
+        <div className="flex flex-col gap-3 sm:gap-4 min-w-0">
+          <div className="relative w-full min-w-0">
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 size-4 pointer-events-none"
+              style={{ color: "var(--color-text-tertiary)" }}
+            />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by title or topic…"
+              className="h-11 pl-10 w-full min-w-0"
+            />
+            {search ? (
               <button
-                key={item}
                 type="button"
-                onClick={() => setCategory(item)}
-                className="px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors"
-                style={{
-                  background: active ? AMBER : "#fff",
-                  color: active ? "#fff" : "var(--color-sage-700)",
-                  border: `1px solid ${active ? AMBER : "rgba(194,150,58,0.18)"}`,
-                }}
+                onClick={() => setSearch("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-black/5"
+                aria-label="Clear search"
               >
-                {item}
+                <X className="size-4" style={{ color: "var(--color-text-tertiary)" }} />
               </button>
-            );
-          })}
-          {hasFilters ? (
-            <button
-              type="button"
-              onClick={clearFilters}
-              className="text-xs font-medium underline ml-1"
-              style={{ color: "var(--color-sage-700)", textUnderlineOffset: "3px" }}
-            >
-              Clear
-            </button>
-          ) : null}
-        </div>
-      </div>
+            ) : null}
+          </div>
 
-      {/* Result meta */}
+          <div className="flex flex-wrap items-center gap-2">
+            {CATEGORIES.map((item) => {
+              const active = category === item;
+              return (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => setCategory(item)}
+                  className="px-3 py-1.5 rounded-full text-xs font-medium transition-colors shrink-0"
+                  style={{
+                    background: active ? AMBER : "#fff",
+                    color: active ? "#fff" : "var(--color-sage-700)",
+                    border: `1px solid ${active ? AMBER : "rgba(194,150,58,0.18)"}`,
+                  }}
+                >
+                  {item}
+                </button>
+              );
+            })}
+            {hasFilters ? (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="text-xs font-medium underline ml-1"
+                style={{ color: "var(--color-sage-700)", textUnderlineOffset: "3px" }}
+              >
+                Clear
+              </button>
+            ) : null}
+          </div>
+        </div>
+      </CardBox>
+
       <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
         {filtered.length} resource{filtered.length === 1 ? "" : "s"}
         {category !== "All" ? ` in ${category}` : ""}
         {search.trim() ? ` matching “${search.trim()}”` : ""}
       </p>
 
-      {/* List */}
       {filtered.length === 0 ? (
-        <Card className="py-14 text-center flex flex-col items-center gap-3">
-          <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>
-            No resources match your search.
-          </p>
-          <button
-            type="button"
-            onClick={clearFilters}
-            className="text-sm font-medium underline"
-            style={{ color: "var(--color-sage-700)", textUnderlineOffset: "3px" }}
-          >
-            Clear search and filters
-          </button>
-        </Card>
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <FileText />
+            </EmptyMedia>
+            <EmptyTitle>No resources match</EmptyTitle>
+            <EmptyDescription>
+              Try another category or clear your search.
+            </EmptyDescription>
+          </EmptyHeader>
+          <Button type="button" variant="secondary" size="sm" onClick={clearFilters}>
+            Clear filters
+          </Button>
+        </Empty>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="app-shell-grid">
           {filtered.map((resource) => (
-            <Card
+            <CardBox
               key={resource.title}
-              className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6"
+              className="flex flex-col gap-3 h-full min-w-0 w-full transition-shadow hover:shadow-md !p-4 sm:!p-5"
             >
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                style={{ background: "var(--color-sage-100)", color: "var(--color-sage-600)" }}
-                aria-hidden="true"
-              >
-                <FileText className="size-4" />
-              </div>
-
-              <div className="flex-1 min-w-0 flex flex-col gap-1.5">
-                <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-start justify-between gap-2 min-w-0">
+                <span
+                  className="flex size-10 items-center justify-center rounded-xl shrink-0"
+                  style={{ background: "rgba(74,94,72,0.1)", color: "var(--color-sage-600)" }}
+                >
+                  <FileText className="size-4" />
+                </span>
+                <div className="flex flex-wrap gap-1.5 justify-end min-w-0">
                   <Badge>{resource.category}</Badge>
                   <Badge variant="highlight">{resource.type}</Badge>
                 </div>
-                <p className="text-sm font-semibold" style={{ color: "var(--color-sage-800)" }}>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold break-words" style={{ color: "var(--color-sage-800)" }}>
                   {resource.title}
                 </p>
-                <p className="text-xs leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>
+                <p className="text-xs leading-relaxed mt-1.5 break-words" style={{ color: "var(--color-text-secondary)" }}>
                   {resource.description}
                 </p>
-                <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
+              </div>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-2 border-t border-[rgba(45,59,44,0.08)]">
+                <p className="text-xs shrink-0" style={{ color: "var(--color-text-tertiary)" }}>
                   Added {resource.date}
                 </p>
-              </div>
-
-              <div className="flex items-center gap-2 sm:shrink-0 sm:flex-col sm:items-stretch">
                 <Button
+                  type="button"
                   size="sm"
-                  disabled
-                  title="File upload is not connected yet."
-                  className="flex-1 sm:flex-none"
+                  className="gap-1.5 w-full sm:w-auto shrink-0"
+                  onClick={() =>
+                    downloadResourcePacket({
+                      title: resource.title,
+                      category: resource.category,
+                      type: resource.type,
+                      description: resource.description,
+                      date: resource.date,
+                    })
+                  }
                 >
+                  <Download className="size-3.5" />
                   Download
                 </Button>
               </div>
-            </Card>
+            </CardBox>
           ))}
         </div>
       )}

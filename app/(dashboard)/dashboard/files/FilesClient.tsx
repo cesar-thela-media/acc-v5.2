@@ -1,57 +1,96 @@
 "use client";
 
+import { useState } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Button, buttonClasses } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
+import { CardBox } from "@/components/dashboard/CardBox";
+import { PageHeader } from "@/components/dashboard/PageHeader";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/shadcn/alert";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/shadcn/empty";
 import { EVENTS } from "@/lib/events";
+import { downloadDemoCertificate } from "@/lib/demoDownload";
+import { Download, FileText, Info } from "lucide-react";
 
-export function FilesClient({ hasCertificates }: { hasCertificates: boolean }) {
+export function FilesClient({
+  hasCertificates,
+  memberName = "Member",
+}: {
+  hasCertificates: boolean;
+  memberName?: string;
+}) {
   const ceuEvents = EVENTS.filter((ev) => ev.ceus);
+  const [busyId, setBusyId] = useState<number | null>(null);
+
+  function handleDemoDownload(ev: (typeof EVENTS)[number]) {
+    setBusyId(ev.id);
+    downloadDemoCertificate({
+      memberName,
+      workshop: ev.title,
+      ceus: ev.ceus ?? 0,
+      date: ev.date,
+    });
+    setTimeout(() => setBusyId(null), 400);
+  }
 
   return (
-    <div className="flex flex-col gap-8">
-      <div>
-        <p className="text-eyebrow">Files</p>
-        <h1 className="text-page-title">CEU certificates</h1>
-      </div>
+    <div className="flex flex-col gap-4 sm:gap-6 w-full min-w-0">
+      <PageHeader
+        eyebrow="Files"
+        title="CEU certificates"
+        description="Download attendance certificates for CEU-eligible sessions."
+      />
 
       {!hasCertificates && (
-        <Card className="flex flex-col gap-1">
-          <p className="text-sm font-medium" style={{ color: "var(--color-text-primary)" }}>
-            Certificate generation isn&apos;t configured yet.
-          </p>
-          <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
-            Once the certificate template is connected, downloads will appear here for every CEU-eligible session.
-          </p>
-        </Card>
+        <Alert variant="amber">
+          <Info />
+          <AlertTitle>Demo certificates</AlertTitle>
+          <AlertDescription>
+            Official Robolly templates aren&apos;t configured. You can still download a
+            demo attendance certificate for each CEU session below.
+          </AlertDescription>
+        </Alert>
       )}
 
       {ceuEvents.length === 0 ? (
-        <Card className="py-14 text-center">
-          <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>
-            No CEU sessions yet.
-          </p>
-        </Card>
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <FileText />
+            </EmptyMedia>
+            <EmptyTitle>No CEU sessions yet</EmptyTitle>
+            <EmptyDescription>
+              Certificates show up after you RSVP to CEU-eligible events.
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full min-w-0">
           {ceuEvents.map((ev) => (
-            <Card key={ev.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-start gap-4">
+            <CardBox
+              key={ev.id}
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 min-w-0"
+            >
+              <div className="flex items-start gap-4 min-w-0">
                 <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ background: "var(--color-sage-100)", color: "var(--color-sage-600)" }}
+                  className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+                  style={{ background: "rgba(74,94,72,0.1)", color: "var(--color-sage-600)" }}
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                    <polyline points="14 2 14 8 20 8" />
-                  </svg>
+                  <FileText className="size-5" />
                 </div>
-                <div>
-                  <p className="text-sm font-medium" style={{ color: "var(--color-text-primary)" }}>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold break-words" style={{ color: "var(--color-sage-800)" }}>
                     {ev.title}
                   </p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Badge variant="success">{ev.ceus} CEU{ev.ceus !== 1 ? "s" : ""}</Badge>
+                  <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                    <Badge variant="success">
+                      {ev.ceus} CEU{ev.ceus !== 1 ? "s" : ""}
+                    </Badge>
                     <span className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
                       {ev.date}
                     </span>
@@ -61,16 +100,25 @@ export function FilesClient({ hasCertificates }: { hasCertificates: boolean }) {
               {hasCertificates ? (
                 <a
                   href={`/api/certificate?workshop=${encodeURIComponent(ev.title)}&ceus=${ev.ceus}`}
-                  className={`sm:shrink-0 ${buttonClasses("secondary", "sm")}`}
+                  className={`sm:shrink-0 inline-flex items-center justify-center gap-1.5 ${buttonClasses("secondary", "sm")}`}
                 >
-                  Download certificate
+                  <Download className="size-3.5" />
+                  Download
                 </a>
               ) : (
-                <Button variant="secondary" size="sm" disabled className="sm:shrink-0" title="Certificate generation isn't configured yet.">
-                  Download certificate
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  className="sm:shrink-0"
+                  disabled={busyId === ev.id}
+                  onClick={() => handleDemoDownload(ev)}
+                >
+                  <Download className="size-3.5" />
+                  {busyId === ev.id ? "Preparing…" : "Download demo"}
                 </Button>
               )}
-            </Card>
+            </CardBox>
           ))}
         </div>
       )}

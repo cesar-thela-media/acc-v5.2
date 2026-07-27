@@ -60,6 +60,22 @@ describe("shellActiveStyle", () => {
     assert.equal(idle.boxShadow, "none");
     assert.equal(active.background.includes("gradient"), false);
   });
+
+  it("light mode uses near-black active pill like Shadcn Space", () => {
+    const active = shellActiveStyle(true, "light");
+    const idle = shellActiveStyle(false, "light");
+    assert.equal(active.background, "#1A1A1A");
+    assert.equal(active.color, "#FFFFFF");
+    assert.equal(idle.boxShadow, "none");
+  });
+
+  it("admin mode uses light text on muted amber chrome", () => {
+    const active = shellActiveStyle(true, "admin");
+    const idle = shellActiveStyle(false, "admin");
+    assert.equal(active.color, "#FFFFFF");
+    assert.equal(idle.color, "rgba(255,255,255,0.78)");
+    assert.equal(active.boxShadow, "none");
+  });
 });
 
 describe("findDuplicateImagePaths", () => {

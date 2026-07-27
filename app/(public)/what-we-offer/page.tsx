@@ -26,12 +26,12 @@ const offerDetails = [
 
 const faqs = [
   {
-    q: "Who is The Circle for?",
-    a: "The Circle is for licensed therapists, LPC, LCSW, LMFT, PhD, and PsyD, who are in independent or group private practice. Pre-licensed associates are not currently eligible for full membership.",
+    q: "Who is Austin Clinician Circle for?",
+    a: "Austin Clinician Circle is for licensed therapists, LPC, LCSW, LMFT, PhD, and PsyD, who are in independent or group private practice. Pre-licensed associates are not currently eligible for full membership.",
   },
   {
     q: "Is this for Austin only?",
-    a: "No. While The Circle is based in Austin, we provide connection and support for clinicians all across Texas.",
+    a: "No. While Austin Clinician Circle is based in Austin, we provide connection and support for clinicians all across Texas.",
   },
   {
     q: "How does the consultation group work?",
@@ -57,7 +57,7 @@ function AmberCheck() {
 }
 
 export const metadata: Metadata = {
-  title: "What We Offer | The Circle",
+  title: "What We Offer | Austin Clinician Circle",
   description:
     "Membership gives you full access to clinical support, professional development, and community. Monthly case consultation, CEU trainings, resource library, and more.",
 };

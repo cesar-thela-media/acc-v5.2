@@ -4,14 +4,13 @@ import type { Metadata } from "next";
 import { AdminNav } from "@/components/layout/AdminNav";
 import { getCurrentMemberName, getCurrentViewer } from "@/lib/auth";
 import { hasClerkCredentials } from "@/lib/env";
+import { DEFAULT_PROFILE_PHOTO } from "@/lib/profilePhoto";
 
 export const metadata: Metadata = {
-  title: "Admin | The Circle",
+  title: "Admin | Austin Clinician Circle",
   description:
     "Admin dashboard for managing members, applications, events, and resources.",
 };
-
-const DEFAULT_PHOTO = "/sarah-arnold.jpeg";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   if (hasClerkCredentials) {
@@ -31,14 +30,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     getCurrentViewer(),
   ]);
   const viewerName = firstName || "Account";
-  const viewerPhotoUrl = hasClerkCredentials && viewer.user?.imageUrl ? viewer.user.imageUrl : DEFAULT_PHOTO;
+  const viewerPhotoUrl =
+    hasClerkCredentials && viewer.user?.imageUrl
+      ? viewer.user.imageUrl
+      : DEFAULT_PROFILE_PHOTO;
 
   return (
-    <div className="flex min-h-screen md:h-screen md:overflow-hidden" style={{ background: "var(--color-cream-100)" }}>
-      <AdminNav viewerName={viewerName} viewerPhotoUrl={viewerPhotoUrl} />
-      <main className="flex-1 min-w-0 overflow-visible md:h-screen md:overflow-y-auto pt-16" style={{ background: "var(--color-cream-100)", color: "var(--color-text-primary)" }}>
-        <div className="container-fluid py-8 md:py-10">{children}</div>
-      </main>
-    </div>
+    <AdminNav viewerName={viewerName} viewerPhotoUrl={viewerPhotoUrl}>
+      {children}
+    </AdminNav>
   );
 }

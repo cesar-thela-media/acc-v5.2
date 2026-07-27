@@ -80,7 +80,7 @@ export function Footer() {
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 lg:grid-cols-12 lg:gap-x-8 gap-y-10 px-6 xl:px-0">
             {/* Logo */}
             <div className="col-span-full lg:col-span-3">
-              <Link href="/" aria-label="The Circle" className="inline-flex items-center gap-3 mb-3">
+              <Link href="/" aria-label="Austin Clinician Circle" className="inline-flex items-center gap-3 mb-3">
                 <Image src="/logo-mark.png" alt="" width={2000} height={732} className="h-20 w-auto object-contain" />
               </Link>
               <p className="text-sm" style={{ color: "rgba(255,255,255,0.48)" }}>
@@ -88,7 +88,7 @@ export function Footer() {
               </p>
             </div>
 
-            {/* Quick Links / Inside The Circle / Community */}
+            {/* Quick Links / Inside Austin Clinician Circle / Community */}
             <div className="lg:col-span-6 col-span-12 grid sm:grid-cols-2 grid-cols-1 gap-6 gap-y-10">
               <div>
                 <p className="text-[12px] font-semibold uppercase tracking-[0.22em] mb-4" style={{ color: AMBER }}>
@@ -162,7 +162,7 @@ export function Footer() {
 
           <div className="flex items-center justify-between md:flex-nowrap flex-wrap gap-6">
             <div className="flex items-center flex-wrap gap-y-2 gap-x-3 text-sm" style={{ color: "rgba(255,255,255,0.32)" }}>
-              <p>© {new Date().getFullYear()} The Circle. All rights reserved.</p>
+              <p>© {new Date().getFullYear()} Austin Clinician Circle. All rights reserved.</p>
               <span className="size-1 rounded-full" style={{ background: "rgba(255,255,255,0.2)" }} />
               <Link href="/privacy" className="transition-colors duration-150 hover:text-white">Privacy</Link>
               <span className="size-1 rounded-full" style={{ background: "rgba(255,255,255,0.2)" }} />
@@ -170,13 +170,32 @@ export function Footer() {
             </div>
             {/* social links */}
             <div className="flex items-center gap-4">
-              <span role="img" aria-label="Instagram" className="transition-colors duration-150" style={{ color: "rgba(255,255,255,0.55)" }}>
+              <a
+                href="https://www.instagram.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="transition-colors duration-150 hover:text-white"
+                style={{ color: "rgba(255,255,255,0.55)" }}
+              >
                 <InstagramIcon />
-              </span>
-              <span role="img" aria-label="LinkedIn" className="transition-colors duration-150" style={{ color: "rgba(255,255,255,0.55)" }}>
+              </a>
+              <a
+                href="https://www.linkedin.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="transition-colors duration-150 hover:text-white"
+                style={{ color: "rgba(255,255,255,0.55)" }}
+              >
                 <LinkedinIcon />
-              </span>
-              <a href="mailto:sarah@restoredfamily.com" aria-label="Email" className="transition-colors duration-150 hover:text-white" style={{ color: "rgba(255,255,255,0.55)" }}>
+              </a>
+              <a
+                href="mailto:sarah@restoredfamily.com"
+                aria-label="Email"
+                className="transition-colors duration-150 hover:text-white"
+                style={{ color: "rgba(255,255,255,0.55)" }}
+              >
                 <Mail width={16} height={16} />
               </a>
             </div>

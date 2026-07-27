@@ -1,4 +1,4 @@
-# The Circle
+# Austin Clinician Circle
 
 A membership network for licensed therapists in Austin, TX — consultation, referrals, resources, and continuing education. Founded by Sarah Arnold, LPC-S (Restored Family Counseling). This serves therapists, not their clients.
 
@@ -90,7 +90,7 @@ public/                 Static assets
 
 | Route | Description |
 |---|---|
-| `/` | Homepage — hero, why The Circle exists, membership carousel, pricing, testimonials |
+| `/` | Homepage — hero, why Austin Clinician Circle exists, membership carousel, pricing, testimonials |
 | `/who-we-are` | Founder story, origin, values |
 | `/what-we-offer` | Membership benefits, pricing, FAQ |
 | `/find-a-clinician` | Public clinician directory (coming soon) |

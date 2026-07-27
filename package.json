@@ -10,7 +10,7 @@
     "build": "next build",
     "start": "node scripts/start-standalone.mjs",
     "lint": "eslint",
-    "test:unit": "npx --yes tsx --test lib/navShell.test.ts lib/publicNavLinkButton.test.ts",
+    "test:unit": "npx --yes tsx --test lib/navShell.test.ts lib/publicNavLinkButton.test.ts lib/shellSearch.test.ts",
     "postinstall": "node scripts/prisma-generate.js"
   },
   "dependencies": {

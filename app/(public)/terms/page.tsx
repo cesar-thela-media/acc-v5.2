@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms of Service | The Circle",
-  description: "Terms of service for The Circle membership.",
+  title: "Terms of Service | Austin Clinician Circle",
+  description: "Terms of service for Austin Clinician Circle membership.",
 };
 
 const SECTIONS = [
@@ -12,7 +12,7 @@ const SECTIONS = [
   },
   {
     title: "Eligibility",
-    body: "The Circle is for licensed mental health clinicians. Membership applications are reviewed personally by Sarah, and approval isn't guaranteed.",
+    body: "Austin Clinician Circle is for licensed mental health clinicians. Membership applications are reviewed personally by Sarah, and approval isn't guaranteed.",
   },
   {
     title: "Community conduct",
@@ -20,7 +20,7 @@ const SECTIONS = [
   },
   {
     title: "Changes",
-    body: "We may update these terms as The Circle grows. If we make a material change, we'll let members know by email.",
+    body: "We may update these terms as Austin Clinician Circle grows. If we make a material change, we'll let members know by email.",
   },
 ];
 

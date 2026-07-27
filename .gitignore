@@ -62,3 +62,7 @@ next-env.d.ts
 
 # local agent tooling
 .kilo/
+
+# Local template / asset dumps (do not ship)
+_reference/
+

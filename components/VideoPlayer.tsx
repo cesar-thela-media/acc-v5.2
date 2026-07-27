@@ -67,7 +67,7 @@ export function VideoPlayer() {
               className="text-xs font-medium uppercase tracking-widest"
               style={{ color: "rgba(255,255,255,0.35)" }}
             >
-              The Circle
+              Austin Clinician Circle
             </p>
 
             {/* Play button */}
@@ -106,7 +106,7 @@ export function VideoPlayer() {
                 className="text-sm mt-2"
                 style={{ color: "rgba(255,255,255,0.45)" }}
               >
-                Founder of The Circle · 3-minute introduction
+                Founder of Austin Clinician Circle · 3-minute introduction
               </p>
             </div>
           </div>

@@ -12,92 +12,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/shadcn/dialog";
-import {
-  daysFromNow,
-  formatAbbrevDate,
-  nextFirstWeekdayOfMonth,
-} from "@/lib/relativeDates";
+import { formatAbbrevDate } from "@/lib/relativeDates";
 import { usePersistedState } from "@/lib/admin-store";
+import {
+  DEMO_EVENTS_KEY,
+  SEED_DEMO_EVENTS,
+  defaultDescription,
+  type DemoEvent,
+} from "@/lib/demo-events";
 
 const CATEGORIES = ["Consultation", "Workshop", "CEU", "Self-Care"] as const;
-const THURSDAY = 4;
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
 
-const firstConsultation = nextFirstWeekdayOfMonth(THURSDAY, 0);
-const monthsUntilFirst =
-  (firstConsultation.getFullYear() - new Date().getFullYear()) * 12 +
-  (firstConsultation.getMonth() - new Date().getMonth());
-const secondConsultation = nextFirstWeekdayOfMonth(THURSDAY, monthsUntilFirst + 1);
-
-export type EventEntry = {
-  id: number;
-  title: string;
-  date: string;
-  time: string;
-  format: string;
-  category: string;
-  ceus: number | null;
-  rsvpCount: number;
-  spots: number | null;
-};
-
-export const INITIAL_EVENTS: EventEntry[] = [
-  {
-    id: 1,
-    title: "Monthly case consultation",
-    date: formatAbbrevDate(firstConsultation),
-    time: "9:00 – 10:30am",
-    format: "Virtual (Zoom)",
-    category: "Consultation",
-    ceus: 1.5,
-    rsvpCount: 9,
-    spots: null,
-  },
-  {
-    id: 2,
-    title: "Practice building workshop: Setting your fee",
-    date: formatAbbrevDate(daysFromNow(22)),
-    time: "12:00 – 1:00pm",
-    format: "Virtual (Zoom)",
-    category: "Workshop",
-    ceus: null,
-    rsvpCount: 4,
-    spots: 20,
-  },
-  {
-    id: 3,
-    title: "Trauma-informed care: CEU training",
-    date: formatAbbrevDate(daysFromNow(31)),
-    time: "10:00am – 12:00pm",
-    format: "Virtual (Zoom)",
-    category: "CEU",
-    ceus: 2.0,
-    rsvpCount: 11,
-    spots: 30,
-  },
-  {
-    id: 4,
-    title: "Monthly case consultation",
-    date: formatAbbrevDate(secondConsultation),
-    time: "9:00 – 10:30am",
-    format: "Virtual (Zoom)",
-    category: "Consultation",
-    ceus: 1.5,
-    rsvpCount: 0,
-    spots: null,
-  },
-  {
-    id: 5,
-    title: "Burnout prevention: clinician self-care",
-    date: formatAbbrevDate(daysFromNow(56)),
-    time: "1:00 – 2:30pm",
-    format: "Virtual (Zoom)",
-    category: "Self-Care",
-    ceus: null,
-    rsvpCount: 2,
-    spots: 25,
-  },
-];
+export type EventEntry = DemoEvent;
+/** @deprecated use SEED_DEMO_EVENTS — kept for overview imports */
+export const INITIAL_EVENTS = SEED_DEMO_EVENTS;
 
 const CATEGORY_COLORS: Record<string, { bg: string; color: string }> = {
   Consultation: { bg: "#2D3B2C", color: "#fff" },
@@ -184,10 +113,10 @@ function buildMonthCells(cursor: Date) {
 }
 
 export default function AdminEventsPage() {
-  const [events, setEvents] = usePersistedState<EventEntry[]>("admin-events", INITIAL_EVENTS);
+  const [events, setEvents] = usePersistedState<EventEntry[]>(DEMO_EVENTS_KEY, SEED_DEMO_EVENTS);
   const [cursor, setCursor] = useState(() => {
     // Open on a month that has events when possible
-    const first = parseEventDate(INITIAL_EVENTS[0]?.date ?? "");
+    const first = parseEventDate(SEED_DEMO_EVENTS[0]?.date ?? "");
     return first ?? new Date();
   });
   const [view, setView] = useState<ViewMode>("month");
@@ -255,7 +184,7 @@ export default function AdminEventsPage() {
       format: ev.format,
       category: ev.category,
       ceus: ev.ceus != null ? String(ev.ceus) : "",
-      description: "",
+      description: ev.description ?? "",
       spots: ev.spots != null ? String(ev.spots) : "",
     });
     setDateIso(abbrevToDateInput(ev.date));
@@ -283,17 +212,22 @@ export default function AdminEventsPage() {
     const dateLabel = dateIso ? fromDateInputValue(dateIso) : form.date;
     if (!form.title.trim() || !dateLabel) return;
 
+    const title = form.title.trim();
+    const desc =
+      form.description.trim() || defaultDescription(formCategory, title);
+
     if (editId != null) {
       setEvents((prev) =>
         prev.map((ev) =>
           ev.id === editId
             ? {
                 ...ev,
-                title: form.title.trim(),
+                title,
                 date: dateLabel,
                 time: form.time,
                 format: form.format,
                 category: formCategory,
+                description: desc,
                 ceus: form.ceus ? parseFloat(form.ceus) : null,
                 spots: form.spots ? parseInt(form.spots, 10) : null,
               }
@@ -305,14 +239,18 @@ export default function AdminEventsPage() {
         ...prev,
         {
           id: Date.now(),
-          title: form.title.trim(),
+          title,
           date: dateLabel,
           time: form.time,
           format: form.format,
           category: formCategory,
+          description: desc,
           ceus: form.ceus ? parseFloat(form.ceus) : null,
           rsvpCount: 0,
           spots: form.spots ? parseInt(form.spots, 10) : null,
+          startTime: form.time.split("–")[0]?.trim() || "9:00am",
+          startHour: 9,
+          durationMinutes: 60,
         },
       ]);
     }
@@ -352,44 +290,56 @@ export default function AdminEventsPage() {
 
       <CardBox className="!p-0 overflow-hidden w-full min-w-0" padding={false}>
         {/* Toolbar */}
-        <div className="flex flex-col lg:flex-row lg:items-center gap-3 px-4 sm:px-5 py-4 border-b border-[rgba(45,59,44,0.08)]">
-          <div className="flex items-center gap-1.5 flex-wrap">
+        <div className="flex flex-col gap-3 px-3 sm:px-5 py-3 sm:py-4 border-b border-[rgba(45,59,44,0.08)]">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <button
+                type="button"
+                onClick={goToday}
+                className="min-h-9 px-3 py-1.5 rounded-lg text-sm font-medium border bg-white hover:bg-[var(--color-cream-100)]"
+                style={{ borderColor: "rgba(45,59,44,0.12)", color: "var(--color-sage-800)" }}
+              >
+                Today
+              </button>
+              <button
+                type="button"
+                onClick={goPrev}
+                className="min-h-9 min-w-9 px-2.5 py-1.5 rounded-lg text-sm font-medium border bg-white hover:bg-[var(--color-cream-100)]"
+                style={{ borderColor: "rgba(45,59,44,0.12)", color: "var(--color-sage-800)" }}
+                aria-label="Previous month"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                onClick={goNext}
+                className="min-h-9 min-w-9 px-2.5 py-1.5 rounded-lg text-sm font-medium border bg-white hover:bg-[var(--color-cream-100)]"
+                style={{ borderColor: "rgba(45,59,44,0.12)", color: "var(--color-sage-800)" }}
+                aria-label="Next month"
+              >
+                ›
+              </button>
+            </div>
             <button
               type="button"
-              onClick={goToday}
-              className="px-3 py-1.5 rounded-lg text-sm font-medium border bg-white hover:bg-[var(--color-cream-100)]"
-              style={{ borderColor: "rgba(45,59,44,0.12)", color: "var(--color-sage-800)" }}
+              onClick={() => openCreate()}
+              className="min-h-9 px-3.5 sm:px-4 py-1.5 rounded-full text-sm font-semibold shrink-0"
+              style={{ background: "#B8892E", color: "#fff" }}
             >
-              Today
-            </button>
-            <button
-              type="button"
-              onClick={goPrev}
-              className="px-3 py-1.5 rounded-lg text-sm font-medium border bg-white hover:bg-[var(--color-cream-100)]"
-              style={{ borderColor: "rgba(45,59,44,0.12)", color: "var(--color-sage-800)" }}
-            >
-              Back
-            </button>
-            <button
-              type="button"
-              onClick={goNext}
-              className="px-3 py-1.5 rounded-lg text-sm font-medium border bg-white hover:bg-[var(--color-cream-100)]"
-              style={{ borderColor: "rgba(45,59,44,0.12)", color: "var(--color-sage-800)" }}
-            >
-              Next
+              + Event
             </button>
           </div>
 
           <p
-            className="flex-1 text-center text-base sm:text-lg font-semibold"
+            className="text-center text-base sm:text-lg font-semibold"
             style={{ color: "var(--color-sage-800)" }}
           >
             {monthTitle}
           </p>
 
-          <div className="flex items-center gap-2 flex-wrap justify-end">
+          <div className="flex items-center justify-center">
             <div
-              className="inline-flex rounded-full p-0.5 border"
+              className="inline-flex rounded-full p-0.5 border w-full sm:w-auto max-w-xs"
               style={{ borderColor: "rgba(45,59,44,0.12)", background: "var(--color-cream-100)" }}
             >
               {(
@@ -402,7 +352,7 @@ export default function AdminEventsPage() {
                   key={key}
                   type="button"
                   onClick={() => setView(key)}
-                  className="px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors"
+                  className="flex-1 sm:flex-none min-h-9 px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors"
                   style={{
                     background: view === key ? "#2D3B2C" : "transparent",
                     color: view === key ? "#fff" : "var(--color-text-secondary)",
@@ -412,21 +362,14 @@ export default function AdminEventsPage() {
                 </button>
               ))}
             </div>
-            <button
-              type="button"
-              onClick={() => openCreate()}
-              className="px-4 py-1.5 rounded-full text-sm font-semibold"
-              style={{ background: "#B8892E", color: "#fff" }}
-            >
-              + Event
-            </button>
           </div>
         </div>
 
         {/* Month grid — fully interactive */}
         {view === "month" && (
           <div className="w-full min-w-0 overflow-x-auto overscroll-x-contain">
-            <div className="min-w-[560px] w-full">
+            {/* Full-width on phones; only enforce horizontal scroll min-width from sm up */}
+            <div className="w-full min-w-0 sm:min-w-[520px]">
               <div
                 className="grid grid-cols-7 border-b"
                 style={{ borderColor: "rgba(45,59,44,0.08)", background: "var(--color-cream-100)" }}
@@ -434,7 +377,7 @@ export default function AdminEventsPage() {
                 {WEEKDAYS.map((d) => (
                   <div
                     key={d}
-                    className="px-1 sm:px-2 py-2 text-center text-[10px] sm:text-xs font-semibold"
+                    className="px-0.5 sm:px-2 py-2 text-center text-[9px] sm:text-xs font-semibold"
                     style={{ color: "var(--color-text-secondary)" }}
                   >
                     {d}
@@ -458,7 +401,7 @@ export default function AdminEventsPage() {
                           openCreate(cell.date);
                         }
                       }}
-                      className="min-h-[80px] sm:min-h-[100px] lg:min-h-[112px] border-b border-r p-1 sm:p-1.5 flex flex-col gap-0.5 min-w-0 cursor-pointer transition-colors hover:bg-[rgba(184,137,46,0.06)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#B8892E]"
+                      className="group min-h-[64px] sm:min-h-[100px] lg:min-h-[112px] border-b border-r p-0.5 sm:p-1.5 flex flex-col gap-0.5 min-w-0 cursor-pointer transition-colors hover:bg-[rgba(184,137,46,0.06)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#B8892E]"
                       style={{
                         borderColor: "rgba(45,59,44,0.06)",
                         background: cell.inMonth
@@ -485,7 +428,7 @@ export default function AdminEventsPage() {
                         </span>
                         {cell.inMonth && dayEvents.length === 0 && (
                           <span
-                            className="text-[10px] font-medium opacity-0 group-hover:opacity-100 sm:opacity-40"
+                            className="text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity"
                             style={{ color: "#B8892E" }}
                           >
                             +

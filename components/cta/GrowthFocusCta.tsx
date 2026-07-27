@@ -102,19 +102,19 @@ export function GrowthFocusCta({
       </div>
 
       {showFilmstrip ? (
-        <div className="relative z-10 w-full overflow-hidden">
-          <div className="flex w-full items-end justify-center min-w-[600px] md:min-w-full">
+        <div className="relative z-10 w-full overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex w-full min-w-0 md:min-w-full items-end justify-start md:justify-center">
             {FILMSTRIP.map((image, i) => (
               <div
                 key={`${image.src}-${i}`}
-                className={`flex-1 min-w-[100px] md:min-w-[140px] lg:min-w-[180px] relative overflow-hidden ${image.height}`}
+                className={`relative overflow-hidden shrink-0 w-[28vw] max-w-[140px] md:flex-1 md:w-auto md:max-w-none md:min-w-[140px] lg:min-w-[180px] ${image.height}`}
               >
                 <Image
                   src={image.src}
                   alt=""
                   fill
                   className="object-cover grayscale hover:grayscale-0 transition-all duration-300"
-                  sizes="(max-width: 768px) 25vw, 20vw"
+                  sizes="(max-width: 768px) 28vw, 20vw"
                 />
               </div>
             ))}

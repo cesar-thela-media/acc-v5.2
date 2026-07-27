@@ -96,11 +96,9 @@ export function AppShell({
   const shellCardBg = "rgba(255,255,255,0.08)";
   const shellCardBorder = "rgba(255,255,255,0.12)";
 
-  const [prevPathname, setPrevPathname] = useState(pathname);
-  if (pathname !== prevPathname) {
-    setPrevPathname(pathname);
+  useEffect(() => {
     setMobileOpen(false);
-  }
+  }, [pathname]);
 
   useEffect(() => {
     if (!preferLocalProfilePhoto) {
@@ -333,7 +331,7 @@ export function AppShell({
             <div className="flex items-center gap-1 sm:gap-2 shrink-0">
               <DropdownMenu>
                 <DropdownMenuTrigger
-                  className="hidden sm:flex relative items-center justify-center w-10 h-10 rounded-full transition-colors hover:bg-black/5 outline-none"
+                  className="flex relative items-center justify-center w-10 h-10 min-w-10 min-h-10 rounded-full transition-colors hover:bg-black/5 outline-none"
                   style={{ color: "rgba(45,59,44,0.55)" }}
                   aria-label="Notifications"
                 >
@@ -414,7 +412,7 @@ export function AppShell({
             className="app-shell-scroll flex-1 min-h-0 min-w-0 overflow-y-auto overflow-x-hidden"
             style={{ background: CREAM, color: TEXT }}
           >
-            <div className="w-full max-w-full min-w-0 px-3 py-4 sm:px-5 sm:py-5 md:px-6 md:py-6 lg:px-8">
+            <div className="w-full max-w-full min-w-0 px-3 py-3.5 sm:px-5 sm:py-5 md:px-6 md:py-6 lg:px-8 pb-[max(1rem,env(safe-area-inset-bottom))]">
               {children}
             </div>
           </main>

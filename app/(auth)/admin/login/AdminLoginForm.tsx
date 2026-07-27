@@ -189,10 +189,6 @@ export function AdminLoginForm() {
               </Button>
             </FieldGroup>
           </form>
-          <p className="text-xs text-center leading-relaxed" style={{ color: "rgba(255,255,255,0.48)" }}>
-            To enable real auth, add <code className="font-mono text-white/60">NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY</code> and{" "}
-            <code className="font-mono text-white/60">CLERK_SECRET_KEY</code> to your environment.
-          </p>
         </div>
       </div>
     </section>

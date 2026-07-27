@@ -8,7 +8,8 @@ import { CalendlyEmbed } from "@/components/CalendlyEmbed";
 import { CardBox } from "@/components/dashboard/CardBox";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/shadcn/tabs";
-import { EVENTS } from "@/lib/events";
+import { usePersistedState } from "@/lib/admin-store";
+import { DEMO_EVENTS_KEY, SEED_DEMO_EVENTS, type DemoEvent } from "@/lib/demo-events";
 import { downloadIcsEvent } from "@/lib/ics";
 import { downloadDemoCertificate } from "@/lib/demoDownload";
 
@@ -22,66 +23,62 @@ const categoryColor: Record<string, "default" | "success" | "warning" | "accent"
 export function EventsClient({ hasCertificates }: { hasCertificates: boolean }) {
   const searchParams = useSearchParams();
   const q = (searchParams.get("q") ?? "").trim().toLowerCase();
-  const [rsvpd, setRsvpd] = useState<Set<number>>(new Set([1]));
+  const [events] = usePersistedState<DemoEvent[]>(DEMO_EVENTS_KEY, SEED_DEMO_EVENTS);
+  const [rsvpd, setRsvpd] = usePersistedState<number[]>("acc-demo-rsvp", [1]);
   const [expanded, setExpanded] = useState<number | null>(null);
 
+  const rsvpSet = useMemo(() => new Set(rsvpd), [rsvpd]);
+
   const listEvents = useMemo(() => {
-    if (!q) return EVENTS;
-    return EVENTS.filter((ev) =>
+    if (!q) return events;
+    return events.filter((ev) =>
       `${ev.title} ${ev.category} ${ev.description} ${ev.date}`.toLowerCase().includes(q),
     );
-  }, [q]);
+  }, [q, events]);
 
   function toggleRsvp(id: number) {
     setRsvpd((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
+      if (prev.includes(id)) return prev.filter((x) => x !== id);
+      return [...prev, id];
     });
   }
 
-  /** Simple month calendar cells from event dates (template calendar surface) */
+  /** Month grid from shared demo events (same store as admin calendar) */
   const calendarCells = useMemo(() => {
-    const now = new Date();
+    const firstEvent = events.map((ev) => {
+      const d = new Date(ev.date);
+      return Number.isNaN(d.getTime()) ? null : d;
+    }).find(Boolean) as Date | undefined;
+    const now = firstEvent ?? new Date();
     const year = now.getFullYear();
     const month = now.getMonth();
     const first = new Date(year, month, 1);
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const startPad = first.getDay();
-    const cells: { day: number | null; events: typeof EVENTS }[] = [];
+    const cells: { day: number | null; events: DemoEvent[] }[] = [];
     for (let i = 0; i < startPad; i++) cells.push({ day: null, events: [] });
     for (let d = 1; d <= daysInMonth; d++) {
-      const label = new Date(year, month, d).toLocaleDateString("en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-      });
-      const dayEvents = EVENTS.filter((ev) => ev.date.includes(label.split(",")[0]) || ev.date.includes(`${d},`));
-      // Match by day number appearing in date string when full label fails
-      const loose = EVENTS.filter((ev) => {
+      const shortMonth = now.toLocaleDateString("en-US", { month: "short" });
+      const longMonth = now.toLocaleDateString("en-US", { month: "long" });
+      const dayEvents = events.filter((ev) => {
         const m = ev.date.match(/(\w+)\s+(\d+)/);
         if (!m) return false;
-        const monthName = now.toLocaleDateString("en-US", { month: "long" });
-        const shortMonth = now.toLocaleDateString("en-US", { month: "short" });
         return (
           Number(m[2]) === d &&
-          (ev.date.includes(monthName) || ev.date.includes(shortMonth))
+          (ev.date.includes(shortMonth) || ev.date.includes(longMonth))
         );
       });
-      cells.push({ day: d, events: dayEvents.length ? dayEvents : loose });
+      cells.push({ day: d, events: dayEvents });
     }
-    return cells;
-  }, []);
-
-  const monthTitle = new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" });
+    return { cells, monthTitle: now.toLocaleDateString("en-US", { month: "long", year: "numeric" }) };
+  }, [events]);
 
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
         eyebrow="Events"
         title="Upcoming events"
-        description="Case consultation, CEU trainings, and workshops. Add to calendar or download certificates when available."
+        description="Case consultation, CEU trainings, and workshops — same calendar Sarah manages in admin."
       />
 
       <Tabs defaultValue="list">
@@ -98,7 +95,7 @@ export function EventsClient({ hasCertificates }: { hasCertificates: boolean }) 
             </p>
           )}
           {listEvents.map((ev) => {
-            const isRsvpd = rsvpd.has(ev.id);
+            const isRsvpd = rsvpSet.has(ev.id);
             const isExpanded = expanded === ev.id;
             return (
               <CardBox key={ev.id} className="!p-0 overflow-hidden" padding={false}>
@@ -187,7 +184,7 @@ export function EventsClient({ hasCertificates }: { hasCertificates: boolean }) 
                             style={{ color: "var(--color-sage-700)", textUnderlineOffset: "3px" }}
                             onClick={() =>
                               downloadDemoCertificate({
-                                memberName: "Member",
+                                memberName: "Sarah Arnold",
                                 workshop: ev.title,
                                 ceus: ev.ceus ?? 0,
                                 date: ev.date,
@@ -209,7 +206,7 @@ export function EventsClient({ hasCertificates }: { hasCertificates: boolean }) 
         <TabsContent value="calendar" className="mt-4">
           <CardBox>
             <p className="text-sm font-semibold mb-4" style={{ color: "var(--color-sage-800)" }}>
-              {monthTitle}
+              {calendarCells.monthTitle}
             </p>
             <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-semibold uppercase tracking-wide mb-2" style={{ color: "var(--color-text-tertiary)" }}>
               {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
@@ -219,7 +216,7 @@ export function EventsClient({ hasCertificates }: { hasCertificates: boolean }) 
               ))}
             </div>
             <div className="grid grid-cols-7 gap-1">
-              {calendarCells.map((cell, i) => (
+              {calendarCells.cells.map((cell, i) => (
                 <div
                   key={i}
                   className="min-h-[72px] rounded-lg p-1.5 text-left"

@@ -268,13 +268,6 @@ export default function AdminOverviewPage() {
                 </div>
               </div>
             </div>
-            {/* Soft decorative mark (template uses illustration) */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -right-4 -bottom-6 sm:right-4 sm:bottom-2 opacity-[0.12]"
-            >
-              <LayoutGrid className="size-36 sm:size-44" style={{ color: SAGE }} strokeWidth={1} />
-            </div>
             <div
               aria-hidden
               className="pointer-events-none absolute inset-0"
@@ -322,7 +315,7 @@ export default function AdminOverviewPage() {
               className="mt-auto inline-flex items-center gap-1.5 text-sm font-semibold w-fit"
               style={{ color: AMBER }}
             >
-              See report
+              View applications
               <ArrowRight className="size-4" />
             </Link>
           </CardBox>
@@ -363,7 +356,7 @@ export default function AdminOverviewPage() {
               className="mt-auto inline-flex items-center gap-1.5 text-sm font-semibold w-fit"
               style={{ color: AMBER }}
             >
-              See report
+              View calendar
               <ArrowRight className="size-4" />
             </Link>
           </CardBox>
@@ -480,7 +473,7 @@ export default function AdminOverviewPage() {
                   className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
                   style={{ background: SAGE }}
                 >
-                  View full report
+                  View members
                   <ArrowRight className="size-4" />
                 </Link>
               </div>

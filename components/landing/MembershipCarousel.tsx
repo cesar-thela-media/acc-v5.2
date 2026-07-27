@@ -39,13 +39,38 @@ interface CarouselConfig {
 }
 
 const getCarouselConfig = (width: number): CarouselConfig => {
+  // Tighter fan on phones so side cards don't feel clipped / cramped
   if (width < 640) {
-    return { distanceDivisor: 120, velocityDivisor: 500, sensitivity: 180, xMultiplier: 110, yMultiplier: 24, rotationMultiplier: 8, scaleReduction: 0.06 };
+    return {
+      distanceDivisor: 100,
+      velocityDivisor: 450,
+      sensitivity: 160,
+      xMultiplier: 72,
+      yMultiplier: 10,
+      rotationMultiplier: 4,
+      scaleReduction: 0.05,
+    };
   }
   if (width < 1024) {
-    return { distanceDivisor: 160, velocityDivisor: 650, sensitivity: 220, xMultiplier: 160, yMultiplier: 36, rotationMultiplier: 10, scaleReduction: 0.09 };
+    return {
+      distanceDivisor: 160,
+      velocityDivisor: 650,
+      sensitivity: 220,
+      xMultiplier: 160,
+      yMultiplier: 36,
+      rotationMultiplier: 10,
+      scaleReduction: 0.09,
+    };
   }
-  return { distanceDivisor: 200, velocityDivisor: 800, sensitivity: 250, xMultiplier: 210, yMultiplier: 48, rotationMultiplier: 12, scaleReduction: 0.12 };
+  return {
+    distanceDivisor: 200,
+    velocityDivisor: 800,
+    sensitivity: 250,
+    xMultiplier: 210,
+    yMultiplier: 48,
+    rotationMultiplier: 12,
+    scaleReduction: 0.12,
+  };
 };
 
 export function MembershipCarousel({ slides }: { slides: MembershipSlide[] }) {
@@ -87,15 +112,33 @@ export function MembershipCarousel({ slides }: { slides: MembershipSlide[] }) {
     animate(scrollProgress, target, { type: "spring", stiffness: 200, damping: 30, mass: 1 });
   };
 
+  const [activeIndex, setActiveIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    const unsub = scrollProgress.on("change", (v) => {
+      const rounded = Math.round(v);
+      // Normalize into [0, total)
+      const idx = ((rounded % total) + total) % total;
+      setActiveIndex(idx);
+    });
+    return () => unsub();
+  }, [scrollProgress, total]);
+
   return (
     <div
       className="flex flex-col items-center justify-center w-full overflow-hidden select-none"
       style={{
-        WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
-        maskImage: "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+        WebkitMaskImage:
+          windowWidth > 0 && windowWidth < 640
+            ? "none"
+            : "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+        maskImage:
+          windowWidth > 0 && windowWidth < 640
+            ? "none"
+            : "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
       }}
     >
-      <div className="relative w-full max-w-7xl h-96 sm:h-128 lg:h-144 flex items-center justify-center">
+      <div className="relative w-full max-w-7xl h-[22rem] sm:h-128 lg:h-144 flex items-center justify-center">
         <motion.div
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
@@ -105,13 +148,38 @@ export function MembershipCarousel({ slides }: { slides: MembershipSlide[] }) {
             scrollProgress.set(scrollProgress.get() + delta);
           }}
           onDragEnd={handleDragEnd}
-          className="absolute inset-0 z-50 cursor-grab active:cursor-grabbing"
+          className="absolute inset-0 z-50 cursor-grab active:cursor-grabbing touch-pan-y"
+          aria-label="Swipe membership benefits"
         />
 
         {slides.map((slide, i) => (
           <MembershipCard key={i} slide={slide} index={i} total={total} progress={scrollProgress} config={config} />
         ))}
       </div>
+
+      {/* Mobile-friendly dots */}
+      <div className="flex items-center justify-center gap-1.5 mt-2 sm:mt-4 px-4" role="tablist" aria-label="Membership slides">
+        {slides.map((slide, i) => (
+          <button
+            key={slide.title}
+            type="button"
+            role="tab"
+            aria-selected={i === activeIndex}
+            aria-label={slide.title}
+            className="size-2 rounded-full transition-all"
+            style={{
+              background: i === activeIndex ? "#C2963A" : "rgba(255,255,255,0.35)",
+              transform: i === activeIndex ? "scale(1.25)" : "scale(1)",
+            }}
+            onClick={() => {
+              animate(scrollProgress, i, { type: "spring", stiffness: 200, damping: 30, mass: 1 });
+            }}
+          />
+        ))}
+      </div>
+      <p className="sm:hidden text-center text-xs mt-3 px-6 max-w-sm" style={{ color: "rgba(255,255,255,0.65)" }}>
+        Swipe to explore benefits
+      </p>
     </div>
   );
 }
@@ -158,7 +226,7 @@ function MembershipCard({ slide, index, total, progress, config }: CardProps) {
       style={{ x, rotate, y, scale, opacity, zIndex, background: "#fff" }}
       className={cn(
         "absolute rounded-2xl overflow-hidden group pointer-events-none",
-        "w-52 h-64 sm:w-64 sm:h-88 lg:w-80 lg:h-104"
+        "w-[13.5rem] h-[17.5rem] sm:w-64 sm:h-88 lg:w-80 lg:h-104"
       )}
     >
       <Image
@@ -166,7 +234,7 @@ function MembershipCard({ slide, index, total, progress, config }: CardProps) {
         src={slide.image}
         alt={slide.title}
         fill
-        sizes="(max-width: 640px) 208px, (max-width: 1024px) 256px, 320px"
+        sizes="(max-width: 640px) 216px, (max-width: 1024px) 256px, 320px"
         className="object-cover object-center pointer-events-none transition-transform duration-700 group-hover:scale-110"
       />
 
@@ -175,13 +243,13 @@ function MembershipCard({ slide, index, total, progress, config }: CardProps) {
       <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
 
       <Badge
-        className="absolute top-3 right-3 sm:top-5 sm:right-5 lg:top-6 lg:right-6 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-white/95 backdrop-blur-md text-xs font-bold uppercase tracking-widest"
+        className="absolute top-3 right-3 sm:top-5 sm:right-5 lg:top-6 lg:right-6 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-white/95 backdrop-blur-md text-[10px] sm:text-xs font-bold uppercase tracking-widest"
         style={{ color: SAGE_800 }}
       >
         {slide.badge}
       </Badge>
 
-      <div className="absolute bottom-5 left-3 right-3 sm:bottom-8 sm:left-5 sm:right-5 lg:bottom-10 lg:left-6 lg:right-6 text-white text-center sm:text-left">
+      <div className="absolute bottom-4 left-3 right-3 sm:bottom-8 sm:left-5 sm:right-5 lg:bottom-10 lg:left-6 lg:right-6 text-white text-left">
         <motion.p
           style={{ opacity: textOpacity }}
           className="text-sm sm:text-lg lg:text-xl font-semibold leading-tight mb-0.5 sm:mb-1 drop-shadow-md"
@@ -190,7 +258,7 @@ function MembershipCard({ slide, index, total, progress, config }: CardProps) {
         </motion.p>
         <motion.p
           style={{ opacity: textOpacity }}
-          className="hidden sm:block text-xs text-white/70 line-clamp-2 font-medium"
+          className="text-[11px] sm:text-xs text-white/75 line-clamp-2 font-medium"
         >
           {slide.description}
         </motion.p>

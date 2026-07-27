@@ -56,26 +56,26 @@ export default function LeadMagnetPage() {
         }}
       />
 
-      <main className="relative z-10 mx-auto max-w-7xl px-5 sm:px-8 py-12 md:py-16 lg:py-20">
+      <main className="relative z-10 mx-auto max-w-7xl px-4 sm:px-8 py-10 sm:py-12 md:py-16 lg:py-20">
         {/* Two columns: left = copy + book, right = big form */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 xl:gap-20 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 xl:gap-20 items-start">
           {/* Left column — badge, headline, body, book */}
-          <div className="flex flex-col gap-8 lg:gap-10">
+          <div className="flex flex-col gap-6 sm:gap-8 lg:gap-10">
             <div>
               <div
-                className="inline-flex items-center gap-2 mb-5 px-3.5 py-1.5 rounded-full"
+                className="inline-flex items-center gap-2 mb-4 sm:mb-5 px-3 py-1.5 rounded-full max-w-full"
                 style={{ background: "var(--color-accent-highlight)" }}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-white/80" />
-                <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-white">
+                <span className="w-1.5 h-1.5 rounded-full bg-white/80 shrink-0" />
+                <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.18em] sm:tracking-[0.28em] text-white truncate">
                   Free guide for Austin therapists
                 </span>
               </div>
               <h1
-                className="leading-[1.08] mb-5"
+                className="leading-[1.08] mb-4 sm:mb-5"
                 style={{
                   fontFamily: "var(--font-serif), Georgia, serif",
-                  fontSize: "clamp(2.5rem, 5.5vw, 3.75rem)",
+                  fontSize: "clamp(2.1rem, 7vw, 3.75rem)",
                   fontWeight: 400,
                   color: "#fff",
                   letterSpacing: "-0.01em",
@@ -93,7 +93,7 @@ export default function LeadMagnetPage() {
               </p>
             </div>
 
-            <div className="w-full max-w-[260px] sm:max-w-[280px]">
+            <div className="w-full max-w-[200px] sm:max-w-[280px] mx-auto lg:mx-0">
               <Image
                 src="/playbook-cover.svg"
                 alt="The Private Practice Playbook"
@@ -110,7 +110,7 @@ export default function LeadMagnetPage() {
           <div className="w-full lg:sticky lg:top-28">
             {!submitted ? (
               <div
-                className="rounded-2xl p-8 sm:p-10 lg:p-12"
+                className="rounded-2xl p-5 sm:p-10 lg:p-12"
                 style={{
                   background: "#F7F4EC",
                   border: "1px solid rgba(255,255,255,0.12)",

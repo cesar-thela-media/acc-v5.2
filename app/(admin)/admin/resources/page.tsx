@@ -10,6 +10,11 @@ import { PageHeader } from "@/components/dashboard/PageHeader";
 import { usePersistedState } from "@/lib/admin-store";
 import { downloadResourcePacket } from "@/lib/demoDownload";
 import {
+  DEMO_RESOURCES_KEY,
+  SEED_DEMO_RESOURCES,
+  type DemoResource,
+} from "@/lib/demo-resources";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -37,21 +42,13 @@ function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
   );
 }
 
-export const RESOURCES = [
-  { id: 1, title: "CBT Session Planning Template", category: "Clinical Tools", type: "PDF", published: "Apr 18, 2026", publishedSort: "2026-04-18", downloads: 14 },
-  { id: 2, title: "Psychoeducation: Anxiety Handout", category: "Handouts", type: "PDF", published: "Apr 15, 2026", publishedSort: "2026-04-15", downloads: 22 },
-  { id: 3, title: "Fee Setting for Private Practice", category: "Business", type: "Guide", published: "Apr 10, 2026", publishedSort: "2026-04-10", downloads: 19 },
-  { id: 4, title: "Attachment Styles Explainer", category: "Handouts", type: "PDF", published: "Apr 8, 2026", publishedSort: "2026-04-08", downloads: 31 },
-  { id: 5, title: "EMDR Phase Protocol Checklist", category: "Clinical Tools", type: "PDF", published: "Apr 3, 2026", publishedSort: "2026-04-03", downloads: 17 },
-  { id: 6, title: "Marketing for Therapists: Getting Started", category: "Business", type: "Guide", published: "Mar 28, 2026", publishedSort: "2026-03-28", downloads: 25 },
-  { id: 7, title: "Burnout Self-Assessment", category: "Self-Care", type: "Worksheet", published: "Mar 22, 2026", publishedSort: "2026-03-22", downloads: 38 },
-  { id: 8, title: "Trauma-Informed Care Intro", category: "Clinical Tools", type: "Video", published: "Feb 28, 2026", publishedSort: "2026-02-28", downloads: 42 },
-];
+/** Seed for admin overview charts */
+export const RESOURCES = SEED_DEMO_RESOURCES;
 
-type ResourceRow = (typeof RESOURCES)[number];
+type ResourceRow = DemoResource;
 
 export default function AdminResourcesPage() {
-  const [resources, setResources] = usePersistedState("admin-resources", RESOURCES);
+  const [resources, setResources] = usePersistedState(DEMO_RESOURCES_KEY, SEED_DEMO_RESOURCES);
   const [category, setCategory] = useState("All");
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
@@ -92,7 +89,7 @@ export default function AdminResourcesPage() {
   function openEdit(r: ResourceRow) {
     setEditId(r.id);
     setFormTitle(r.title);
-    setFormDescription(`${r.type} · ${r.category}`);
+    setFormDescription(r.description || `${r.type} · ${r.category}`);
     setFormCategory(r.category);
     setFormType(r.type);
     setFileName(null);
@@ -120,12 +117,14 @@ export default function AdminResourcesPage() {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const title = formTitle.trim() || "Untitled resource";
+    const description =
+      formDescription.trim() || `${formType} resource for Austin Clinician Circle members.`;
     const today = new Date();
     if (editId != null) {
       setResources((prev) =>
         prev.map((r) =>
           r.id === editId
-            ? { ...r, title, category: formCategory, type: formType }
+            ? { ...r, title, category: formCategory, type: formType, description }
             : r,
         ),
       );
@@ -143,6 +142,7 @@ export default function AdminResourcesPage() {
           }),
           publishedSort: today.toISOString().slice(0, 10),
           downloads: 0,
+          description,
         },
         ...prev,
       ]);

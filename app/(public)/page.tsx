@@ -25,9 +25,9 @@ const AMBER     = "#C2963A";   // muted warm amber — accents, CTAs
 
 /* ── Pricing features ─────────────────────────────────────── */
 const pricingFeatures = [
-  ["Monthly case consultation",       "Public directory listing"],
-  ["Full access to resource library", "Practice coaching support"],
-  ["Referral network connection",     "Continuing education discounts"],
+  ["Monthly case consultation",       "Member resource library"],
+  ["Full access to clinical tools",   "Practice coaching support"],
+  ["Peer consultation community",     "Continuing education discounts"],
   ["Private online community",        "Professional will designation"],
 ];
 
@@ -91,7 +91,7 @@ export default function HomePage() {
           />
 
           {/* Content */}
-          <div className="relative z-10 w-full" style={{ maxWidth: 1100, padding: "0 2rem 4.5rem", margin: "0 auto" }}>
+          <div className="relative z-10 w-full" style={{ maxWidth: 1100, padding: "0 1.25rem 3rem", margin: "0 auto" }}>
             {/* Eyebrow */}
             <p
               className="uppercase tracking-[0.28em] font-medium mb-6 text-xs"
@@ -107,11 +107,11 @@ export default function HomePage() {
             <h1
               style={{
                 fontFamily: "var(--font-serif), Georgia, serif",
-                fontSize: "clamp(2.5rem, 6.5vw, 5.5rem)",
+                fontSize: "clamp(2.15rem, 8.2vw, 5.5rem)",
                 fontWeight: 400,
                 letterSpacing: "-0.02em",
-                lineHeight: 1.0,
-                marginBottom: "1.75rem",
+                lineHeight: 1.05,
+                marginBottom: "1.25rem",
                 animation: "fadeInUp 0.75s 0.2s cubic-bezier(0.16,1,0.3,1) both",
               }}
             >
@@ -129,12 +129,12 @@ export default function HomePage() {
 
             {/* CTA row */}
             <div
-              className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5"
+              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-5 w-full sm:w-auto"
               style={{ animation: "fadeInUp 0.75s 0.36s cubic-bezier(0.16,1,0.3,1) both" }}
             >
               <Link
                 href="/join"
-                className="relative overflow-hidden group inline-flex items-center justify-center rounded-full text-sm font-medium"
+                className="relative overflow-hidden group inline-flex items-center justify-center rounded-full text-sm font-medium min-h-12 w-full sm:w-auto"
                 style={{ background: "#fff", color: "#1A1A1A", padding: "0.85rem 2.2rem" }}
               >
                 <span
@@ -148,7 +148,7 @@ export default function HomePage() {
               </Link>
               <Link
                 href="/what-we-offer"
-                className="text-sm font-medium transition-opacity hover:opacity-70"
+                className="text-sm font-medium transition-opacity hover:opacity-70 min-h-11 inline-flex items-center justify-center sm:justify-start px-1"
                 style={{ color: "rgba(255,255,255,0.85)" }}
               >
                 See what&apos;s included →
@@ -192,9 +192,9 @@ export default function HomePage() {
           }}
         />
         <div className="container-fluid relative z-10" style={{ maxWidth: 1100 }}>
-          <div className="grid grid-cols-12 gap-8 items-stretch">
+          <div className="grid grid-cols-12 gap-6 sm:gap-8 items-stretch">
             {/* Left: content */}
-            <div className="md:col-span-6 col-span-12 flex flex-col justify-center" data-aos="fade-in-up">
+            <div className="md:col-span-6 col-span-12 flex flex-col justify-center order-1" data-aos="fade-in-up">
               <p className="uppercase tracking-[0.28em] font-medium text-[11px] mb-5" style={{ color: `rgba(194,150,58,0.85)` }}>
                 Why Austin Clinician Circle exists
               </p>
@@ -236,12 +236,12 @@ export default function HomePage() {
             {/* Spacer column (matches about-us-09's own 6-1-5 split) */}
             <div className="lg:col-span-1 lg:block hidden" />
 
-            {/* Right: taller photo — unique path (not reused on who-we-are believe cards) */}
+            {/* Right: photo — shorter on mobile so the section doesn't leave a dead cream band */}
             <div
-              className="relative lg:col-span-5 md:col-span-6 col-span-12 rounded-2xl overflow-hidden"
+              className="relative lg:col-span-5 md:col-span-6 col-span-12 rounded-2xl overflow-hidden order-2"
               data-aos="fade-in"
               data-delay="150"
-              style={{ minHeight: "clamp(420px, 62vh, 560px)" }}
+              style={{ minHeight: "clamp(240px, 42vh, 560px)" }}
             >
               <Image
                 src="/private-practice-can.jpg"
@@ -498,19 +498,20 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Filmstrip — stays at the very bottom of the merged section */}
-        <div className="relative z-10 w-full overflow-hidden">
-          <div className="flex w-full items-end justify-center min-w-[600px] md:min-w-full">
+        {/* Filmstrip — scrollable on small screens (no forced 600px min-width) */}
+        <div className="relative z-10 w-full overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex w-full min-w-0 items-end justify-start md:justify-center">
             {ctaImages.map((image, i) => (
               <div
                 key={i}
-                className={`flex-1 min-w-[100px] md:min-w-[160px] lg:min-w-[200px] relative overflow-hidden ${image.height}`}
+                className={`relative overflow-hidden shrink-0 w-[28vw] max-w-[140px] md:flex-1 md:w-auto md:max-w-none md:min-w-[160px] lg:min-w-[200px] ${image.height}`}
               >
                 <Image
                   src={image.src}
                   alt=""
                   fill
                   className="object-cover grayscale hover:grayscale-0 duration-200"
+                  sizes="(max-width: 768px) 28vw, 20vw"
                 />
               </div>
             ))}

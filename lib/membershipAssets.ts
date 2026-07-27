@@ -28,9 +28,9 @@ export const MEMBERSHIP_ITEMS: MembershipItem[] = [
     img: "/membership-resources.jpg",
   },
   {
-    title: "Referral network",
-    badge: "Referrals",
-    body: "A trusted, vetted circle of clinicians. Get referred, refer with confidence. Build relationships that last longer than a single consult.",
+    title: "Peer consultation community",
+    badge: "Peers",
+    body: "Stay connected between meetings with clinicians who understand private practice — real-time support without a formal referral product yet.",
     img: "/membership-referral.jpg",
   },
   {
@@ -40,9 +40,9 @@ export const MEMBERSHIP_ITEMS: MembershipItem[] = [
     img: "/membership-ce.jpg",
   },
   {
-    title: "Public directory listing",
+    title: "Member directory (at launch)",
     badge: "Directory",
-    body: "A professionally crafted listing in our public clinician directory, searchable by specialty, format, and availability. Clients find you here.",
+    body: "A searchable clinician directory is planned for launch — specialty, format, and availability. Until then, focus stays on consultation and resources.",
     img: "/membership-directory.jpg",
   },
   {

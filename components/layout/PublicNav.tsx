@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/shadcn/button";
 import {
@@ -35,29 +35,26 @@ export function PublicNav() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
-  // Close the mobile menu when the route changes — adjusting state during
-  // render instead of an effect, since this syncs with a prop-like value.
-  const [prevPathname, setPrevPathname] = useState(pathname);
-  if (pathname !== prevPathname) {
-    setPrevPathname(pathname);
+  // Close mobile menu after navigation (effect avoids render-time setState / hydration risk).
+  useEffect(() => {
     setIsOpen(false);
-  }
+  }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-40 p-4 pt-4" style={{ background: "transparent" }}>
-      <div className="max-w-7xl mx-auto w-full">
+    <header className="sticky top-0 z-40 p-3 sm:p-4 pt-3 sm:pt-4" style={{ background: "transparent" }}>
+      <div className="max-w-7xl mx-auto w-full min-w-0">
         <nav
-          className="w-full flex items-center h-fit justify-between gap-3.5 lg:gap-6 p-2.5 rounded-full shadow-md mt-2 px-4"
+          className="w-full flex items-center h-fit justify-between gap-2 sm:gap-3.5 lg:gap-6 p-2 sm:p-2.5 rounded-full shadow-md mt-1 sm:mt-2 px-3 sm:px-4 min-w-0"
           style={{
             background: "var(--color-sage-800)",
             border: "1px solid rgba(255,255,255,0.12)",
             boxShadow: "0 8px 28px rgba(26,26,26,0.18), inset 0 1px 0 rgba(255,255,255,0.08)",
           }}
         >
-          <div className="flex items-center justify-center gap-5 pl-2">
-            {/* Logo */}
+          <div className="flex items-center justify-center gap-3 sm:gap-5 pl-1 sm:pl-2 min-w-0">
+            {/* Logo — smaller on phones so the pill nav doesn't dominate */}
             <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label="Austin Clinician Circle">
-              <Image src="/logo-mark.png" alt="" width={160} height={58} className="h-14 w-auto object-contain" priority />
+              <Image src="/logo-mark.png" alt="" width={160} height={58} className="h-10 sm:h-12 lg:h-14 w-auto object-contain" priority />
             </Link>
 
             <Separator
@@ -149,7 +146,7 @@ export function PublicNav() {
                     </SheetClose>
                   </SheetHeader>
                   <div className="px-4 py-2">
-                    <div className="flex flex-col gap-1.5">
+                    <div className="flex flex-col gap-1">
                       {navigationData.map((item) => {
                         const active = pathname === item.href;
                         return (
@@ -157,7 +154,7 @@ export function PublicNav() {
                             key={item.name}
                             href={item.href}
                             onClick={() => setIsOpen(false)}
-                            className="text-base rounded-lg px-2 py-1 transition-colors hover:bg-black/5"
+                            className="text-base rounded-xl px-3 py-3 min-h-12 flex items-center transition-colors hover:bg-black/5"
                             style={{ color: active ? "var(--color-sage-800)" : "rgba(26,26,26,0.8)", fontWeight: active ? 600 : 400 }}
                           >
                             {item.name}
@@ -165,11 +162,11 @@ export function PublicNav() {
                         );
                       })}
                     </div>
-                    <div className="mt-4 flex flex-col gap-2">
+                    <div className="mt-5 flex flex-col gap-2.5">
                       <Link
                         href="/admin/login"
                         onClick={() => setIsOpen(false)}
-                        className="text-center py-2.5 rounded-xl text-sm"
+                        className="text-center py-3 min-h-12 flex items-center justify-center rounded-xl text-sm"
                         style={{ color: "rgba(26,26,26,0.65)" }}
                       >
                         Admin
@@ -177,7 +174,7 @@ export function PublicNav() {
                       <Link
                         href="/sign-in"
                         onClick={() => setIsOpen(false)}
-                        className="text-center py-2.5 rounded-xl text-sm border"
+                        className="text-center py-3 min-h-12 flex items-center justify-center rounded-xl text-sm border"
                         style={{ borderColor: "rgba(45,59,44,0.2)", color: "#1A1A1A" }}
                       >
                         Log in
@@ -185,7 +182,7 @@ export function PublicNav() {
                       <Button
                         render={<Link href="/join" onClick={() => setIsOpen(false)} />}
                         nativeButton={false}
-                        className="w-full rounded-xl h-10 cursor-pointer"
+                        className="w-full rounded-xl h-12 cursor-pointer"
                         style={{ background: "var(--color-sage-800)", color: "#fff" }}
                       >
                         Join Austin Clinician Circle

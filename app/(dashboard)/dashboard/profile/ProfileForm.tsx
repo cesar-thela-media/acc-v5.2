@@ -42,7 +42,7 @@ export function ProfileForm({
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [email, setEmail] = useState(p?.email ?? "jane@example.com");
+  const [email, setEmail] = useState(p?.email ?? "sarah@restoredfamily.com");
   const [city, setCity] = useState(p?.city ?? "Austin, TX");
   const [licenseType, setLicenseType] = useState(p?.licenseType ?? "LPC");
   const [licenseNumber, setLicenseNumber] = useState(p?.licenseNumber ?? "LPC-80042");
@@ -183,24 +183,25 @@ export function ProfileForm({
               className="px-4 sm:px-5 pt-4 pb-0 border-b"
               style={{ borderColor: "rgba(45,59,44,0.08)", background: "var(--color-cream-100)" }}
             >
-              <TabsList className="w-full max-w-full justify-start flex-wrap h-auto gap-1 bg-transparent p-0">
-                <TabsTrigger value="account" className="gap-1.5 data-[state=active]:bg-white">
+              <TabsList className="w-full max-w-full justify-start flex-nowrap overflow-x-auto overscroll-x-contain h-auto gap-1 bg-transparent p-0 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <TabsTrigger value="account" className="gap-1.5 shrink-0 min-h-10 data-[state=active]:bg-white">
                   <User className="size-4 opacity-70" />
                   Account
                 </TabsTrigger>
-                <TabsTrigger value="credentials" className="gap-1.5 data-[state=active]:bg-white">
+                <TabsTrigger value="credentials" className="gap-1.5 shrink-0 min-h-10 data-[state=active]:bg-white">
                   <BadgeCheck className="size-4 opacity-70" />
                   Credentials
                 </TabsTrigger>
-                <TabsTrigger value="practice" className="gap-1.5 data-[state=active]:bg-white">
+                <TabsTrigger value="practice" className="gap-1.5 shrink-0 min-h-10 data-[state=active]:bg-white">
                   <Briefcase className="size-4 opacity-70" />
                   Practice
                 </TabsTrigger>
-                <TabsTrigger value="availability" className="gap-1.5 data-[state=active]:bg-white">
+                <TabsTrigger value="availability" className="gap-1.5 shrink-0 min-h-10 data-[state=active]:bg-white">
                   <Calendar className="size-4 opacity-70" />
-                  Availability
+                  <span className="hidden sm:inline">Availability</span>
+                  <span className="sm:hidden">Avail.</span>
                 </TabsTrigger>
-                <TabsTrigger value="security" className="gap-1.5 data-[state=active]:bg-white">
+                <TabsTrigger value="security" className="gap-1.5 shrink-0 min-h-10 data-[state=active]:bg-white">
                   <Lock className="size-4 opacity-70" />
                   Security
                 </TabsTrigger>
@@ -543,20 +544,16 @@ export function ProfileForm({
                       Password is managed by your sign-in provider
                     </p>
                   </div>
-                  <div className="flex flex-col gap-3">
-                    <Input label="Current password" type="password" name="currentPassword" disabled autoComplete="current-password" />
-                    <Input label="New password" type="password" name="newPassword" disabled autoComplete="new-password" />
-                    <Input label="Confirm password" type="password" name="confirmPassword" disabled autoComplete="new-password" />
-                  </div>
-                  <p className="text-xs mt-3" style={{ color: "var(--color-text-tertiary)" }}>
-                    Passwords are managed by the sign-in provider (Clerk) or demo cookie auth.
+                  <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>
+                    Password changes are handled at sign-in. Contact Sarah if you need help accessing
+                    your account.
                   </p>
                   <a
-                    href="/sign-in"
+                    href="mailto:sarah@restoredfamily.com"
                     className="inline-flex mt-3 text-sm font-semibold underline"
                     style={{ color: "var(--color-sage-700)", textUnderlineOffset: "3px" }}
                   >
-                    Open sign-in settings →
+                    Email Sarah →
                   </a>
                 </CardBox>
                 <CardBox>

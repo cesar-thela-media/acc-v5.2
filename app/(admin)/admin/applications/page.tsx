@@ -12,6 +12,10 @@ import {
   type Application,
   type AppStatus,
 } from "@/lib/applications";
+import {
+  removeMemberByEmail,
+  upsertMemberFromApplication,
+} from "@/lib/demo-members";
 
 /** Re-export seed list for admin overview charts / static imports */
 export { SEED_APPLICATIONS as APPLICATIONS, type Application, type AppStatus } from "@/lib/applications";
@@ -35,7 +39,16 @@ export default function AdminApplicationsPage() {
   const [openId, setOpenId] = useState<number | null>(null);
 
   function decide(id: number, decision: AppStatus) {
+    const app = apps.find((a) => a.id === id);
     setApps((prev) => prev.map((a) => (a.id === id ? { ...a, status: decision } : a)));
+    // Demo walkthrough: approve adds to roster; reject removes if they were added
+    if (app) {
+      if (decision === "approved") {
+        upsertMemberFromApplication({ ...app, status: "approved" });
+      } else if (decision === "rejected") {
+        removeMemberByEmail(app.email);
+      }
+    }
     setOpenId(null);
   }
 
@@ -96,7 +109,7 @@ export default function AdminApplicationsPage() {
         </div>
       </CardBox>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 items-start w-full min-w-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 items-start w-full min-w-0">
         {COLUMNS.map((col) => {
           const items = apps.filter((a) => a.status === col.key && matchesSearch(a));
           return (

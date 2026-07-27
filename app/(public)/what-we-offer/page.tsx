@@ -15,12 +15,12 @@ const SAGE_600 = "#4A5E48";
 const AMBER = "#C2963A";
 const PARCHMENT = "#F0EDE6";
 
-const pricingFeatures = ["Monthly case consultation", "CEU trainings", "Clinical resource library", "Public directory listing", "Referral network", "Practice guidance", "Coaching with Sarah", "Professional will designation", "Private online community"];
+const pricingFeatures = ["Monthly case consultation", "CEU trainings", "Clinical resource library", "Member directory (at launch)", "Peer consultation community", "Practice guidance", "Coaching with Sarah", "Professional will designation", "Private online community"];
 
 const offerDetails = [
   "A structured consultation group meets the first Thursday of every month from 9:00 to 10:30am. Bring your difficult cases, process with trusted peers, and leave with a new perspective.",
   "Access to continuing education content aligned with your licensure requirements. Curated for practicing clinicians and designed for professional growth.",
-  "Your profile in the public directory, searchable by specialty, modality, location, and availability. A trusted source for referrals from clients and colleagues.",
+  "A member directory (launching soon) searchable by specialty, modality, location, and availability — so referrals stay within a trusted clinical community.",
   "Mindfulness practices and burnout prevention structures designed specifically for therapists carrying heavy caseloads. Because your sustainability matters too.",
 ];
 

@@ -29,31 +29,17 @@ import {
 } from "@/components/ui/shadcn/table";
 import { usePersistedState } from "@/lib/admin-store";
 
-export type Status = "active" | "inactive" | "suspended";
+import {
+  DEMO_MEMBERS_KEY,
+  SEED_DEMO_MEMBERS,
+  type DemoMember,
+  type DemoMemberStatus,
+} from "@/lib/demo-members";
 
-export type Member = {
-  id: number;
-  name: string;
-  credentials: string;
-  email: string;
-  joined: string;
-  joinedSort: string;
-  status: Status;
-  accepting: boolean;
-};
-
-export const ALL_MEMBERS: Member[] = [
-  { id: 1, name: "Dr. Maya Okonkwo", credentials: "LCSW", email: "maya@example.com", joined: "Jan 12, 2026", joinedSort: "2026-01-12", status: "active", accepting: true },
-  { id: 2, name: "James Whitfield", credentials: "LPC", email: "james@example.com", joined: "Jan 28, 2026", joinedSort: "2026-01-28", status: "active", accepting: false },
-  { id: 3, name: "Sofia Reyes", credentials: "LMFT", email: "sofia@example.com", joined: "Feb 5, 2026", joinedSort: "2026-02-05", status: "active", accepting: true },
-  { id: 4, name: "Dr. Claire Hutchinson", credentials: "PhD", email: "claire@example.com", joined: "Feb 14, 2026", joinedSort: "2026-02-14", status: "active", accepting: true },
-  { id: 5, name: "Marcus Lee", credentials: "LPC", email: "marcus@example.com", joined: "Apr 15, 2026", joinedSort: "2026-04-15", status: "active", accepting: true },
-  { id: 6, name: "Priya Nair", credentials: "LCSW", email: "priya@example.com", joined: "Apr 10, 2026", joinedSort: "2026-04-10", status: "active", accepting: false },
-  { id: 7, name: "Thomas Garza", credentials: "LMFT", email: "thomas@example.com", joined: "Apr 3, 2026", joinedSort: "2026-04-03", status: "active", accepting: true },
-  { id: 8, name: "Rachel Bloom", credentials: "LPC", email: "rachel@example.com", joined: "Mar 20, 2026", joinedSort: "2026-03-20", status: "active", accepting: true },
-  { id: 9, name: "Dr. Ade Kolade", credentials: "PsyD", email: "ade@example.com", joined: "Mar 8, 2026", joinedSort: "2026-03-08", status: "inactive", accepting: false },
-  { id: 10, name: "Christine Walsh", credentials: "LPC-S", email: "christine@example.com", joined: "Feb 22, 2026", joinedSort: "2026-02-22", status: "suspended", accepting: false },
-];
+export type Status = DemoMemberStatus;
+export type Member = DemoMember;
+/** Seed roster for overview charts */
+export const ALL_MEMBERS = SEED_DEMO_MEMBERS;
 
 const STATUS_LABELS: Record<Status, string> = {
   active: "Active",
@@ -111,27 +97,22 @@ export default function AdminMembersPage() {
   const [search, setSearch] = useState(() => searchParams.get("q") ?? "");
   const [statusFilter, setStatusFilter] = useState<"all" | Status>("all");
   const [sorting, setSorting] = useState<SortingState>([{ id: "joinedSort", desc: true }]);
-  const [statusOverrides, setStatusOverrides] = usePersistedState<Record<number, Status>>(
-    "admin-members",
-    {},
+  const [members, setMembers] = usePersistedState<Member[]>(
+    DEMO_MEMBERS_KEY,
+    SEED_DEMO_MEMBERS,
   );
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
   function setMemberStatus(id: number, status: Status) {
-    setStatusOverrides((prev) => ({ ...prev, [id]: status }));
+    setMembers((prev) => prev.map((m) => (m.id === id ? { ...m, status } : m)));
   }
-
-  const dataWithLiveStatus = useMemo(
-    () => ALL_MEMBERS.map((m) => ({ ...m, status: statusOverrides[m.id] ?? m.status })),
-    [statusOverrides],
-  );
 
   const filteredByStatus = useMemo(
     () =>
       statusFilter === "all"
-        ? dataWithLiveStatus
-        : dataWithLiveStatus.filter((m) => m.status === statusFilter),
-    [dataWithLiveStatus, statusFilter],
+        ? members
+        : members.filter((m) => m.status === statusFilter),
+    [members, statusFilter],
   );
 
   const columns = useMemo(
@@ -146,7 +127,7 @@ export default function AdminMembersPage() {
   );
 
   const table = useReactTable({
-    data: filteredByStatus,
+    data: filteredByStatus as Member[],
     columns,
     state: { sorting, globalFilter: search, pagination },
     onSortingChange: setSorting,

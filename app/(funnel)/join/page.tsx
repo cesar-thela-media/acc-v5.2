@@ -202,18 +202,18 @@ export default function JoinPage() {
         style={{ background: "radial-gradient(ellipse 80% 60% at 50% 28%, rgba(194,150,58,0.42) 0%, rgba(194,150,58,0.18) 45%, transparent 74%)" }}
       />
 
-      <div className="relative max-w-7xl mx-auto px-5 lg:px-16 xl:px-16">
-        <div className="flex lg:flex-row flex-col items-start justify-center gap-10 lg:gap-16">
-          <div className="w-full lg:flex-[1.4] sm:py-8 py-4">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-5 lg:px-16 xl:px-16">
+        <div className="flex lg:flex-row flex-col-reverse items-start justify-center gap-6 sm:gap-10 lg:gap-16">
+          <div className="w-full lg:flex-[1.4] sm:py-8 py-2">
             <div
-              className="relative rounded-2xl p-6 sm:p-8"
+              className="relative rounded-2xl p-5 sm:p-8"
               style={{ background: "#fff", border: "1px solid rgba(197,200,190,0.7)" }}
             >
-              <div className="flex items-center justify-center gap-2 mb-10">
+              <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-8 sm:mb-10">
                 {STEPS.map((label, i) => (
-                  <div key={label} className="flex items-center gap-2">
+                  <div key={label} className="flex items-center gap-1.5 sm:gap-2 min-w-0">
                     <div
-                      className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium transition-colors"
+                      className="w-7 h-7 shrink-0 rounded-full flex items-center justify-center text-xs font-medium transition-colors"
                       style={{
                         background: i <= step ? "var(--color-accent-highlight)" : "var(--color-cream-300)",
                         color: i <= step ? "#fff" : "var(--color-text-tertiary)",
@@ -221,10 +221,15 @@ export default function JoinPage() {
                     >
                       {i < step ? "✓" : i + 1}
                     </div>
-                    <span className="text-xs font-medium hidden sm:block" style={{ color: i === step ? "var(--color-accent-highlight)" : "var(--color-text-tertiary)" }}>
+                    <span
+                      className="text-[10px] sm:text-xs font-medium max-w-[4.5rem] sm:max-w-none truncate sm:overflow-visible"
+                      style={{ color: i === step ? "var(--color-accent-highlight)" : "var(--color-text-tertiary)" }}
+                    >
                       {label}
                     </span>
-                    {i < STEPS.length - 1 && <span className="w-4 h-px hidden sm:block" style={{ background: "var(--color-cream-300)" }} />}
+                    {i < STEPS.length - 1 && (
+                      <span className="w-2 sm:w-4 h-px shrink-0" style={{ background: "var(--color-cream-300)" }} />
+                    )}
                   </div>
                 ))}
               </div>

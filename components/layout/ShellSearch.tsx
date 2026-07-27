@@ -140,9 +140,14 @@ export function ShellSearch({
           }}
         >
           {results.length === 0 ? (
-            <p className="px-4 py-6 text-sm text-center" style={{ color: "var(--color-text-tertiary)" }}>
-              No results for “{query.trim()}”
-            </p>
+            <div className="px-4 py-6 text-center">
+              <p className="text-sm" style={{ color: "var(--color-text-tertiary)" }}>
+                No results for “{query.trim()}”
+              </p>
+              <p className="text-xs mt-2" style={{ color: "var(--color-text-tertiary)" }}>
+                Try a member name, event title, or page like “billing”
+              </p>
+            </div>
           ) : (
             groups.map(([group, hits]) => (
               <div key={group} className="pb-1">

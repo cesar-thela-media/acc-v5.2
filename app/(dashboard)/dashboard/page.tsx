@@ -1,55 +1,16 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import {
-  CalendarDays,
-  BookOpen,
-  Folder,
-  CreditCard,
-  ArrowUpRight,
-  ArrowRight,
-  Users,
-  FileText,
-} from "lucide-react";
-import { Badge } from "@/components/ui/shadcn/badge";
-import { Separator } from "@/components/ui/shadcn/separator";
+import { ArrowUpRight, ArrowRight, Users } from "lucide-react";
 import { CardBox } from "@/components/dashboard/CardBox";
-import { StatCard } from "@/components/dashboard/StatCard";
+import { DashboardGreeting } from "@/components/dashboard/DashboardGreeting";
+import { DashboardOverviewPanels } from "@/components/dashboard/DashboardOverviewPanels";
+import { DashboardOverviewStats } from "@/components/dashboard/DashboardOverviewStats";
 import { hasClerkCredentials } from "@/lib/env";
-import {
-  daysFromNow,
-  formatShortDate,
-  formatShortWeekdayDate,
-  nextFirstWeekdayOfMonth,
-} from "@/lib/relativeDates";
+import { daysFromNow, formatShortDate } from "@/lib/relativeDates";
 
-const THURSDAY = 4;
 const AMBER = "#C2963A";
 const SAGE = "#4A5E48";
-
-const upcomingEvents = [
-  {
-    title: "Monthly case consultation",
-    date: `${formatShortWeekdayDate(nextFirstWeekdayOfMonth(THURSDAY, 0))} · 9:00–10:30am`,
-    rsvp: true,
-  },
-  {
-    title: "Practice building workshop",
-    date: `${formatShortWeekdayDate(daysFromNow(22))} · 12:00–1:00pm`,
-    rsvp: false,
-  },
-  {
-    title: "Trauma-informed care CEU",
-    date: `${formatShortWeekdayDate(daysFromNow(31))} · 10:00am–12:00pm`,
-    rsvp: false,
-  },
-];
-
-const recentResources = [
-  { title: "CBT Session Planning Template", category: "Clinical" },
-  { title: "Fee Setting for Private Practice", category: "Business" },
-  { title: "Psychoeducation: Anxiety Handout", category: "Handouts" },
-];
 
 export default async function DashboardPage() {
   let firstName = "there";
@@ -64,13 +25,8 @@ export default async function DashboardPage() {
     }
   }
 
-  const hour = new Date().getHours();
-  const greeting =
-    hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-
   return (
     <div className="flex flex-col gap-4 sm:gap-5 md:gap-6 w-full min-w-0 max-w-full">
-      {/* Template-style hero banner (ACC sage) */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 sm:gap-5 w-full min-w-0">
         <div className="xl:col-span-7 min-w-0">
           <CardBox
@@ -102,7 +58,7 @@ export default async function DashboardPage() {
                     color: "#fff",
                   }}
                 >
-                  {greeting}, {firstName}.
+                  <DashboardGreeting firstName={firstName} />
                 </h1>
                 <p className="text-sm mt-2 max-w-md" style={{ color: "rgba(255,255,255,0.68)" }}>
                   Your membership hub for consultation, resources, CEUs, and billing.
@@ -120,132 +76,12 @@ export default async function DashboardPage() {
           </CardBox>
         </div>
 
-        <div className="xl:col-span-5 grid grid-cols-2 gap-3 sm:gap-4 min-w-0">
-          <StatCard
-            title="Events this month"
-            value={upcomingEvents.length}
-            hint="Consultation + CEU"
-            icon={CalendarDays}
-            href="/dashboard/events"
-            accent="sage"
-          />
-          <StatCard
-            title="Membership"
-            value="$79"
-            hint={`Renews ${formatShortDate(daysFromNow(18))}`}
-            icon={CreditCard}
-            href="/dashboard/billing"
-            accent="amber"
-          />
-          <StatCard
-            title="Resources"
-            value={recentResources.length}
-            hint="Recently added"
-            icon={BookOpen}
-            href="/dashboard/resources"
-            accent="sage"
-          />
-          <StatCard
-            title="Certificates"
-            value="Files"
-            hint="CEU downloads"
-            icon={Folder}
-            href="/dashboard/files"
-            accent="success"
-          />
-        </div>
+        <DashboardOverviewStats />
       </div>
 
-      {/* Two-column content cards (template analytics layout) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 w-full min-w-0">
-        <CardBox className="!p-0 overflow-hidden" padding={false}>
-          <div className="flex items-center justify-between px-5 pt-5 pb-3">
-            <div>
-              <h2 className="text-base font-semibold" style={{ color: SAGE }}>
-                Upcoming events
-              </h2>
-              <p className="text-xs mt-0.5" style={{ color: "var(--color-text-tertiary)" }}>
-                Calendar & consultation
-              </p>
-            </div>
-            <Link href="/dashboard/events" className="text-xs font-semibold" style={{ color: AMBER }}>
-              View all
-            </Link>
-          </div>
-          <Separator style={{ background: "rgba(45,59,44,0.08)" }} />
-          <div className="px-5 py-4 flex flex-col gap-4">
-            {upcomingEvents.map((ev) => (
-              <div key={ev.title} className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="text-sm font-medium" style={{ color: "var(--color-text-primary)" }}>
-                    {ev.title}
-                  </p>
-                  <p className="text-xs mt-0.5" style={{ color: "var(--color-text-tertiary)" }}>
-                    {ev.date}
-                  </p>
-                </div>
-                {ev.rsvp ? (
-                  <Badge className="bg-[rgba(74,124,89,0.12)] text-[var(--color-success)] border-0 shrink-0">
-                    RSVP&apos;d
-                  </Badge>
-                ) : (
-                  <Link href="/dashboard/events" className="shrink-0">
-                    <Badge
-                      variant="outline"
-                      className="border-[rgba(194,150,58,0.35)] text-[var(--color-sage-700)]"
-                    >
-                      RSVP
-                    </Badge>
-                  </Link>
-                )}
-              </div>
-            ))}
-          </div>
-        </CardBox>
+      {/* Shared demo stores: same events/resources as admin */}
+      <DashboardOverviewPanels />
 
-        <CardBox className="!p-0 overflow-hidden" padding={false}>
-          <div className="flex items-center justify-between px-5 pt-5 pb-3">
-            <div>
-              <h2 className="text-base font-semibold" style={{ color: SAGE }}>
-                Resource library
-              </h2>
-              <p className="text-xs mt-0.5" style={{ color: "var(--color-text-tertiary)" }}>
-                Latest clinical tools
-              </p>
-            </div>
-            <Link
-              href="/dashboard/resources"
-              className="text-xs font-semibold"
-              style={{ color: AMBER }}
-            >
-              View all
-            </Link>
-          </div>
-          <Separator style={{ background: "rgba(45,59,44,0.08)" }} />
-          <div className="px-5 py-4 flex flex-col gap-4">
-            {recentResources.map((r) => (
-              <div key={r.title} className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3 min-w-0">
-                  <span
-                    className="flex size-9 items-center justify-center rounded-lg shrink-0"
-                    style={{ background: "rgba(74,94,72,0.08)", color: SAGE }}
-                  >
-                    <FileText className="size-4" />
-                  </span>
-                  <p className="text-sm truncate" style={{ color: "var(--color-text-primary)" }}>
-                    {r.title}
-                  </p>
-                </div>
-                <Badge variant="secondary" className="font-normal shrink-0">
-                  {r.category}
-                </Badge>
-              </div>
-            ))}
-          </div>
-        </CardBox>
-      </div>
-
-      {/* Membership strip */}
       <CardBox
         className="!py-5"
         style={{

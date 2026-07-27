@@ -1,9 +1,24 @@
 /**
  * Global search index for member + admin AppShell search bars.
- * Results navigate to real routes (optional ?q= for page-level filters).
+ * Rebuilds from demo localStorage keys on each query so new events/resources/members appear.
  */
 
-import { EVENTS } from "@/lib/events";
+import { SEED_DEMO_EVENTS, DEMO_EVENTS_KEY, type DemoEvent } from "@/lib/demo-events";
+import {
+  SEED_DEMO_RESOURCES,
+  DEMO_RESOURCES_KEY,
+  type DemoResource,
+} from "@/lib/demo-resources";
+import {
+  SEED_DEMO_MEMBERS,
+  DEMO_MEMBERS_KEY,
+  type DemoMember,
+} from "@/lib/demo-members";
+import {
+  SEED_APPLICATIONS,
+  APPLICATIONS_STORAGE_KEY,
+  type Application,
+} from "@/lib/applications";
 
 export type ShellSearchScope = "member" | "admin";
 
@@ -110,77 +125,41 @@ const ADMIN_PAGES: ShellSearchHit[] = [
   },
 ];
 
-/** Mirrors member dashboard resource library titles for search */
-const MEMBER_RESOURCES: { title: string; category: string; description: string }[] = [
-  { title: "CBT Session Planning Template", category: "Clinical Tools", description: "planning CBT sessions" },
-  { title: "Psychoeducation: Anxiety Handout", category: "Handouts", description: "anxiety cycle handout" },
-  { title: "Fee Setting for Private Practice", category: "Business", description: "fees private practice" },
-  { title: "Attachment Styles Explainer", category: "Handouts", description: "attachment styles" },
-  { title: "EMDR Phase Protocol Checklist", category: "Clinical Tools", description: "EMDR protocol" },
-  { title: "Marketing for Therapists: Getting Started", category: "Business", description: "marketing caseload" },
-  { title: "Burnout Self-Assessment", category: "Self-Care", description: "burnout assessment" },
-  { title: "Gottman Four Horsemen Handout", category: "Handouts", description: "gottman couples" },
-  { title: "Mindfulness Practices for Clinicians", category: "Self-Care", description: "mindfulness self-care" },
-  { title: "Insurance vs. Private Pay: Pros & Cons", category: "Business", description: "insurance private pay" },
-  { title: "Trauma-Informed Care Intro", category: "Clinical Tools", description: "trauma informed" },
-  { title: "Intake Form Template", category: "Clinical Tools", description: "intake form" },
-];
-
-/** Static admin roster keywords (matches mock members list) */
-const ADMIN_MEMBERS = [
-  "Dr. Maya Okonkwo LCSW",
-  "James Whitfield LPC",
-  "Sofia Reyes LMFT",
-  "Dr. Claire Hutchinson PhD",
-  "Marcus Lee LPC",
-  "Priya Nair LCSW",
-  "Thomas Garza LMFT",
-  "Rachel Bloom LPC",
-  "Dr. Ade Kolade PsyD",
-  "Christine Walsh LPC-S",
-];
-
-const ADMIN_APPLICANTS = [
-  "Lauren Park LPC",
-  "DeShawn Morris LCSW",
-  "Ingrid Larsson LMFT",
-  "Tamara Wells LPC",
-  "Ryan Calloway LPC",
-];
-
-/** Pull live join submissions into admin search when available */
-function liveApplicantHits(): ShellSearchHit[] {
-  if (typeof window === "undefined") return [];
+function readStorage<T>(key: string, fallback: T): T {
+  if (typeof window === "undefined") return fallback;
   try {
-    const raw = window.localStorage.getItem("acc-applications");
-    if (!raw) return [];
-    const list = JSON.parse(raw) as {
-      id: number;
-      name: string;
-      credentials?: string;
-      source?: string;
-      email?: string;
-    }[];
-    if (!Array.isArray(list)) return [];
-    return list
-      .filter((a) => a.source === "join")
-      .map((a) => ({
-        id: `a-app-live-${a.id}`,
-        title: a.credentials ? `${a.name} ${a.credentials}` : a.name,
-        subtitle: a.email ? `Application · ${a.email}` : "Application",
-        href: `/admin/applications?q=${encodeURIComponent(a.name.split(" ")[0] ?? a.name)}`,
-        group: "Applications",
-        keywords: `${a.name} ${a.credentials ?? ""} ${a.email ?? ""} application applicant join`,
-      }));
+    const raw = window.localStorage.getItem(key);
+    if (raw == null) return fallback;
+    const parsed = JSON.parse(raw) as T;
+    if (Array.isArray(parsed) && parsed.length === 0) return fallback;
+    return parsed ?? fallback;
   } catch {
-    return [];
+    return fallback;
   }
+}
+
+function liveEvents(): DemoEvent[] {
+  return readStorage(DEMO_EVENTS_KEY, SEED_DEMO_EVENTS);
+}
+
+function liveResources(): DemoResource[] {
+  return readStorage(DEMO_RESOURCES_KEY, SEED_DEMO_RESOURCES);
+}
+
+function liveMembers(): DemoMember[] {
+  return readStorage(DEMO_MEMBERS_KEY, SEED_DEMO_MEMBERS);
+}
+
+function liveApplications(): Application[] {
+  return readStorage(APPLICATIONS_STORAGE_KEY, SEED_APPLICATIONS);
 }
 
 function buildMemberIndex(): ShellSearchHit[] {
   const hits: ShellSearchHit[] = [...MEMBER_PAGES];
+  const events = liveEvents();
+  const resources = liveResources();
 
-  for (const ev of EVENTS) {
+  for (const ev of events) {
     hits.push({
       id: `m-ev-${ev.id}`,
       title: ev.title,
@@ -191,9 +170,9 @@ function buildMemberIndex(): ShellSearchHit[] {
     });
   }
 
-  for (const r of MEMBER_RESOURCES) {
+  for (const r of resources) {
     hits.push({
-      id: `m-res-${r.title}`,
+      id: `m-res-${r.id}`,
       title: r.title,
       subtitle: r.category,
       href: `/dashboard/resources?q=${encodeURIComponent(r.title)}`,
@@ -202,7 +181,7 @@ function buildMemberIndex(): ShellSearchHit[] {
     });
   }
 
-  for (const ev of EVENTS.filter((e) => e.ceus)) {
+  for (const ev of events.filter((e) => e.ceus)) {
     hits.push({
       id: `m-file-${ev.id}`,
       title: `${ev.title} certificate`,
@@ -218,60 +197,57 @@ function buildMemberIndex(): ShellSearchHit[] {
 
 function buildAdminIndex(): ShellSearchHit[] {
   const hits: ShellSearchHit[] = [...ADMIN_PAGES];
+  const members = liveMembers();
+  const apps = liveApplications();
+  const events = liveEvents();
+  const resources = liveResources();
 
-  ADMIN_MEMBERS.forEach((name, i) => {
+  for (const m of members) {
     hits.push({
-      id: `a-mem-${i}`,
-      title: name,
-      subtitle: "Member roster",
-      href: `/admin/members?q=${encodeURIComponent(name.split(" ")[0] ?? name)}`,
+      id: `a-mem-${m.id}`,
+      title: `${m.name} ${m.credentials}`,
+      subtitle: `Member · ${m.email}`,
+      href: `/admin/members?q=${encodeURIComponent(m.name.split(" ")[0] ?? m.name)}`,
       group: "Members",
-      keywords: `${name} member roster clinician`,
+      keywords: `${m.name} ${m.credentials} ${m.email} member roster clinician ${m.status}`,
     });
-  });
+  }
 
-  ADMIN_APPLICANTS.forEach((name, i) => {
+  for (const a of apps) {
     hits.push({
-      id: `a-app-${i}`,
-      title: name,
-      subtitle: "Application",
-      href: `/admin/applications?q=${encodeURIComponent(name.split(" ")[0] ?? name)}`,
+      id: `a-app-${a.id}`,
+      title: a.credentials ? `${a.name}, ${a.credentials}` : a.name,
+      subtitle: `Application · ${a.status}${a.source === "join" ? " · new" : ""}`,
+      href: `/admin/applications?q=${encodeURIComponent(a.name.split(" ")[0] ?? a.name)}`,
       group: "Applications",
-      keywords: `${name} application applicant pending approve`,
+      keywords: `${a.name} ${a.credentials} ${a.email} application applicant ${a.status} ${a.source ?? ""}`,
     });
-  });
+  }
 
-  hits.push(...liveApplicantHits());
-
-  for (const ev of EVENTS) {
+  for (const ev of events) {
     hits.push({
       id: `a-ev-${ev.id}`,
       title: ev.title,
       subtitle: `Event · ${ev.category}`,
-      href: `/admin/events?q=${encodeURIComponent(ev.title)}`,
+      href: `/admin/events`,
       group: "Events",
-      keywords: `${ev.title} ${ev.category} calendar event schedule`,
+      keywords: `${ev.title} ${ev.category} calendar event schedule ${ev.date}`,
     });
   }
 
-  for (const r of MEMBER_RESOURCES) {
+  for (const r of resources) {
     hits.push({
-      id: `a-res-${r.title}`,
+      id: `a-res-${r.id}`,
       title: r.title,
       subtitle: "Admin resources",
       href: `/admin/resources?q=${encodeURIComponent(r.title)}`,
       group: "Resources",
-      keywords: `${r.title} ${r.category} resource publish`,
+      keywords: `${r.title} ${r.category} ${r.description} resource publish`,
     });
   }
 
   return hits;
 }
-
-const INDEX: Record<ShellSearchScope, ShellSearchHit[]> = {
-  member: buildMemberIndex(),
-  admin: buildAdminIndex(),
-};
 
 function scoreHit(hit: ShellSearchHit, tokens: string[]): number {
   const hay = `${hit.title} ${hit.subtitle ?? ""} ${hit.keywords}`.toLowerCase();
@@ -281,7 +257,7 @@ function scoreHit(hit: ShellSearchHit, tokens: string[]): number {
     if (hit.title.toLowerCase().includes(t)) score += 10;
     else if ((hit.subtitle ?? "").toLowerCase().includes(t)) score += 5;
     else if (hay.includes(t)) score += 2;
-    else return 0; // require all tokens somewhere
+    else return 0;
   }
   return score;
 }
@@ -290,7 +266,9 @@ export function searchShell(query: string, scope: ShellSearchScope, limit = 12):
   const q = query.trim().toLowerCase();
   if (!q) return [];
   const tokens = q.split(/\s+/).filter(Boolean);
-  const scored = INDEX[scope]
+  // Rebuild every search so localStorage mutations are visible immediately
+  const index = scope === "admin" ? buildAdminIndex() : buildMemberIndex();
+  const scored = index
     .map((hit) => ({ hit, score: scoreHit(hit, tokens) }))
     .filter((x) => x.score > 0)
     .sort((a, b) => b.score - a.score || a.hit.title.localeCompare(b.hit.title));

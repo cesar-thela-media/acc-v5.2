@@ -34,6 +34,27 @@ export function AdminNav({ viewerName = "Account", viewerPhotoUrl, children }: P
       signOutRedirectTo="/admin/login"
       signOutLabel="Log out"
     >
+      <div
+        className="mx-0 mb-3 sm:mb-4 rounded-xl px-3 py-2 sm:px-3.5 sm:py-2.5 text-[11px] sm:text-sm leading-snug"
+        style={{
+          background: "rgba(184,137,46,0.12)",
+          border: "1px solid rgba(184,137,46,0.28)",
+          color: "var(--color-sage-800)",
+        }}
+        role="status"
+      >
+        <span className="font-semibold" style={{ color: "#9A7426" }}>
+          Sample data
+        </span>
+        <span style={{ color: "var(--color-text-secondary)" }}>
+          <span className="sm:hidden"> — demo content; stays in this browser.</span>
+          <span className="hidden sm:inline">
+            {" "}
+            — roster, applications, events, and resources are demo content for this preview. Changes stay
+            in this browser only.
+          </span>
+        </span>
+      </div>
       {children}
     </AppShell>
   );

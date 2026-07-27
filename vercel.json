@@ -1,8 +1,9 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "buildCommand": "npx prisma generate && next build",
   "installCommand": "npm install",
-  "regions": ["sin1"],
+  "regions": ["iad1"],
   "build": {
     "env": {
       "DATABASE_URL": "postgresql://localhost:5432/build-only"

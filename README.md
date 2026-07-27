@@ -35,6 +35,23 @@ Open [http://localhost:3000](http://localhost:3000).
 
 **No environment variables are required to run locally.** Every integration (Clerk, Stripe, Resend, Robolly, the database) has a graceful fallback — the app runs entirely on mock data and a demo cookie-based sign-in until you configure real credentials. Copy `.env.example` to `.env.local` and fill in only the integrations you're actively testing.
 
+### Deploy on Vercel
+
+1. Import this repo in [Vercel](https://vercel.com/new) (Framework Preset: **Next.js**).
+2. Leave env vars empty for a pure demo deploy — build uses a dummy `DATABASE_URL` via `vercel.json` / `postinstall` so Prisma client generation succeeds without a real DB.
+3. Optional production env (Project → Settings → Environment Variables):
+
+| Variable | Required for |
+|---|---|
+| `NEXT_PUBLIC_APP_URL` | Correct absolute URLs / OG (auto-falls back to `VERCEL_URL`) |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, `CLERK_ADMIN_EMAILS` | Real auth + admin gate |
+| `DATABASE_URL` | Prisma-backed writes |
+| `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `SARAH_EMAIL` | Application / lead emails |
+| `STRIPE_*` | Billing |
+| `ROBOLLY_*` | CEU certificates |
+
+4. Deploy. Node **20+** is required (`engines` in `package.json`). No Docker/`NEXT_OUTPUT=standalone` needed on Vercel.
+
 ### Production build
 
 ```bash

@@ -5,7 +5,10 @@ export function isConfigured(value: string | undefined | null) {
   return !PLACEHOLDER_MARKERS.some((marker) => value.includes(marker));
 }
 
-export const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+/** Prefer explicit app URL; on Vercel fall back to the deployment host so OG/metadata aren't localhost. */
+export const appUrl =
+  process.env.NEXT_PUBLIC_APP_URL ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
 
 export const hasClerkCredentials =
   isConfigured(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) &&

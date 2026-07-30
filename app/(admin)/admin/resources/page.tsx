@@ -217,7 +217,7 @@ export default function AdminResourcesPage() {
                       style={{
                         background: formCategory === c ? "#B8892E" : "#fff",
                         color: formCategory === c ? "#fff" : "var(--color-sage-700)",
-                        border: `1px solid ${formCategory === c ? "#B8892E" : "rgba(45,59,44,0.12)"}`,
+                        border: `1px solid ${formCategory === c ? "#B8892E" : "rgba(74,94,72,0.12)"}`,
                       }}
                     >{c}</button>
                   ))}
@@ -235,7 +235,7 @@ export default function AdminResourcesPage() {
                       style={{
                         background: formType === t ? "#B8892E" : "#fff",
                         color: formType === t ? "#fff" : "var(--color-sage-700)",
-                        border: `1px solid ${formType === t ? "#B8892E" : "rgba(45,59,44,0.12)"}`,
+                        border: `1px solid ${formType === t ? "#B8892E" : "rgba(74,94,72,0.12)"}`,
                       }}
                     >{t}</button>
                   ))}
@@ -322,7 +322,7 @@ export default function AdminResourcesPage() {
             style={{
               background: category === c ? "#B8892E" : "var(--color-cream-100)",
               color: category === c ? "#fff" : "var(--color-sage-700)",
-              border: category === c ? "none" : "1px solid rgba(45,59,44,0.12)",
+              border: category === c ? "none" : "1px solid rgba(74,94,72,0.12)",
             }}
           >{c}</button>
         ))}

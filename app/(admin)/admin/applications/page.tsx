@@ -92,7 +92,7 @@ export default function AdminApplicationsPage() {
             className="relative flex items-center gap-2 h-10 rounded-full px-3.5 w-full sm:w-72"
             style={{
               background: "var(--color-cream-100)",
-              border: "1px solid rgba(45,59,44,0.1)",
+              border: "1px solid rgba(74,94,72,0.1)",
             }}
           >
             <Search className="size-4 shrink-0" style={{ color: "var(--color-text-tertiary)" }} />
@@ -142,7 +142,7 @@ export default function AdminApplicationsPage() {
                     <div
                       key={app.id}
                       className="rounded-xl bg-white border shadow-sm overflow-hidden"
-                      style={{ borderColor: "rgba(45,59,44,0.08)" }}
+                      style={{ borderColor: "rgba(74,94,72,0.08)" }}
                     >
                       <button
                         type="button"
@@ -197,7 +197,7 @@ export default function AdminApplicationsPage() {
                       {open && (
                         <div
                           className="px-3.5 pb-3.5 pt-0 flex flex-col gap-3 border-t"
-                          style={{ borderColor: "rgba(45,59,44,0.06)" }}
+                          style={{ borderColor: "rgba(74,94,72,0.06)" }}
                         >
                           <p
                             className="text-sm leading-relaxed pt-3 whitespace-pre-wrap"
@@ -241,7 +241,7 @@ export default function AdminApplicationsPage() {
                               onClick={() => decide(app.id, "pending")}
                               className="text-xs font-semibold py-2 rounded-full border w-full"
                               style={{
-                                borderColor: "rgba(45,59,44,0.12)",
+                                borderColor: "rgba(74,94,72,0.12)",
                                 color: SAGE,
                                 background: "var(--color-cream-100)",
                               }}

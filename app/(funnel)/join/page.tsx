@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Separator } from "@/components/ui/shadcn/separator";
@@ -10,6 +11,7 @@ import {
   appendSubmittedApplication,
   buildApplicationFromJoin,
 } from "@/lib/applications";
+import { upsertMemberFromApplication } from "@/lib/demo-members";
 
 const STEPS = ["About you", "Your practice", "Confirm"];
 
@@ -72,6 +74,7 @@ const empty: FormData = {
 };
 
 export default function JoinPage() {
+  const router = useRouter();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormData>(empty);
   const [submitted, setSubmitted] = useState(false);
@@ -110,6 +113,10 @@ export default function JoinPage() {
     setStep(next);
   }
 
+  /**
+   * Direct join: complete membership → session + member access immediately.
+   * No Sarah approval gate. (Stripe live checkout can plug in here when configured.)
+   */
   async function handleSubmit() {
     const error = validateStep(0) || validateStep(1);
     if (error) {
@@ -119,20 +126,35 @@ export default function JoinPage() {
     setSubmitting(true);
     setSubmitError("");
     try {
-      const res = await fetch("/api/application", {
+      // Best-effort notify (welcome / ops email). Do not block access if this fails.
+      await fetch("/api/application", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
+      }).catch(() => null);
+
+      const fullName = `${form.firstName.trim()} ${form.lastName.trim()}`.trim();
+      const authRes = await fetch("/api/mock-auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: fullName, email: form.email.trim() }),
       });
-      if (res.ok) {
-        // Persist into the same localStorage list admin applications reads,
-        // so Sarah sees this applicant under Pending immediately (demo store).
-        appendSubmittedApplication(buildApplicationFromJoin(form));
-        setSubmitted(true);
-      } else {
-        const data = await res.json().catch(() => ({}));
-        setSubmitError((data as { error?: string }).error || "Something went wrong. Please try again.");
+      if (!authRes.ok) {
+        setSubmitError("Could not open your member account. Please try again.");
+        return;
       }
+
+      const application = {
+        ...buildApplicationFromJoin(form),
+        status: "approved" as const,
+      };
+      appendSubmittedApplication(application);
+      upsertMemberFromApplication(application);
+
+      setSubmitted(true);
+      // Immediate portal access
+      router.push("/dashboard");
+      router.refresh();
     } catch {
       setSubmitError("Network error. Please try again.");
     } finally {
@@ -153,7 +175,7 @@ export default function JoinPage() {
     return (
       <div
         className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 md:pt-16 px-5 md:px-6"
-        style={{ background: "#2D3B2C" }}
+        style={{ background: "#4A5E48" }}
       >
         <div
           aria-hidden="true"
@@ -168,11 +190,18 @@ export default function JoinPage() {
             ✓
           </div>
           <h1 className="text-page-title mb-4" style={{ fontFamily: "var(--font-serif), Georgia, serif", fontWeight: 400, color: "#fff" }}>
-            Application received.
+            Welcome, {form.firstName}.
           </h1>
-          <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.65)" }}>
-            Thank you, {form.firstName}. Sarah reviews every application personally and will be in touch within a few business days.
+          <p className="text-sm leading-relaxed mb-6" style={{ color: "rgba(255,255,255,0.65)" }}>
+            Your membership is active. Opening your member portal…
           </p>
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center justify-center rounded-full text-sm font-semibold px-8 py-3"
+            style={{ background: "#C2963A", color: "#fff" }}
+          >
+            Go to dashboard →
+          </Link>
         </div>
       </div>
     );
@@ -181,7 +210,7 @@ export default function JoinPage() {
   return (
     <div
       className="relative min-h-screen pt-2 md:pt-3 pb-10 md:pb-12 overflow-hidden"
-      style={{ background: "#2D3B2C" }}
+      style={{ background: "#4A5E48" }}
     >
       <nav className="relative z-20 w-full flex items-center justify-center py-3 md:py-4 px-4">
         <Link href="/" aria-label="Austin Clinician Circle" className="inline-flex items-center no-underline">
@@ -383,14 +412,16 @@ export default function JoinPage() {
                       </div>
                     </div>
                     <div className="rounded-2xl border p-5 text-sm" style={{ borderColor: "var(--color-sage-100)", background: "var(--color-sage-50)", color: "var(--color-sage-700)" }}>
-                      Membership is $79/month, billed monthly. Payment details will be collected after Sarah reviews and approves your application.
+                      Membership is <strong>$79/month</strong>, billed monthly. Complete membership now for immediate access to the member portal.
                     </div>
                     {submitError && (
                       <p className="text-sm text-center" style={{ color: "var(--color-error)" }}>{submitError}</p>
                     )}
                     <div className="flex flex-col sm:flex-row gap-3">
                       <Button variant="secondary" onClick={() => setStep(1)} className="flex-1" disabled={submitting}>Back</Button>
-                      <Button onClick={handleSubmit} className="flex-1" disabled={submitting}>{submitting ? "Submitting…" : "Submit application"}</Button>
+                      <Button onClick={handleSubmit} className="flex-1" disabled={submitting}>
+                        {submitting ? "Opening your portal…" : "Pay $79 & join"}
+                      </Button>
                     </div>
                   </div>
                 )}
@@ -404,12 +435,12 @@ export default function JoinPage() {
 
           <div className="w-full lg:max-w-sm sm:px-0 sm:py-8 py-4 lg:pt-32">
             <div className="flex flex-col gap-4">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.28em]" style={{ color: "#C2963A" }}>Membership application</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.28em]" style={{ color: "#C2963A" }}>Membership</p>
               <h2 className="leading-tight" style={{ fontFamily: "var(--font-serif), Georgia, serif", fontSize: "clamp(1.8rem, 3vw, 2.5rem)", fontWeight: 400, color: "#fff" }}>
                 Join Austin Clinician Circle.
               </h2>
               <p className="text-base" style={{ color: "rgba(255,255,255,0.55)" }}>
-                A professional community for licensed therapists. Sarah reviews every application personally.
+                A professional community for licensed therapists. Complete membership and access the member portal right away.
               </p>
             </div>
           </div>

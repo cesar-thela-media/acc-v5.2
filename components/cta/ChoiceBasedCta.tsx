@@ -52,19 +52,19 @@ const DEFAULT_CHOICES: Choice[] = [
 export function ChoiceBasedCta({
   eyebrow = "Next step",
   heading = "Three ways to move forward.",
-  subheading = "Choose what fits — there is no wrong place to start.",
+  subheading = "Choose what fits. There is no wrong place to start.",
   choices = DEFAULT_CHOICES,
   background = "sage",
 }: Props) {
   const bgVar = background === "sage" ? "var(--color-sage-800)" : background === "parchment" ? "var(--color-parchment)" : "#FBF8F1";
   const headingColor = background === "sage" ? "#fff" : "var(--color-sage-800)";
-  const subColor = background === "sage" ? "rgba(255,255,255,0.65)" : "rgba(45,59,44,0.70)";
+  const subColor = background === "sage" ? "rgba(255,255,255,0.65)" : "rgba(74,94,72,0.70)";
   const eyebrowColor = "#C2963A";
   const cardBg = background === "sage" ? "rgba(255,255,255,0.04)" : "#ffffff";
   const cardBorder = background === "sage" ? "rgba(255,255,255,0.10)" : "rgba(194,150,58,0.20)";
   const cardTitleColor = background === "sage" ? "#fff" : "var(--color-sage-800)";
   const cardTextColor = background === "sage" ? "rgba(255,255,255,0.62)" : "var(--color-text-secondary)";
-  const mutedPillBg = background === "sage" ? "rgba(255,255,255,0.10)" : "rgba(45,59,44,0.06)";
+  const mutedPillBg = background === "sage" ? "rgba(255,255,255,0.10)" : "rgba(74,94,72,0.06)";
   const mutedPillColor = background === "sage" ? "rgba(255,255,255,0.55)" : "var(--color-sage-700)";
 
   return (

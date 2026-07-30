@@ -20,15 +20,21 @@ type Props = {
 
 const FILMSTRIP = CTA_FILMSTRIP;
 
+/** Exactly two lines: "You've been doing this alone" / "long enough." */
+export const GROWTH_FOCUS_HEADING = (
+  <>
+    <span style={{ display: "block", whiteSpace: "nowrap" }}>
+      You&apos;ve been doing this alone
+    </span>
+    <em style={{ display: "block", color: "#C2963A", fontStyle: "italic", whiteSpace: "nowrap" }}>
+      long enough.
+    </em>
+  </>
+);
+
 export function GrowthFocusCta({
   eyebrow,
-  heading = (
-    <>
-      You&apos;ve been doing this alone
-      <br />
-      <em style={{ color: "#C2963A", fontStyle: "italic" }}>long enough.</em>
-    </>
-  ),
+  heading = GROWTH_FOCUS_HEADING,
   subheading,
   ctaLabel = "Join Austin Clinician Circle",
   ctaHref = "/join",
@@ -57,8 +63,8 @@ export function GrowthFocusCta({
       <div
         className="relative z-10 mx-auto flex flex-col items-center gap-5"
         style={{
-          maxWidth: 720,
-          padding: "clamp(3.5rem, 8vw, 6rem) 1.5rem clamp(2.5rem, 5vw, 3.5rem)",
+          maxWidth: 800,
+          padding: "clamp(3.5rem, 8vw, 6rem) 1.25rem clamp(2.5rem, 5vw, 3.5rem)",
         }}
       >
         {eyebrow ? (
@@ -70,10 +76,11 @@ export function GrowthFocusCta({
           </p>
         ) : null}
         <h2
-          className="leading-[1.1]"
+          className="leading-[1.15]"
           style={{
             fontFamily: "var(--font-serif), Georgia, serif",
-            fontSize: "clamp(2rem, 5vw, 3.5rem)",
+            /* slightly smaller floor so line 1 fits on phones without wrapping */
+            fontSize: "clamp(1.5rem, 4.5vw, 3.5rem)",
             fontWeight: 400,
             letterSpacing: "-0.02em",
             color: "#1A1A1A",
@@ -82,7 +89,7 @@ export function GrowthFocusCta({
           {heading}
         </h2>
         {subheading ? (
-          <p className="text-base md:text-lg" style={{ color: "rgba(45,59,44,0.68)", maxWidth: 440 }}>
+          <p className="text-base md:text-lg" style={{ color: "rgba(74,94,72,0.68)", maxWidth: 440 }}>
             {subheading}
           </p>
         ) : null}

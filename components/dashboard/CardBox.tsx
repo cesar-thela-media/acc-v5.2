@@ -24,8 +24,8 @@ export function CardBox({
         className,
       )}
       style={{
-        border: "1px solid rgba(45,59,44,0.08)",
-        boxShadow: "0 4px 20px rgba(45,59,44,0.06)",
+        border: "1px solid rgba(74,94,72,0.08)",
+        boxShadow: "0 4px 20px rgba(74,94,72,0.06)",
         ...style,
       }}
     >

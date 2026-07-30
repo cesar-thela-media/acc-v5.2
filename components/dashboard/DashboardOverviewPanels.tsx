@@ -66,7 +66,7 @@ export function DashboardOverviewPanels({ rsvpIds = [1] }: { rsvpIds?: number[] 
             View all
           </Link>
         </div>
-        <Separator style={{ background: "rgba(45,59,44,0.08)" }} />
+        <Separator style={{ background: "rgba(74,94,72,0.08)" }} />
         <div className="px-5 py-4 flex flex-col gap-4">
           {upcoming.length === 0 && (
             <p className="text-sm" style={{ color: "var(--color-text-tertiary)" }}>
@@ -116,7 +116,7 @@ export function DashboardOverviewPanels({ rsvpIds = [1] }: { rsvpIds?: number[] 
             View all
           </Link>
         </div>
-        <Separator style={{ background: "rgba(45,59,44,0.08)" }} />
+        <Separator style={{ background: "rgba(74,94,72,0.08)" }} />
         <div className="px-5 py-4 flex flex-col gap-4">
           {recentResources.length === 0 && (
             <p className="text-sm" style={{ color: "var(--color-text-tertiary)" }}>

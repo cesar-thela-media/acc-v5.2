@@ -30,7 +30,7 @@ export const MEMBERSHIP_ITEMS: MembershipItem[] = [
   {
     title: "Peer consultation community",
     badge: "Peers",
-    body: "Stay connected between meetings with clinicians who understand private practice — real-time support without a formal referral product yet.",
+    body: "Stay connected between meetings with clinicians who understand private practice: real-time support without a formal referral product yet.",
     img: "/membership-referral.jpg",
   },
   {
@@ -42,7 +42,7 @@ export const MEMBERSHIP_ITEMS: MembershipItem[] = [
   {
     title: "Member directory (at launch)",
     badge: "Directory",
-    body: "A searchable clinician directory is planned for launch — specialty, format, and availability. Until then, focus stays on consultation and resources.",
+    body: "A searchable clinician directory is planned for launch: specialty, format, and availability. Until then, focus stays on consultation and resources.",
     img: "/membership-directory.jpg",
   },
   {

@@ -37,7 +37,7 @@ export function ActivityTimeline({
                 className="absolute top-3 left-[7px] w-px"
                 style={{
                   bottom: 0,
-                  background: "rgba(45,59,44,0.12)",
+                  background: "rgba(74,94,72,0.12)",
                 }}
               />
             ) : null}

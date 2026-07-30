@@ -63,17 +63,17 @@ export async function POST(req: NextRequest) {
 <html lang="en">
 <body style="font-family:Helvetica,Arial,sans-serif;background:#F8FAF3;padding:32px 16px;margin:0;">
   <table width="580" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 16px rgba(74,93,78,0.07);">
-    <tr><td style="background:#2D3B2C;padding:28px 36px;">
+    <tr><td style="background:#4A5E48;padding:28px 36px;">
       <p style="margin:0 0 4px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);">Austin Clinician Circle</p>
-      <h1 style="margin:0;font-size:22px;font-weight:400;color:#fff;">New membership application</h1>
+      <h1 style="margin:0;font-size:22px;font-weight:400;color:#fff;">New member joined</h1>
     </td></tr>
     <tr><td style="padding:28px 36px;">
       <p style="margin:0 0 20px;font-size:15px;color:#444841;line-height:1.6;">
-        <strong>${safeFirst} ${safeLast}</strong> submitted an application on ${now} (CT).
+        <strong>${safeFirst} ${safeLast}</strong> completed membership on ${now} (CT) and has portal access.
       </p>
       <table cellpadding="0" cellspacing="0" style="width:100%;border-top:1px solid #DFE3DA;">
         ${row("Name", `${safeFirst} ${safeLast}`)}
-        ${row("Email", `<a href="mailto:${safeEmail}" style="color:#4A5D4E;">${safeEmail}</a>`)}
+        ${row("Email", `<a href="mailto:${safeEmail}" style="color:#4A5E48;">${safeEmail}</a>`)}
         ${row("Phone", String(body.phone || ""))}
         ${row("License type", String(body.licenseType || ""))}
         ${row("License number", String(body.licenseNumber || ""))}
@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
       </table>
     </td></tr>
     <tr><td style="padding:16px 36px 28px;border-top:1px solid #ECEFE8;">
-      <a href="mailto:${safeEmail}" style="display:inline-block;background:#2D3B2C;color:#fff;text-decoration:none;padding:11px 22px;border-radius:100px;font-size:13px;font-weight:600;">
+      <a href="mailto:${safeEmail}" style="display:inline-block;background:#4A5E48;color:#fff;text-decoration:none;padding:11px 22px;border-radius:100px;font-size:13px;font-weight:600;">
         Reply to ${safeFirst} →
       </a>
     </td></tr>
@@ -99,33 +99,30 @@ export async function POST(req: NextRequest) {
   const notifyResult = await resend.emails.send({
     from: FROM_EMAIL,
     to: SARAH_EMAIL,
-    subject: `Application: ${safeFirst} ${safeLast} (${safeEmail})`,
+    subject: `New member: ${safeFirst} ${safeLast} (${safeEmail})`,
     html: sarahHtml,
   });
 
+  // Ops notify is best-effort — membership access is already granted client-side.
   if (notifyResult.error) {
-    console.error("[application] Resend error:", notifyResult.error);
-    return NextResponse.json(
-      { error: "Submission failed. Please try again." },
-      { status: 502 }
-    );
+    console.error("[application] Resend notify error:", notifyResult.error);
   }
 
   const confirmHtml = `<!DOCTYPE html>
 <html lang="en">
 <body style="font-family:Helvetica,Arial,sans-serif;background:#F8FAF3;padding:32px 16px;margin:0;">
   <table width="560" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(74,93,78,0.08);">
-    <tr><td style="background:#2D3B2C;padding:32px 40px;">
+    <tr><td style="background:#4A5E48;padding:32px 40px;">
       <p style="margin:0 0 8px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);">Austin Clinician Circle</p>
-      <h1 style="margin:0;font-size:24px;font-weight:400;color:#fff;line-height:1.25;">Your application is in, ${safeFirst}.</h1>
+      <h1 style="margin:0;font-size:24px;font-weight:400;color:#fff;line-height:1.25;">Welcome, ${safeFirst}.</h1>
     </td></tr>
     <tr><td style="padding:36px 40px;">
       <p style="margin:0 0 16px;font-size:15px;color:#444841;line-height:1.65;">
-        Thank you for applying to Austin Clinician Circle. Sarah reviews every application personally and will be in touch within a few business days.
+        Your Austin Clinician Circle membership is active. You have full access to the member portal — resources, events, and more.
       </p>
       <p style="margin:0 0 28px;font-size:15px;color:#444841;line-height:1.65;">
-        In the meantime, if you have any questions you can reply to this email or reach Sarah directly at
-        <a href="mailto:sarah@restoredfamily.com" style="color:#4A5D4E;">sarah@restoredfamily.com</a>.
+        Questions? Reply to this email or reach Sarah at
+        <a href="mailto:sarah@restoredfamily.com" style="color:#4A5E48;">sarah@restoredfamily.com</a>.
       </p>
       <hr style="border:none;border-top:1px solid #DFE3DA;margin:0 0 28px;" />
       <p style="margin:0;font-size:13px;color:#75796E;line-height:1.6;">
@@ -140,10 +137,10 @@ export async function POST(req: NextRequest) {
     .send({
       from: FROM_EMAIL,
       to: safeEmail,
-      subject: "Your application to Austin Clinician Circle, received",
+      subject: "Welcome to Austin Clinician Circle — membership active",
       html: confirmHtml,
     })
-    .catch((err) => console.error("[application] confirmation email failed:", err));
+    .catch((err) => console.error("[application] welcome email failed:", err));
 
   return NextResponse.json({ ok: true });
 }

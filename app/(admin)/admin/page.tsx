@@ -380,7 +380,7 @@ export default function AdminOverviewPage() {
                 className="self-start text-xs font-medium rounded-full px-3 py-1.5"
                 style={{
                   background: "var(--color-cream-100)",
-                  border: "1px solid rgba(45,59,44,0.1)",
+                  border: "1px solid rgba(74,94,72,0.1)",
                   color: "var(--color-text-secondary)",
                 }}
               >
@@ -406,7 +406,7 @@ export default function AdminOverviewPage() {
                       tickLine={false}
                       width={28}
                     />
-                    <ReferenceLine y={0} stroke="rgba(45,59,44,0.15)" />
+                    <ReferenceLine y={0} stroke="rgba(74,94,72,0.15)" />
                     <Tooltip
                       contentStyle={{
                         fontSize: 13,

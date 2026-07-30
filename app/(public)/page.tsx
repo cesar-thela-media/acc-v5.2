@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/shadcn/separator";
 import { MembershipCarousel } from "@/components/landing/MembershipCarousel";
 import { GrowthFocusCta } from "@/components/cta/GrowthFocusCta";
 import { CTA_FILMSTRIP, MEMBERSHIP_ITEMS } from "@/lib/membershipAssets";
+import { MEMBERSHIP_BENEFITS } from "@/lib/membershipBenefits";
 
 /* HIDDEN SECTIONS (toggle to restore):
    - homepage testimonials carousel + filmstrip   (HIDE_TESTIMONIALS)
@@ -20,16 +21,11 @@ import { CTA_FILMSTRIP, MEMBERSHIP_ITEMS } from "@/lib/membershipAssets";
 const HIDE_TESTIMONIALS = true; /* flip to false to restore the hidden block below */
 
 /* ── Reference design tokens ───────────────────────────────── */
-const HERO_BG   = "#2D3B2C";   // deep forest sage — hero, CTA band, footer
+const HERO_BG   = "#4A5E48";   // main brand sage — hero, CTA band, footer
 const AMBER     = "#C2963A";   // muted warm amber — accents, CTAs
 
-/* ── Pricing features ─────────────────────────────────────── */
-const pricingFeatures = [
-  ["Monthly case consultation",       "Member resource library"],
-  ["Full access to clinical tools",   "Practice coaching support"],
-  ["Peer consultation community",     "Continuing education discounts"],
-  ["Private online community",        "Professional will designation"],
-];
+/* Shared with What We Offer — see lib/membershipBenefits.ts */
+const pricingFeatures = MEMBERSHIP_BENEFITS;
 
 const membershipItems = MEMBERSHIP_ITEMS;
 const ctaImages = CTA_FILMSTRIP;
@@ -87,7 +83,7 @@ export default function HomePage() {
           {/* Dark gradient scrim for legibility */}
           <div
             className="absolute inset-0 pointer-events-none"
-            style={{ background: `linear-gradient(to top, ${HERO_BG} 0%, rgba(45,59,44,0.92) 42%, rgba(45,59,44,0.55) 70%, transparent 100%)` }}
+            style={{ background: `linear-gradient(to top, ${HERO_BG} 0%, rgba(74,94,72,0.92) 42%, rgba(74,94,72,0.55) 70%, transparent 100%)` }}
           />
 
           {/* Content */}
@@ -245,7 +241,7 @@ export default function HomePage() {
             >
               <Image
                 src="/private-practice-can.jpg"
-                alt="Private practice can feel isolating — Austin Clinician Circle offers connection"
+                alt="Private practice can feel isolating. Austin Clinician Circle offers connection."
                 fill
                 className="object-cover object-center"
                 sizes="(max-width: 768px) 100vw, 40vw"
@@ -332,40 +328,52 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ══ PRICING (pricing-14 + background photo) ══════════ */}
-      {/* Bottom padding is intentionally larger than top: the header block above the
-          card already eats into the "visible photo" space up top, so the extra room
-          below balances how much background shows above vs. below the card. */}
+      {/* ══ PRICING — simplified What We Offer layout (left copy + right card) ══ */}
       <section className="relative overflow-hidden" style={{ paddingTop: "clamp(2.5rem,5vw,4rem)", paddingBottom: "clamp(5rem,10vw,8rem)" }}>
         <Image src="/pricing-bg.jpg" alt="" fill className="object-cover" />
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(rgba(45,59,44,0.88), rgba(45,59,44,0.92))" }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(rgba(74,94,72,0.88), rgba(74,94,72,0.92))" }} />
         <div className="container-fluid relative z-10">
-          {/* Centered header */}
-          <div className="text-center mb-8" data-aos="fade-in-up">
-            <p className="uppercase tracking-[0.28em] font-medium text-[11px] mb-3" style={{ color: AMBER }}>
-              Membership
-            </p>
-            <h2
-              style={{
-                fontFamily: "var(--font-serif), Georgia, serif",
-                fontSize: "clamp(1.8rem, 4.2vw, 3.5rem)",
-                fontWeight: 400,
-                letterSpacing: "-0.018em",
-                lineHeight: 1.18,
-                color: "#fff",
-              }}
-            >
-              Simple, all-inclusive pricing.
-            </h2>
-          </div>
+          <div
+            className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center max-w-5xl mx-auto"
+            data-aos="fade-in-up"
+          >
+            {/* Left — short, left-aligned intro (simpler than What We Offer) */}
+            <div className="flex flex-col items-start text-left">
+              <p className="uppercase tracking-[0.28em] font-medium text-[11px] mb-4" style={{ color: AMBER }}>
+                Membership
+              </p>
+              <h2
+                className="mb-5"
+                style={{
+                  fontFamily: "var(--font-serif), Georgia, serif",
+                  fontSize: "clamp(1.8rem, 4.2vw, 3rem)",
+                  fontWeight: 400,
+                  letterSpacing: "-0.018em",
+                  lineHeight: 1.18,
+                  color: "#fff",
+                }}
+              >
+                Membership Benefits
+              </h2>
+              <p className="text-base leading-relaxed max-w-md" style={{ color: "rgba(255,255,255,0.78)" }}>
+                Everything in one monthly membership: consultation, Continuing Education Credits,
+                community, and practice support.
+              </p>
+              <Link
+                href="/what-we-offer"
+                className="mt-6 text-sm font-medium underline underline-offset-4 transition-opacity hover:opacity-80"
+                style={{ color: AMBER }}
+              >
+                See full details →
+              </Link>
+            </div>
 
-          {/* Pricing card — single centered card (pricing-14's literal shape, no left/right split) */}
-          <div className="flex justify-center">
+            {/* Right — pricing card (same benefits list as What We Offer) */}
             <div
               data-aos="scale-in"
               data-delay="80"
-              className="rounded-2xl flex flex-col gap-8"
-              style={{ background: "#fff", border: "1px solid rgba(194,150,58,0.22)", padding: "2rem", width: "100%", maxWidth: 368 }}
+              className="rounded-2xl flex flex-col gap-8 w-full max-w-md lg:max-w-none mx-auto lg:mx-0"
+              style={{ background: "#fff", border: "1px solid rgba(194,150,58,0.22)", padding: "2rem" }}
             >
               <div className="flex items-baseline gap-1">
                 <span
@@ -386,7 +394,7 @@ export default function HomePage() {
               <Separator style={{ background: "rgba(194,150,58,0.2)" }} />
 
               <ul className="flex flex-col gap-4">
-                {pricingFeatures.flat().map((feature) => (
+                {pricingFeatures.map((feature) => (
                   <li key={feature} className="flex items-center gap-3">
                     <AmberCheck />
                     <span style={{ fontSize: 14, color: "#3D4A3B" }}>{feature}</span>

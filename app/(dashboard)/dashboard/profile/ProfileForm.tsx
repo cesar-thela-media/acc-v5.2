@@ -181,7 +181,7 @@ export function ProfileForm({
           <Tabs defaultValue="account" className="w-full">
             <div
               className="px-4 sm:px-5 pt-4 pb-0 border-b"
-              style={{ borderColor: "rgba(45,59,44,0.08)", background: "var(--color-cream-100)" }}
+              style={{ borderColor: "rgba(74,94,72,0.08)", background: "var(--color-cream-100)" }}
             >
               <TabsList className="w-full max-w-full justify-start flex-nowrap overflow-x-auto overscroll-x-contain h-auto gap-1 bg-transparent p-0 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 <TabsTrigger value="account" className="gap-1.5 shrink-0 min-h-10 data-[state=active]:bg-white">

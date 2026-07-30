@@ -8,7 +8,7 @@ const alertVariants = cva(
     variants: {
       variant: {
         default:
-          "border-[rgba(45,59,44,0.1)] bg-white text-[var(--color-text-primary)]",
+          "border-[rgba(74,94,72,0.1)] bg-white text-[var(--color-text-primary)]",
         amber:
           "border-[rgba(194,150,58,0.25)] bg-[rgba(194,150,58,0.08)] text-[var(--color-sage-800)]",
         sage:

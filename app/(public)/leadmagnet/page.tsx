@@ -1,10 +1,19 @@
 "use client";
 
+import { redirect } from "next/navigation";
+
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function LeadMagnetPage() {
+/**
+ * Free playbook page kept intact but HIDDEN until Sarah finishes content.
+ * Flip HIDE_LEADMAGNET to false to re-open the public offer.
+ * PublicNav + sitemap stay unlisted while hidden.
+ */
+const HIDE_LEADMAGNET = true;
+
+function LeadMagnetContent() {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
@@ -89,7 +98,7 @@ export default function LeadMagnetPage() {
                 style={{ color: "rgba(255,255,255,0.62)", maxWidth: "32rem" }}
               >
                 Download <strong className="font-semibold text-white/90">The Private Practice Playbook</strong>
-                {" "}— a free guide for licensed therapists building sustainable practices.
+                {" "}- a free guide for licensed therapists building sustainable practices.
               </p>
             </div>
 
@@ -146,7 +155,7 @@ export default function LeadMagnetPage() {
                       required
                       className="w-full px-5 py-4 rounded-xl text-base outline-none border bg-white"
                       style={{
-                        borderColor: "rgba(45,59,44,0.12)",
+                        borderColor: "rgba(74,94,72,0.12)",
                         color: "var(--color-text-primary)",
                       }}
                     />
@@ -166,7 +175,7 @@ export default function LeadMagnetPage() {
                       required
                       className="w-full px-5 py-4 rounded-xl text-base outline-none border bg-white"
                       style={{
-                        borderColor: "rgba(45,59,44,0.12)",
+                        borderColor: "rgba(74,94,72,0.12)",
                         color: "var(--color-text-primary)",
                       }}
                     />
@@ -238,4 +247,11 @@ export default function LeadMagnetPage() {
       </main>
     </div>
   );
+}
+
+export default function LeadMagnetPage() {
+  if (HIDE_LEADMAGNET) {
+    redirect("/");
+  }
+  return <LeadMagnetContent />;
 }

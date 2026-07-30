@@ -40,7 +40,7 @@ export const SEED_DEMO_EVENTS: DemoEvent[] = [
     id: 1,
     title: "Monthly case consultation",
     date: formatAbbrevDate(firstConsultation),
-    time: "9:00 – 10:30am",
+    time: "9:00 – 11:00am",
     format: "Virtual (Zoom)",
     category: "Consultation",
     description:
@@ -50,7 +50,7 @@ export const SEED_DEMO_EVENTS: DemoEvent[] = [
     spots: null,
     startTime: "9:00am",
     startHour: 9,
-    durationMinutes: 90,
+    durationMinutes: 120,
   },
   {
     id: 2,
@@ -88,7 +88,7 @@ export const SEED_DEMO_EVENTS: DemoEvent[] = [
     id: 4,
     title: "Monthly case consultation",
     date: formatAbbrevDate(secondConsultation),
-    time: "9:00 – 10:30am",
+    time: "9:00 – 11:00am",
     format: "Virtual (Zoom)",
     category: "Consultation",
     description: "Monthly case consultation group.",
@@ -97,7 +97,7 @@ export const SEED_DEMO_EVENTS: DemoEvent[] = [
     spots: null,
     startTime: "9:00am",
     startHour: 9,
-    durationMinutes: 90,
+    durationMinutes: 120,
   },
   {
     id: 5,

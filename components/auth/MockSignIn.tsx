@@ -8,7 +8,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/shadcn/field";
 import { Input } from "@/components/ui/shadcn/input";
 import { Button } from "@/components/ui/shadcn/button";
-import { UserRound } from "lucide-react";
+import { UserRound, Shield } from "lucide-react";
 
 const AMBER = "#C2963A";
 
@@ -79,14 +79,14 @@ export function MockSignIn({
       <Image src="/signin-bg.jpg" alt="" fill priority className="object-cover" />
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{ background: "linear-gradient(to right, rgba(45,59,44,0.75) 0%, rgba(45,59,44,0.35) 55%, rgba(45,59,44,0.15) 100%)" }}
+        style={{ background: "linear-gradient(to right, rgba(74,94,72,0.75) 0%, rgba(74,94,72,0.35) 55%, rgba(74,94,72,0.15) 100%)" }}
       />
       <div className="relative flex items-end sm:items-center justify-center lg:justify-start min-h-screen">
         <div className="max-w-7xl p-3 sm:p-4 lg:px-8 xl:px-16 lg:py-20 sm:py-16 py-6 mx-auto w-full">
           <Card
             className="w-full max-w-md px-5 py-7 sm:px-8 sm:py-12 border-none shadow-xl gap-6 sm:gap-8 rounded-3xl"
             style={{
-              background: "linear-gradient(160deg, #3D4F3C 0%, #2D3B2C 48%, #243024 100%)",
+              background: "linear-gradient(160deg, #5A6E58 0%, #4A5E48 48%, #3D4F3B 100%)",
               border: "1px solid rgba(194,150,58,0.28)",
               boxShadow: "0 16px 40px rgba(26,26,26,0.28)",
             }}
@@ -97,7 +97,14 @@ export function MockSignIn({
                 <Image src="/logo-mark.png" alt="" width={200} height={72} className="h-14 sm:h-20 w-auto object-contain brightness-110" />
               </Link>
               <div className="flex gap-2 flex-col">
-                <CardTitle className="text-2xl font-semibold" style={{ color: "#fff" }}>
+                <CardTitle
+                  className="text-2xl sm:text-[1.65rem] font-normal"
+                  style={{
+                    color: "#fff",
+                    fontFamily: "var(--font-serif), Georgia, serif",
+                    letterSpacing: "-0.01em",
+                  }}
+                >
                   {title}
                 </CardTitle>
                 <CardDescription className="text-sm font-normal" style={{ color: "rgba(255,255,255,0.72)" }}>
@@ -157,10 +164,21 @@ export function MockSignIn({
                     variant="outline"
                     disabled={loading}
                     onClick={demoLogin}
-                    className="w-full rounded-lg h-9 gap-2 cursor-pointer border-white/25 bg-white/5 text-white hover:bg-white/10"
+                    className="w-full rounded-lg h-9 gap-2 cursor-pointer border-white/25 bg-white/5 text-white hover:bg-white/10 hover:text-white"
                   >
                     <UserRound className="size-4" />
                     {loading ? "Logging you in…" : "Log in as Demo User"}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={loading}
+                    onClick={() => router.push("/admin/login")}
+                    className="w-full rounded-lg h-9 gap-2 cursor-pointer border-white/25 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+                  >
+                    <Shield className="size-4" />
+                    Admin log in
                   </Button>
 
                   {showFreePreview && (

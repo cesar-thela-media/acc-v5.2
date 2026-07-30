@@ -16,10 +16,12 @@ import {
   type PanInfo,
   type MotionValue,
 } from "motion/react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/shadcn/badge";
 
-const SAGE_800 = "#2D3B2C";
+const SAGE_800 = "#4A5E48";
+const AMBER = "#C2963A";
 
 export interface MembershipSlide {
   image: string;
@@ -124,6 +126,28 @@ export function MembershipCarousel({ slides }: { slides: MembershipSlide[] }) {
     return () => unsub();
   }, [scrollProgress, total]);
 
+  /** Absolute progress target — never snaps back to 0..n, so prev/next loop continuously. */
+  function animateTo(progress: number) {
+    animate(scrollProgress, progress, { type: "spring", stiffness: 200, damping: 30, mass: 1 });
+  }
+
+  function stepSlide(direction: -1 | 1) {
+    // Step from live progress (not normalized activeIndex) so ←/→ is an infinite loop,
+    // not a playlist that rewinds/repeats when it hits the ends.
+    const current = Math.round(scrollProgress.get());
+    animateTo(current + direction);
+  }
+
+  /** Jump to a slide via shortest continuous path (dots stay a loop, not a reset). */
+  function goToSlideIndex(targetIndex: number) {
+    const current = scrollProgress.get();
+    const currentNorm = ((Math.round(current) % total) + total) % total;
+    let delta = targetIndex - currentNorm;
+    if (delta > total / 2) delta -= total;
+    if (delta < -total / 2) delta += total;
+    animateTo(Math.round(current) + delta);
+  }
+
   return (
     <div
       className="flex flex-col items-center justify-center w-full overflow-hidden select-none"
@@ -157,29 +181,56 @@ export function MembershipCarousel({ slides }: { slides: MembershipSlide[] }) {
         ))}
       </div>
 
-      {/* Mobile-friendly dots */}
-      <div className="flex items-center justify-center gap-1.5 mt-2 sm:mt-4 px-4" role="tablist" aria-label="Membership slides">
-        {slides.map((slide, i) => (
+      {/* Explicit slider controls — prev/next + dots so trackpad users need not drag */}
+      <div className="flex flex-col items-center gap-3 mt-3 sm:mt-5 px-4 w-full">
+        <div className="flex items-center justify-center gap-3 sm:gap-4">
           <button
-            key={slide.title}
             type="button"
-            role="tab"
-            aria-selected={i === activeIndex}
-            aria-label={slide.title}
-            className="size-2 rounded-full transition-all"
+            onClick={() => stepSlide(-1)}
+            aria-label="Previous membership benefit"
+            className="inline-flex items-center justify-center size-10 sm:size-11 rounded-full transition-opacity hover:opacity-90 cursor-pointer"
             style={{
-              background: i === activeIndex ? "#C2963A" : "rgba(255,255,255,0.35)",
-              transform: i === activeIndex ? "scale(1.25)" : "scale(1)",
+              background: "rgba(255,255,255,0.12)",
+              border: "1px solid rgba(255,255,255,0.35)",
+              color: "#fff",
             }}
-            onClick={() => {
-              animate(scrollProgress, i, { type: "spring", stiffness: 200, damping: 30, mass: 1 });
+          >
+            <ChevronLeft className="size-5" strokeWidth={2} />
+          </button>
+
+          <div className="flex items-center justify-center gap-1.5" role="tablist" aria-label="Membership slides">
+            {slides.map((slide, i) => (
+              <button
+                key={slide.title}
+                type="button"
+                role="tab"
+                aria-selected={i === activeIndex}
+                aria-label={slide.title}
+                className="size-2.5 rounded-full transition-all cursor-pointer"
+                style={{
+                  background: i === activeIndex ? AMBER : "rgba(255,255,255,0.35)",
+                  transform: i === activeIndex ? "scale(1.25)" : "scale(1)",
+                }}
+                onClick={() => goToSlideIndex(i)}
+              />
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => stepSlide(1)}
+            aria-label="Next membership benefit"
+            className="inline-flex items-center justify-center size-10 sm:size-11 rounded-full transition-opacity hover:opacity-90 cursor-pointer"
+            style={{
+              background: "rgba(255,255,255,0.12)",
+              border: "1px solid rgba(255,255,255,0.35)",
+              color: "#fff",
             }}
-          />
-        ))}
+          >
+            <ChevronRight className="size-5" strokeWidth={2} />
+          </button>
+        </div>
       </div>
-      <p className="sm:hidden text-center text-xs mt-3 px-6 max-w-sm" style={{ color: "rgba(255,255,255,0.65)" }}>
-        Swipe to explore benefits
-      </p>
     </div>
   );
 }

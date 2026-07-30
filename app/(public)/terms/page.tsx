@@ -28,7 +28,7 @@ export default function TermsPage() {
   return (
     <section
       className="min-h-screen flex flex-col items-center px-5 md:px-6"
-      style={{ background: "#2D3B2C", paddingTop: "6rem", paddingBottom: "6rem" }}
+      style={{ background: "#4A5E48", paddingTop: "6rem", paddingBottom: "6rem" }}
     >
       <div className="text-center mb-12">
         <p className="font-medium uppercase tracking-[0.28em] text-[11px] mb-6" style={{ color: "#C2963A" }}>

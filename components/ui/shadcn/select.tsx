@@ -40,7 +40,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "flex w-fit items-center justify-between gap-1.5 whitespace-nowrap rounded-md border border-[rgba(45,59,44,0.15)] bg-white py-2 pl-2.5 pr-2 text-sm shadow-xs outline-none transition-[color,box-shadow]",
+        "flex w-fit items-center justify-between gap-1.5 whitespace-nowrap rounded-md border border-[rgba(74,94,72,0.15)] bg-white py-2 pl-2.5 pr-2 text-sm shadow-xs outline-none transition-[color,box-shadow]",
         "focus-visible:border-[var(--color-accent-highlight)] focus-visible:ring-[3px] focus-visible:ring-[rgba(194,150,58,0.25)]",
         "disabled:cursor-not-allowed disabled:opacity-50",
         "data-[size=default]:h-9 data-[size=sm]:h-8",
@@ -88,7 +88,7 @@ function SelectContent({
         <SelectPrimitive.Popup
           data-slot="select-content"
           className={cn(
-            "relative z-50 max-h-(--available-height) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-md bg-white text-[var(--color-text-primary)] shadow-md ring-1 ring-[rgba(45,59,44,0.1)] duration-100",
+            "relative z-50 max-h-(--available-height) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-md bg-white text-[var(--color-text-primary)] shadow-md ring-1 ring-[rgba(74,94,72,0.1)] duration-100",
             "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95",
             className,
           )}
@@ -151,7 +151,7 @@ function SelectSeparator({
   return (
     <SelectPrimitive.Separator
       data-slot="select-separator"
-      className={cn("pointer-events-none -mx-1 my-1 h-px bg-[rgba(45,59,44,0.08)]", className)}
+      className={cn("pointer-events-none -mx-1 my-1 h-px bg-[rgba(74,94,72,0.08)]", className)}
       {...props}
     />
   );

@@ -14,7 +14,7 @@ const PAGE_SAGE = "#4A5E48";
 const PAGE_SAGE_SOFT = "#5A6E58";
 const PAGE_CREAM = "#E8EDE4";
 const AMBER = "#C2963A";
-const SAGE_800 = "#2D3B2C";
+const SAGE_800 = "#4A5E48";
 
 export const metadata: Metadata = {
   title: "Who We Are | Austin Clinician Circle",
@@ -199,13 +199,6 @@ export default function WhoWeArePage() {
       </section>
 
       <GrowthFocusCta
-        heading={
-          <>
-            This is the community
-            <br />
-            you&apos;ve been looking for.
-          </>
-        }
         subheading="Deepen your work. Find your community."
         showFilmstrip={false}
       />

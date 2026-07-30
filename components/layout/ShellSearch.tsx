@@ -91,10 +91,10 @@ export function ShellSearch({
         className="flex items-center gap-2 h-10 w-full min-w-0 rounded-full px-3 sm:px-3.5"
         style={{
           background: CREAM,
-          border: "1px solid rgba(45,59,44,0.10)",
+          border: "1px solid rgba(74,94,72,0.10)",
         }}
       >
-        <Search size={16} className="shrink-0" style={{ color: "rgba(45,59,44,0.45)" }} aria-hidden />
+        <Search size={16} className="shrink-0" style={{ color: "rgba(74,94,72,0.45)" }} aria-hidden />
         <input
           type="search"
           value={query}
@@ -105,7 +105,7 @@ export function ShellSearch({
           onFocus={() => setOpen(true)}
           onKeyDown={onKeyDown}
           placeholder={placeholder}
-          className="flex-1 bg-transparent text-sm outline-none placeholder:text-[rgba(45,59,44,0.4)] min-w-0 w-full"
+          className="flex-1 bg-transparent text-sm outline-none placeholder:text-[rgba(74,94,72,0.4)] min-w-0 w-full"
           style={{ color: TEXT }}
           aria-label="Search"
           aria-autocomplete="list"
@@ -124,7 +124,7 @@ export function ShellSearch({
             className="p-0.5 rounded hover:bg-black/5 shrink-0"
             aria-label="Clear search"
           >
-            <X size={14} style={{ color: "rgba(45,59,44,0.45)" }} />
+            <X size={14} style={{ color: "rgba(74,94,72,0.45)" }} />
           </button>
         ) : null}
       </div>
@@ -135,8 +135,8 @@ export function ShellSearch({
           role="listbox"
           className="absolute left-0 right-0 top-[calc(100%+6px)] z-50 max-h-[min(420px,70vh)] overflow-y-auto overflow-x-hidden rounded-xl border bg-white py-2 shadow-lg w-full min-w-0 sm:min-w-[280px]"
           style={{
-            borderColor: "rgba(45,59,44,0.1)",
-            boxShadow: "0 12px 40px rgba(45,59,44,0.14)",
+            borderColor: "rgba(74,94,72,0.1)",
+            boxShadow: "0 12px 40px rgba(74,94,72,0.14)",
           }}
         >
           {results.length === 0 ? (

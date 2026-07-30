@@ -9,7 +9,7 @@ export default function NetworkPage() {
       <PageHeader
         eyebrow="Network"
         title="Referral network"
-        description="Coming later — not part of this product preview."
+        description="Coming later. Not part of this product preview."
       />
       <CardBox className="py-16 text-center flex flex-col items-center gap-4">
         <p

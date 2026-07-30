@@ -9,18 +9,18 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/shadcn/accordion";
+import { MEMBERSHIP_BENEFITS } from "@/lib/membershipBenefits";
 
-const SAGE_800 = "#2D3B2C";
+const SAGE_800 = "#4A5E48";
 const SAGE_600 = "#4A5E48";
 const AMBER = "#C2963A";
-const PARCHMENT = "#F0EDE6";
 
-const pricingFeatures = ["Monthly case consultation", "CEU trainings", "Clinical resource library", "Member directory (at launch)", "Peer consultation community", "Practice guidance", "Coaching with Sarah", "Professional will designation", "Private online community"];
+const pricingFeatures = MEMBERSHIP_BENEFITS;
 
 const offerDetails = [
-  "A structured consultation group meets the first Thursday of every month from 9:00 to 10:30am. Bring your difficult cases, process with trusted peers, and leave with a new perspective.",
+  "A structured consultation group meets the first Thursday of every month from 9:00 to 11:00am. Bring your difficult cases, process with trusted peers, and leave with a new perspective.",
   "Access to continuing education content aligned with your licensure requirements. Curated for practicing clinicians and designed for professional growth.",
-  "A member directory (launching soon) searchable by specialty, modality, location, and availability — so referrals stay within a trusted clinical community.",
+  "A member directory (launching soon) searchable by specialty, modality, location, and availability, so referrals stay within a trusted clinical community.",
   "Mindfulness practices and burnout prevention structures designed specifically for therapists carrying heavy caseloads. Because your sustainability matters too.",
 ];
 
@@ -35,7 +35,7 @@ const faqs = [
   },
   {
     q: "How does the consultation group work?",
-    a: "The monthly group meets virtually on the first Thursday of each month, 9:00 to 10:30am. Members may present cases for discussion, and various topics will be covered for CEUs. The group is kept intentionally small for the quality of discussion.",
+    a: "The monthly group meets virtually on the first Thursday of each month, 9:00 to 11:00am. Members may present cases for discussion, and various topics will be covered for CEUs. The group is kept intentionally small for the quality of discussion.",
   },
   {
     q: "Is there a long-term contract?",
@@ -59,7 +59,7 @@ function AmberCheck() {
 export const metadata: Metadata = {
   title: "What We Offer | Austin Clinician Circle",
   description:
-    "Membership gives you full access to clinical support, professional development, and community. Monthly case consultation, CEU trainings, resource library, and more.",
+    "Membership gives you full access to clinical support, professional development, and community. Monthly case consultation, Continuing Education Credits, resource library, and more.",
 };
 
 export default function WhatWeOfferPage() {
@@ -94,7 +94,7 @@ export default function WhatWeOfferPage() {
               className="rounded-2xl flex flex-col gap-8"
               style={{ background: "#fff", border: "1px solid rgba(194,150,58,0.22)", padding: "2rem" }}
             >
-              <div className="flex items-baseline justify-center gap-1">
+              <div className="flex items-baseline gap-1">
                 <span style={{ fontFamily: "var(--font-serif), Georgia, serif", fontSize: "clamp(3rem, 6vw, 4rem)", fontWeight: 400, letterSpacing: "-0.03em", lineHeight: 1, color: SAGE_800 }}>
                   $79
                 </span>
@@ -103,7 +103,7 @@ export default function WhatWeOfferPage() {
 
               <Separator style={{ background: "rgba(194,150,58,0.2)" }} />
 
-              <ul className="flex flex-col gap-4 items-center">
+              <ul className="flex flex-col gap-4">
                 {pricingFeatures.map((feature) => (
                   <li key={feature} className="flex items-center gap-3">
                     <AmberCheck />
@@ -139,8 +139,11 @@ export default function WhatWeOfferPage() {
           <div className="flex md:flex-row flex-col md:gap-10 gap-6">
             {/* Left: real contact card, no fabricated team avatars */}
             <div className="max-w-sm w-full">
-              <div className="h-full md:px-8 px-6 md:py-10 py-8 rounded-2xl flex flex-col gap-4" style={{ border: "1px solid rgba(194,150,58,0.18)", background: PARCHMENT }}>
-                <h4 className="text-2xl font-medium" style={{ color: SAGE_800 }}>
+              <div
+                className="h-full md:px-8 px-6 md:py-10 py-8 rounded-2xl flex flex-col gap-4"
+                style={{ border: "1px solid rgba(194,150,58,0.28)", background: SAGE_800 }}
+              >
+                <h4 className="text-2xl font-medium" style={{ color: "#fff" }}>
                   Still have questions?
                 </h4>
                 <Button

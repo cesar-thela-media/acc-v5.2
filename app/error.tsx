@@ -16,7 +16,7 @@ export default function Error({
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center px-5 md:px-6"
-      style={{ background: "#2D3B2C" }}
+      style={{ background: "#4A5E48" }}
     >
       <div className="max-w-md text-center">
         <div

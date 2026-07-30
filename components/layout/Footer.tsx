@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/shadcn/input";
 import { Button } from "@/components/ui/shadcn/button";
 
 const AMBER = "#C2963A";
-const BG    = "#2D3B2C";
+const BG    = "#4A5E48";
 
 const quickLinks = [
   { href: "/who-we-are",   label: "Who We Are" },

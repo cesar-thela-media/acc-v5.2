@@ -34,12 +34,12 @@ img, video, canvas, svg {
   --color-sage-50:  #F2F5F2;
   --color-sage-100: #D8E0D8;
   --color-sage-500: #6B8A69;
-  --color-sage-600: #4A5E48;   /* section-2 mid-sage  */
+  --color-sage-600: #5A6E58;   /* lighter mid-sage accents  */
   --color-sage-700: #3D4F3B;   /* hover/active states  */
-  --color-sage-800: #2D3B2C;   /* hero · footer · CTA  */
+  --color-sage-800: #4A5E48;   /* MAIN brand — hero · footer · nav · CTA  */
   --color-sage-900: #1A1A1A;   /* body text            */
 
-  /* Member + admin chrome (mid sage — not forest dark) */
+  /* Member chrome — same as main brand sage */
   --color-app-shell: #4A5E48;
   --color-app-shell-rgb: 74, 94, 72;
 
@@ -85,12 +85,12 @@ img, video, canvas, svg {
   --radius-full: 9999px;
 
   /* ── Shadows — warm sage-tinted ──────────────────────────── */
-  --shadow-xs: 0 1px 3px  rgba(45,59,44,0.06);
-  --shadow-sm: 0 2px 8px  rgba(45,59,44,0.08);
-  --shadow-md: 0 4px 20px rgba(45,59,44,0.10);
-  --shadow-lg: 0 8px 36px rgba(45,59,44,0.12);
-  --shadow-xl: 0 16px 56px rgba(45,59,44,0.14);
-  --shadow-card: 0 4px 24px rgba(45,59,44,0.10), 0 1px 4px rgba(45,59,44,0.06);
+  --shadow-xs: 0 1px 3px  rgba(74,94,72,0.06);
+  --shadow-sm: 0 2px 8px  rgba(74,94,72,0.08);
+  --shadow-md: 0 4px 20px rgba(74,94,72,0.10);
+  --shadow-lg: 0 8px 36px rgba(74,94,72,0.12);
+  --shadow-xl: 0 16px 56px rgba(74,94,72,0.14);
+  --shadow-card: 0 4px 24px rgba(74,94,72,0.10), 0 1px 4px rgba(74,94,72,0.06);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -130,7 +130,7 @@ img, video, canvas, svg {
 
 /* ── :root custom props ──────────────────────────────────────── */
 :root {
-  --color-hero-bg:  #2D3B2C;
+  --color-hero-bg:  #4A5E48;
   --color-hero-tagline: #C2963A;
   --color-section-2-bg: #4A5E48;
   --color-parchment: #F0EDE6;

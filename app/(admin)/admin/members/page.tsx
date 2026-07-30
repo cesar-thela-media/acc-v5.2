@@ -50,8 +50,8 @@ const STATUS_LABELS: Record<Status, string> = {
 /** Template-style solid status pills (Space basic table) with ACC colors */
 function StatusPill({ status }: { status: Status }) {
   const styles: Record<Status, { bg: string; color: string }> = {
-    active: { bg: "#2D3B2C", color: "#fff" },
-    inactive: { bg: "rgba(45,59,44,0.12)", color: "#3D4F3B" },
+    active: { bg: "#4A5E48", color: "#fff" },
+    inactive: { bg: "rgba(74,94,72,0.12)", color: "#3D4F3B" },
     suspended: { bg: "#B54B4B", color: "#fff" },
   };
   const s = styles[status];
@@ -174,7 +174,7 @@ export default function AdminMembersPage() {
       <CardBox className="!p-0 overflow-hidden" padding={false}>
         <div
           className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 sm:px-6 py-4 border-b"
-          style={{ borderColor: "rgba(45,59,44,0.08)" }}
+          style={{ borderColor: "rgba(74,94,72,0.08)" }}
         >
           <div>
             <h2 className="text-base font-semibold" style={{ color: "var(--color-sage-800)" }}>
@@ -190,7 +190,7 @@ export default function AdminMembersPage() {
               className="relative flex items-center gap-2 h-9 rounded-lg px-3 min-w-[200px]"
               style={{
                 background: "var(--color-cream-100)",
-                border: "1px solid rgba(45,59,44,0.1)",
+                border: "1px solid rgba(74,94,72,0.1)",
               }}
             >
               <Search className="size-3.5 shrink-0" style={{ color: "var(--color-text-tertiary)" }} />
@@ -212,10 +212,10 @@ export default function AdminMembersPage() {
                   onClick={() => setStatusFilter(s)}
                   className="px-2.5 py-1.5 rounded-full text-[11px] font-medium capitalize transition-colors"
                   style={{
-                    background: statusFilter === s ? "#2D3B2C" : "var(--color-cream-100)",
+                    background: statusFilter === s ? "#4A5E48" : "var(--color-cream-100)",
                     color: statusFilter === s ? "#fff" : "var(--color-sage-700)",
                     border:
-                      statusFilter === s ? "none" : "1px solid rgba(45,59,44,0.1)",
+                      statusFilter === s ? "none" : "1px solid rgba(74,94,72,0.1)",
                   }}
                 >
                   {s === "all" ? "All" : STATUS_LABELS[s]}
@@ -226,7 +226,7 @@ export default function AdminMembersPage() {
         </div>
 
         {/* Mobile list */}
-        <div className="md:hidden divide-y" style={{ borderColor: "rgba(45,59,44,0.08)" }}>
+        <div className="md:hidden divide-y" style={{ borderColor: "rgba(74,94,72,0.08)" }}>
           {rows.map(({ original: m }) => (
             <div key={m.id} className="px-5 py-4 flex items-start gap-3">
               <MemberAvatar name={m.name} id={m.id} />
@@ -289,7 +289,7 @@ export default function AdminMembersPage() {
             <TableHeader>
               <TableRow
                 className="hover:bg-transparent border-b"
-                style={{ borderColor: "rgba(45,59,44,0.08)" }}
+                style={{ borderColor: "rgba(74,94,72,0.08)" }}
               >
                 <TableHead
                   className="h-12 px-6 font-medium normal-case tracking-normal text-[13px]"
@@ -338,7 +338,7 @@ export default function AdminMembersPage() {
                 <TableRow
                   key={m.id}
                   className="border-b last:border-0"
-                  style={{ borderColor: "rgba(45,59,44,0.06)" }}
+                  style={{ borderColor: "rgba(74,94,72,0.06)" }}
                 >
                   {/* User column: avatar + name + role */}
                   <TableCell className="px-6 py-4">
@@ -444,7 +444,7 @@ export default function AdminMembersPage() {
                         setStatusFilter("all");
                       }}
                       className="text-xs font-medium underline mt-2"
-                      style={{ color: "#2D3B2C", textUnderlineOffset: "3px" }}
+                      style={{ color: "#4A5E48", textUnderlineOffset: "3px" }}
                     >
                       Reset filters
                     </button>
@@ -459,7 +459,7 @@ export default function AdminMembersPage() {
         {total > 0 && (
           <div
             className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 sm:px-6 py-3.5 border-t"
-            style={{ borderColor: "rgba(45,59,44,0.08)", background: "var(--color-cream-100)" }}
+            style={{ borderColor: "rgba(74,94,72,0.08)", background: "var(--color-cream-100)" }}
           >
             <div className="flex items-center gap-2">
               <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
@@ -471,7 +471,7 @@ export default function AdminMembersPage() {
                   setPagination(() => ({ pageIndex: 0, pageSize: Number(e.target.value) }))
                 }
                 className="text-xs px-2 py-1.5 rounded-md border bg-white"
-                style={{ borderColor: "rgba(45,59,44,0.12)", color: "var(--color-text-primary)" }}
+                style={{ borderColor: "rgba(74,94,72,0.12)", color: "var(--color-text-primary)" }}
               >
                 {[5, 10, 20, 50].map((size) => (
                   <option key={size} value={size}>
@@ -494,7 +494,7 @@ export default function AdminMembersPage() {
                   onClick={() => table.previousPage()}
                   disabled={!table.getCanPreviousPage()}
                   className="px-3 py-1.5 rounded-full text-xs font-medium border bg-white disabled:opacity-40"
-                  style={{ borderColor: "rgba(45,59,44,0.12)", color: "var(--color-sage-800)" }}
+                  style={{ borderColor: "rgba(74,94,72,0.12)", color: "var(--color-sage-800)" }}
                 >
                   Prev
                 </button>
@@ -503,7 +503,7 @@ export default function AdminMembersPage() {
                   onClick={() => table.nextPage()}
                   disabled={!table.getCanNextPage()}
                   className="px-3 py-1.5 rounded-full text-xs font-medium text-white disabled:opacity-40"
-                  style={{ background: "#2D3B2C" }}
+                  style={{ background: "#4A5E48" }}
                 >
                   Next
                 </button>

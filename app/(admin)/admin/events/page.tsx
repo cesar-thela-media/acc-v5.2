@@ -29,7 +29,7 @@ export type EventEntry = DemoEvent;
 export const INITIAL_EVENTS = SEED_DEMO_EVENTS;
 
 const CATEGORY_COLORS: Record<string, { bg: string; color: string }> = {
-  Consultation: { bg: "#2D3B2C", color: "#fff" },
+  Consultation: { bg: "#4A5E48", color: "#fff" },
   Workshop: { bg: "#B8892E", color: "#fff" },
   CEU: { bg: "#4A6F8C", color: "#fff" },
   "Self-Care": { bg: "#4A7C59", color: "#fff" },
@@ -40,7 +40,7 @@ type ViewMode = "month" | "agenda";
 const BLANK_FORM = {
   title: "",
   date: "",
-  time: "9:00 – 10:00am",
+  time: "9:00 – 11:00am",
   format: "Virtual (Zoom)",
   category: "Consultation",
   ceus: "",
@@ -263,7 +263,7 @@ export default function AdminEventsPage() {
   const chip = (active: boolean) => ({
     background: active ? "#B8892E" : "#fff",
     color: active ? "#fff" : "var(--color-sage-700)",
-    border: `1px solid ${active ? "#B8892E" : "rgba(45,59,44,0.12)"}`,
+    border: `1px solid ${active ? "#B8892E" : "rgba(74,94,72,0.12)"}`,
   });
 
   return (
@@ -290,14 +290,14 @@ export default function AdminEventsPage() {
 
       <CardBox className="!p-0 overflow-hidden w-full min-w-0" padding={false}>
         {/* Toolbar */}
-        <div className="flex flex-col gap-3 px-3 sm:px-5 py-3 sm:py-4 border-b border-[rgba(45,59,44,0.08)]">
+        <div className="flex flex-col gap-3 px-3 sm:px-5 py-3 sm:py-4 border-b border-[rgba(74,94,72,0.08)]">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1.5 flex-wrap">
               <button
                 type="button"
                 onClick={goToday}
                 className="min-h-9 px-3 py-1.5 rounded-lg text-sm font-medium border bg-white hover:bg-[var(--color-cream-100)]"
-                style={{ borderColor: "rgba(45,59,44,0.12)", color: "var(--color-sage-800)" }}
+                style={{ borderColor: "rgba(74,94,72,0.12)", color: "var(--color-sage-800)" }}
               >
                 Today
               </button>
@@ -305,7 +305,7 @@ export default function AdminEventsPage() {
                 type="button"
                 onClick={goPrev}
                 className="min-h-9 min-w-9 px-2.5 py-1.5 rounded-lg text-sm font-medium border bg-white hover:bg-[var(--color-cream-100)]"
-                style={{ borderColor: "rgba(45,59,44,0.12)", color: "var(--color-sage-800)" }}
+                style={{ borderColor: "rgba(74,94,72,0.12)", color: "var(--color-sage-800)" }}
                 aria-label="Previous month"
               >
                 ‹
@@ -314,7 +314,7 @@ export default function AdminEventsPage() {
                 type="button"
                 onClick={goNext}
                 className="min-h-9 min-w-9 px-2.5 py-1.5 rounded-lg text-sm font-medium border bg-white hover:bg-[var(--color-cream-100)]"
-                style={{ borderColor: "rgba(45,59,44,0.12)", color: "var(--color-sage-800)" }}
+                style={{ borderColor: "rgba(74,94,72,0.12)", color: "var(--color-sage-800)" }}
                 aria-label="Next month"
               >
                 ›
@@ -340,7 +340,7 @@ export default function AdminEventsPage() {
           <div className="flex items-center justify-center">
             <div
               className="inline-flex rounded-full p-0.5 border w-full sm:w-auto max-w-xs"
-              style={{ borderColor: "rgba(45,59,44,0.12)", background: "var(--color-cream-100)" }}
+              style={{ borderColor: "rgba(74,94,72,0.12)", background: "var(--color-cream-100)" }}
             >
               {(
                 [
@@ -354,7 +354,7 @@ export default function AdminEventsPage() {
                   onClick={() => setView(key)}
                   className="flex-1 sm:flex-none min-h-9 px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors"
                   style={{
-                    background: view === key ? "#2D3B2C" : "transparent",
+                    background: view === key ? "#4A5E48" : "transparent",
                     color: view === key ? "#fff" : "var(--color-text-secondary)",
                   }}
                 >
@@ -372,7 +372,7 @@ export default function AdminEventsPage() {
             <div className="w-full min-w-0 sm:min-w-[520px]">
               <div
                 className="grid grid-cols-7 border-b"
-                style={{ borderColor: "rgba(45,59,44,0.08)", background: "var(--color-cream-100)" }}
+                style={{ borderColor: "rgba(74,94,72,0.08)", background: "var(--color-cream-100)" }}
               >
                 {WEEKDAYS.map((d) => (
                   <div
@@ -403,7 +403,7 @@ export default function AdminEventsPage() {
                       }}
                       className="group min-h-[64px] sm:min-h-[100px] lg:min-h-[112px] border-b border-r p-0.5 sm:p-1.5 flex flex-col gap-0.5 min-w-0 cursor-pointer transition-colors hover:bg-[rgba(184,137,46,0.06)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#B8892E]"
                       style={{
-                        borderColor: "rgba(45,59,44,0.06)",
+                        borderColor: "rgba(74,94,72,0.06)",
                         background: cell.inMonth
                           ? isToday
                             ? "rgba(74,94,72,0.04)"
@@ -421,7 +421,7 @@ export default function AdminEventsPage() {
                                 ? "#fff"
                                 : "var(--color-text-secondary)"
                               : "var(--color-text-tertiary)",
-                            background: isToday ? "#2D3B2C" : "transparent",
+                            background: isToday ? "#4A5E48" : "transparent",
                           }}
                         >
                           {cell.date.getDate()}
@@ -472,7 +472,7 @@ export default function AdminEventsPage() {
         )}
 
         {view === "agenda" && (
-          <div className="divide-y" style={{ borderColor: "rgba(45,59,44,0.08)" }}>
+          <div className="divide-y" style={{ borderColor: "rgba(74,94,72,0.08)" }}>
             {agendaEvents.length === 0 && (
               <div className="px-6 py-16 text-center">
                 <p className="text-sm" style={{ color: "var(--color-text-tertiary)" }}>
@@ -536,7 +536,7 @@ export default function AdminEventsPage() {
 
         <div
           className="flex flex-wrap gap-3 px-5 py-3 border-t"
-          style={{ borderColor: "rgba(45,59,44,0.08)", background: "var(--color-cream-100)" }}
+          style={{ borderColor: "rgba(74,94,72,0.08)", background: "var(--color-cream-100)" }}
         >
           {CATEGORIES.map((cat) => {
             const c = CATEGORY_COLORS[cat];
@@ -570,7 +570,7 @@ export default function AdminEventsPage() {
           showCloseButton
         >
           <form onSubmit={handleSubmit}>
-            <DialogHeader className="px-5 pt-5 pb-3 border-b border-[rgba(45,59,44,0.08)]">
+            <DialogHeader className="px-5 pt-5 pb-3 border-b border-[rgba(74,94,72,0.08)]">
               <DialogTitle>
                 {editId != null ? "Edit event" : "New event"}
               </DialogTitle>
@@ -613,7 +613,7 @@ export default function AdminEventsPage() {
                     }}
                     className="w-full h-10 rounded-lg border px-3 text-sm outline-none focus:border-[#B8892E]"
                     style={{
-                      borderColor: "rgba(45,59,44,0.15)",
+                      borderColor: "rgba(74,94,72,0.15)",
                       color: "var(--color-text-primary)",
                       background: "#fff",
                     }}
@@ -622,7 +622,7 @@ export default function AdminEventsPage() {
                 <Input
                   label="Time"
                   name="time"
-                  placeholder="e.g. 9:00 – 10:30am"
+                  placeholder="e.g. 9:00 – 11:00am"
                   value={form.time}
                   onChange={(e) => setForm((f) => ({ ...f, time: e.target.value }))}
                   required

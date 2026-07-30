@@ -57,7 +57,7 @@ export default function ResourcesPage() {
       <PageHeader
         eyebrow="Resources"
         title="Resource library"
-        description="Clinical tools, handouts, and practice guides — same library managed in admin."
+        description="Clinical tools, handouts, and practice guides: same library managed in admin."
       />
 
       <CardBox className="!p-3 sm:!p-4 md:!p-5 w-full min-w-0">
@@ -93,9 +93,9 @@ export default function ResourcesPage() {
                 onClick={() => setCategory(item)}
                 className="px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
                 style={{
-                  background: category === item ? "#2D3B2C" : "var(--color-cream-100)",
+                  background: category === item ? "#4A5E48" : "var(--color-cream-100)",
                   color: category === item ? "#fff" : "var(--color-text-secondary)",
-                  border: `1px solid ${category === item ? "#2D3B2C" : "rgba(45,59,44,0.1)"}`,
+                  border: `1px solid ${category === item ? "#4A5E48" : "rgba(74,94,72,0.1)"}`,
                 }}
               >
                 {item}

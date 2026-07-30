@@ -12,7 +12,7 @@ import { appUrl } from "@/lib/env";
 
 // ─── Palette ──────────────────────────────────────────────────────────────
 const SAGE_900 = "#1B1B1B";
-const SAGE_700 = "#4A5D4E";
+const SAGE_700 = "#4A5E48";
 const SAGE_600 = "#5A7060";
 const SAGE_100 = "#E4EBE6";
 const GOLD = "#C9A96E";

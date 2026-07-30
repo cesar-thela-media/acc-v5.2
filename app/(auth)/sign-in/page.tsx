@@ -24,7 +24,7 @@ export default function SignInPage() {
             fontFamily: "inherit",
           },
           elements: {
-            card: { boxShadow: "0 4px 24px rgba(45,59,44,0.10)", border: "1px solid rgba(194,150,58,0.15)" },
+            card: { boxShadow: "0 4px 24px rgba(74,94,72,0.10)", border: "1px solid rgba(194,150,58,0.15)" },
             formButtonPrimary: { backgroundColor: "#C2963A" },
             footerActionLink: { color: "#C2963A" },
           },

@@ -186,12 +186,12 @@ export function appendSubmittedApplication(app: Application): Application[] {
     const merged: Application = {
       ...app,
       id: prev.id,
-      // re-apply keeps/returns to pending for re-review
-      status: "pending",
+      // keep status from payload (e.g. approved on direct join)
+      status: app.status ?? "pending",
     };
     next = list.map((a, i) => (i === existingIdx ? merged : a));
   } else {
-    // newest submissions first so they appear at the top of Pending
+    // newest submissions first
     next = [app, ...list];
   }
 

@@ -27,8 +27,6 @@ const navigationData = [
   { name: "Who We Are", href: "/who-we-are" },
   { name: "What We Offer", href: "/what-we-offer" },
   { name: "Find a Clinician", href: "/find-a-clinician" },
-  // Temporary nav entry so the free playbook is easy to open without typing /leadmagnet
-  { name: "Free playbook", href: "/leadmagnet" },
 ];
 
 export function PublicNav() {
@@ -91,13 +89,6 @@ export function PublicNav() {
 
           {/* Right actions */}
           <div className="hidden lg:flex items-center gap-2">
-            <Link
-              href="/admin/login"
-              className="h-10 flex items-center px-4 text-sm font-medium rounded-xl transition-colors hover:bg-white/10"
-              style={{ color: "rgba(255,255,255,0.72)" }}
-            >
-              Admin
-            </Link>
             <Link
               href="/sign-in"
               className="h-10 flex items-center px-5 text-sm font-medium rounded-xl transition-colors hover:bg-white/10"
@@ -164,18 +155,10 @@ export function PublicNav() {
                     </div>
                     <div className="mt-5 flex flex-col gap-2.5">
                       <Link
-                        href="/admin/login"
-                        onClick={() => setIsOpen(false)}
-                        className="text-center py-3 min-h-12 flex items-center justify-center rounded-xl text-sm"
-                        style={{ color: "rgba(26,26,26,0.65)" }}
-                      >
-                        Admin
-                      </Link>
-                      <Link
                         href="/sign-in"
                         onClick={() => setIsOpen(false)}
                         className="text-center py-3 min-h-12 flex items-center justify-center rounded-xl text-sm border"
-                        style={{ borderColor: "rgba(45,59,44,0.2)", color: "#1A1A1A" }}
+                        style={{ borderColor: "rgba(74,94,72,0.2)", color: "#1A1A1A" }}
                       >
                         Log in
                       </Link>

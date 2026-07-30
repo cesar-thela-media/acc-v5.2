@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/shadcn/button";
 
 const AMBER = "#C2963A";
 const SAGE = "#4A5E48";
-const SAGE_DEEP = "#3D4F3B";
+const SAGE_DEEP = "#4A5E48";
 
 export function AdminLoginForm() {
   const router = useRouter();
@@ -62,7 +62,7 @@ export function AdminLoginForm() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(150deg, rgba(45,59,44,0.72) 0%, rgba(61,79,59,0.55) 55%, rgba(74,94,72,0.35) 100%)",
+              "linear-gradient(150deg, rgba(74,94,72,0.72) 0%, rgba(61,79,59,0.55) 55%, rgba(74,94,72,0.35) 100%)",
           }}
         />
         <div className="absolute inset-0 flex flex-col justify-end p-10 xl:p-12">

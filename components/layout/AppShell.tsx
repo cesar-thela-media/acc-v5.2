@@ -83,7 +83,7 @@ export function AppShell({
   const isAdmin = tone === "admin";
   const MEMBER_SHELL = "#4A5E48"; /* same sage as member sidebar */
   const shellTop = isAdmin ? ADMIN_SHELL : MEMBER_SHELL;
-  const shellBottom = isAdmin ? ADMIN_SHELL_DEEP : "#3D4F3B";
+  const shellBottom = isAdmin ? ADMIN_SHELL_DEEP : "#4A5E48";
   const shellSolid = isAdmin ? ADMIN_SHELL : MEMBER_SHELL;
   /** Outer frame/gutter matches sidebar chrome */
   const shellChrome = isAdmin ? ADMIN_SHELL : MEMBER_SHELL;
@@ -302,15 +302,15 @@ export function AppShell({
           className="flex flex-1 flex-col min-h-0 h-full w-full min-w-0 md:rounded-2xl md:overflow-hidden"
           style={{
             background: CREAM,
-            border: "1px solid rgba(45,59,44,0.10)",
-            boxShadow: "0 4px 24px rgba(45,59,44,0.06)",
+            border: "1px solid rgba(74,94,72,0.10)",
+            boxShadow: "0 4px 24px rgba(74,94,72,0.06)",
           }}
         >
           <header
             className="sticky top-0 z-20 h-[56px] sm:h-[60px] shrink-0 flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-5 w-full min-w-0"
             style={{
               background: "rgba(255,255,255,0.97)",
-              borderBottom: "1px solid rgba(45,59,44,0.08)",
+              borderBottom: "1px solid rgba(74,94,72,0.08)",
             }}
           >
             <button
@@ -332,7 +332,7 @@ export function AppShell({
               <DropdownMenu>
                 <DropdownMenuTrigger
                   className="flex relative items-center justify-center w-10 h-10 min-w-10 min-h-10 rounded-full transition-colors hover:bg-black/5 outline-none"
-                  style={{ color: "rgba(45,59,44,0.55)" }}
+                  style={{ color: "rgba(74,94,72,0.55)" }}
                   aria-label="Notifications"
                 >
                   <Bell size={18} />
@@ -343,7 +343,7 @@ export function AppShell({
                   />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" sideOffset={8} className="w-72 rounded-xl p-0 overflow-hidden">
-                  <div className="px-3 py-2.5 border-b" style={{ borderColor: "rgba(45,59,44,0.08)" }}>
+                  <div className="px-3 py-2.5 border-b" style={{ borderColor: "rgba(74,94,72,0.08)" }}>
                     <p className="text-sm font-semibold" style={{ color: "var(--color-sage-800)" }}>
                       Notifications
                     </p>
@@ -371,7 +371,7 @@ export function AppShell({
                           {
                             href: "/dashboard/events",
                             title: "Event reminder",
-                            meta: "Monthly case consultation — RSVP open",
+                            meta: "Monthly case consultation, RSVP open",
                           },
                           {
                             href: "/dashboard/resources",

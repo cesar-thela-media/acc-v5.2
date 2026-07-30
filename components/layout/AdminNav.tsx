@@ -47,10 +47,10 @@ export function AdminNav({ viewerName = "Account", viewerPhotoUrl, children }: P
           Sample data
         </span>
         <span style={{ color: "var(--color-text-secondary)" }}>
-          <span className="sm:hidden"> — demo content; stays in this browser.</span>
+          <span className="sm:hidden">: demo content; stays in this browser.</span>
           <span className="hidden sm:inline">
-            {" "}
-            — roster, applications, events, and resources are demo content for this preview. Changes stay
+            {": "}
+            roster, applications, events, and resources are demo content for this preview. Changes stay
             in this browser only.
           </span>
         </span>

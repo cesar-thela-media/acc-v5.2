@@ -6,7 +6,7 @@ import Link from "next/link";
 // Built to satisfy "a site they can find before the page is ready to go"
 // for pre-launch invitations (see context.md). Confirm wording with her
 // before this URL goes into any real invitation.
-const SAGE_800 = "#2D3B2C";
+const SAGE_800 = "#4A5E48";
 const AMBER = "#C2963A";
 
 export const metadata: Metadata = {

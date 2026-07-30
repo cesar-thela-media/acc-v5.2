@@ -101,7 +101,7 @@ function buildDeliveryEmail(firstName: string) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#F8FAF3;padding:40px 20px;">
     <tr>
       <td align="center">
-        <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(74,93,78,0.08);">
+        <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(74,94,72,0.08);">
           <!-- Header -->
           <tr>
             <td style="background:#1B1B1B;padding:36px 40px;">
@@ -130,7 +130,7 @@ function buildDeliveryEmail(firstName: string) {
                 Austin Clinician Circle is a virtual membership network for licensed therapists with monthly case consultation, a vetted referral network, clinical resources, and CEU trainings each month. We're launching with a founding cohort of therapists.
               </p>
               <a href="${appUrl}/join"
-                 style="display:inline-block;background:#4A5D4E;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:100px;font-size:14px;font-weight:600;">
+                 style="display:inline-block;background:#4A5E48;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:100px;font-size:14px;font-weight:600;">
                 Apply for founding membership →
               </a>
             </td>
@@ -140,7 +140,7 @@ function buildDeliveryEmail(firstName: string) {
             <td style="padding:20px 40px 32px;border-top:1px solid #ECEFE8;">
               <p style="margin:0;font-size:12px;color:#75796E;line-height:1.6;">
                 Sarah Arnold, LPC-S · Restored Family Counseling · Austin, TX<br />
-                <a href="mailto:sarah@restoredfamily.com" style="color:#4A5D4E;">sarah@restoredfamily.com</a>
+                <a href="mailto:sarah@restoredfamily.com" style="color:#4A5E48;">sarah@restoredfamily.com</a>
               </p>
             </td>
           </tr>
@@ -157,13 +157,13 @@ function buildNotificationEmail(firstName: string, email: string) {
   return `<!DOCTYPE html>
 <html lang="en">
 <body style="font-family:Helvetica,Arial,sans-serif;background:#F8FAF3;padding:32px 16px;">
-  <table width="480" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;padding:28px 32px;box-shadow:0 2px 12px rgba(74,93,78,0.06);">
+  <table width="480" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;padding:28px 32px;box-shadow:0 2px 12px rgba(74,94,72,0.06);">
     <tr><td>
         <p style="margin:0 0 4px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#75796E;">New lead</p>
         <h2 style="margin:0 0 20px;font-size:20px;font-weight:600;color:#1B1B1B;">${firstName}</h2>
         <table cellpadding="0" cellspacing="0" style="width:100%;border-top:1px solid #DFE3DA;">
         <tr><td style="padding:10px 0;border-bottom:1px solid #DFE3DA;font-size:13px;color:#75796E;width:120px;">Email</td>
-          <td style="padding:10px 0;border-bottom:1px solid #DFE3DA;font-size:13px;color:#1B1B1B;"><a href="mailto:${email}" style="color:#4A5D4E;">${email}</a></td></tr>
+          <td style="padding:10px 0;border-bottom:1px solid #DFE3DA;font-size:13px;color:#1B1B1B;"><a href="mailto:${email}" style="color:#4A5E48;">${email}</a></td></tr>
         <tr><td style="padding:10px 0;border-bottom:1px solid #DFE3DA;font-size:13px;color:#75796E;">Source</td>
           <td style="padding:10px 0;border-bottom:1px solid #DFE3DA;font-size:13px;color:#1B1B1B;">Coming soon: playbook download</td></tr>
         <tr><td style="padding:10px 0;font-size:13px;color:#75796E;">Time (CT)</td>

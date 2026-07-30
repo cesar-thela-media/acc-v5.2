@@ -78,7 +78,7 @@ export function EventsClient({ hasCertificates }: { hasCertificates: boolean }) 
       <PageHeader
         eyebrow="Events"
         title="Upcoming events"
-        description="Case consultation, CEU trainings, and workshops — same calendar Sarah manages in admin."
+        description="Case consultation, CEU trainings, and workshops: same calendar Sarah manages in admin."
       />
 
       <Tabs defaultValue="list">
@@ -222,7 +222,7 @@ export function EventsClient({ hasCertificates }: { hasCertificates: boolean }) 
                   className="min-h-[72px] rounded-lg p-1.5 text-left"
                   style={{
                     background: cell.day ? "#fff" : "transparent",
-                    border: cell.day ? "1px solid rgba(45,59,44,0.08)" : "none",
+                    border: cell.day ? "1px solid rgba(74,94,72,0.08)" : "none",
                   }}
                 >
                   {cell.day != null && (

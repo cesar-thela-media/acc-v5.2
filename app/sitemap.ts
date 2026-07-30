@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { appUrl } from "@/lib/env";
 
-const routes = ["", "/who-we-are", "/what-we-offer", "/find-a-clinician", "/join", "/leadmagnet", "/privacy", "/terms"];
+const routes = ["", "/who-we-are", "/what-we-offer", "/find-a-clinician", "/join", "/privacy", "/terms"];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
